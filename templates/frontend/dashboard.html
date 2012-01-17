@@ -1,0 +1,90 @@
+{% extends "base/frontend.html" %}
+{% block content %}
+<script type="text/javascript">
+	var tickets = {{tickets_json|safe}};
+	var cartsum = 0;
+	var position = 0;
+	function add(pk){
+		t = getData(pk);
+		var limit = "";
+		if(t.fields.limit_supervisor){
+			limit = "<button class='icon red tooltip' title='Needs supervisor'><img src='{{STATIC_URL}}img/icons/buttons/alert.png'></button> ";
+		}
+		$("#cart").append("<tr id='cart-"+position+"'>" +
+							"<td class='name'><input type=\"hidden\" name=\"position\" value=\""+pk+"\"/>"+limit+t.fields.name+"</td>" +
+							"<td class='price'>"+parseFloat(t.fields.sale_price).toFixed(2)+" "+t.fields.currency+"</td>" +
+							"<td class='remove'><button class='icon red tooltip' title='Remove' onClick='remove("+position+","+parseFloat(t.fields.sale_price).toFixed(2)+");return false;'><img src='{{STATIC_URL}}img/icons/buttons/box_outgoing.png'></button></td>" +
+						  "</tr>");
+		cartsum += parseFloat(t.fields.sale_price);
+		$("#cart-sum").html(cartsum.toFixed(2)+" EUR");
+		position += 1;
+	}
+	function remove(pos, sub){
+		$("#cart-"+pos).html("");
+		cartsum -= sub;
+		$("#cart-sum").html(cartsum.toFixed(2)+" EUR");
+	}
+	function emptyCart(){
+		$("#cart").html("");
+		cartsum = 0;
+		$("#cart-sum").html("0.00 EUR");
+	}
+	function getData(pk){
+		for(t in tickets){
+			if(tickets[t].pk == pk){
+				return tickets[t];
+			}
+		}
+		return false;
+	}
+</script>
+		<article class="content-box col-super2p1">
+			<header>
+				<h2>Cashdesk</h2>
+			</header>
+			<section>
+				<table id="tickets">
+					{% for t in tickets %}
+					<tr>
+						<td style="padding-left:20px;width:50px;"><button class="icon green" onClick="$('#detail-{{t.pk}}').fadeToggle(); return false;"><img src="{{STATIC_URL}}img/icons/buttons/info_about.png"></button></td>
+						<td style="text-align:left;max-width:300px;">
+							<span style="font-size:large;">{{t.name}}</span>
+						</td>
+						<td style="width:100px;">{{t.sale_price|floatformat:2}} {{t.currency}}</td>
+						{#<td style="width: 80px;"><button class="button blue" onclick="return false;">Sell!</button></td>#}
+						<td style="width: 80px; padding-right: 20px;"><button class="button green" onclick="add({{t.pk}})">Add to Cart</button></td>
+					</tr>
+					<tr id="detail-{{t.pk}}" style="display:none;" onClick="$('#detail-{{t.pk}}').fadeToggle()">
+						<td colspan="5" style="text-align:left;padding-left:30px;">{{t.description|safe|linebreaksbr}}</td>
+					</tr>
+					{% empty %}
+					<tr><td>No tickets available for sale.</td></tr>
+					{% endfor %}
+				</table>
+			</section>
+		</article>
+		<article class="content-box col-super2p2 clear-rm">
+			<header>
+				<h2>Cart</h2>
+			</header>
+			<section>
+				<form method="POST" action="{% url desk-sell %}">
+				{% csrf_token %}
+				<table id="cart">
+				</table>
+				<table>
+					<tr>
+						<td style="text-align:left; padding-left: 20px;">
+							<button class="button red tooltip" title="Empty Cart" onclick="emptyCart(); return false;">Clear</button>
+						</td>
+						<td id="cart-sum">0.00 EUR</td>
+						<td style="text-align:right; padding-right: 20px;">
+							<input type="submit" class="button green" onclick="return true;" value="Checkout"/>
+						</td>
+					</tr>
+				</table>
+				</form>
+			</section>
+		</article>
+		<div class="clearfix"></div>
+{% endblock %}

@@ -1,0 +1,43 @@
+/*custom upload elements*/
+input.customfile-input {
+	position:absolute;
+	top:-12px;
+	height:50px;
+	width:280px;
+	cursor:pointer;
+	background:transparent;
+	border:0;
+	opacity:0;
+	-moz-opacity:0;
+	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+	z-index:999;
+}
+.customfile {
+	width:265px;
+	height:28px;
+	position:relative;
+	cursor:pointer;
+	overflow:visible;
+}
+.customfile-disabled {
+	opacity:.5;
+	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+	cursor:default;
+}
+.customfile-feedback {
+	display:block;
+	margin:1px 1px 1px 0;
+	color:#666;
+	padding:.3em .6em;
+}
+.customfile-feedback-populated {
+	color:#666;
+	padding-left:20px;
+}
+.customfile-button {
+	float:right;
+	position:relative;
+	top:-5px;
+	right:-15px;
+	padding:8px 12px;
+}
