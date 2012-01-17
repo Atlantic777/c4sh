@@ -1,0 +1,4 @@
+*.pyc
+*.AppleDouble
+*:2e*
+*.sqlite3

@@ -1,0 +1,71 @@
+{% extends "base/frontend.html" %}
+{% block content %}
+<script type="text/javascript">
+	/* TODO focus given field */
+</script>
+		<article class="content-box col-super2p1">
+			<header>
+				<h2>Sale #{{sale.pk}}</h2>
+			</header>
+			<section>
+				<table id="tickets">
+					{% for p in sale.positions %}
+					<tr>
+						<td style="text-align:left;padding-left:20px;max-width:300px;">
+							<span style="font-size:large;">{{p.ticket.name}}</span>
+						</td>
+						<td style="width:150px;">
+							{% if p.sale_price %}<strike>{% endif %}
+							{{p.ticket.sale_price|floatformat:2}}
+							{% if p.sale_price %}</strike> {{p.sale_price|floatformat:2}}{% endif %}
+							{{p.ticket.currency}}
+							<br/>
+							<small>incl. {{p.ticket.tax_rate}}% tax</small>
+						</td>
+					</tr>
+					{% empty %}
+					<tr><td>No tickets sold. Something went wrong!</td></tr>
+					{% endfor %}
+					<tr>
+						<td colspan="2" style="text-align:right;padding-right:30px;font-weight:bold;font-size:large;">{{sale.cached_sum|floatformat:2}} EUR</td>
+					</tr>
+				</table>
+			</section>
+		</article>
+		<article class="content-box col-super2p2 clear-rm">
+			<header>
+				<h2>Calculator</h2>
+			</header>
+			<section>
+				<table>
+					<tr>
+						<th>Given</th>
+						<th>Return</th>
+					</tr>
+					<tr>
+						<td><input id="given" name="given" onKeyUp="$('#changecalc').html((this.value-{{sale.cached_sum|floatformat:2}}).toFixed(2));"/></td>
+						<td id="changecalc"><- enter value</td>
+					</tr>
+					{% for given in cashlist %}
+					{% if given > sale.cached_sum %}
+					<tr>
+						<td>{{given}}</td>
+						<td>
+							<script>document.write(({{given}} - {{sale.cached_sum|floatformat:2}}).toFixed(2));</script>
+						</td>
+					</tr>
+					{% endif %}
+					{% empty %}
+					<tr>
+						<td colspan="2">No suggestions.</td>
+					</tr>
+					{% endfor %}
+				</table>
+				<br style="clear: both;"/>
+				<div style="text-align:right;">
+					<a href="{% url dashboard %}" class="button blue">Continue</a>
+				</div>
+			</section>
+		</article>
+		<div class="clearfix"></div>
+{% endblock %}

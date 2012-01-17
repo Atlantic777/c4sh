@@ -1,0 +1,434 @@
+@charset "utf-8";
+/* CSS Document */
+
+/* =========================================== 
+MUON style
+=========================================== */
+
+/* Custom left padding of first-level submenu */
+.muon.muon_init nav nav { padding-left:200px; }
+
+/* Basics for header element */
+.muon {
+	background:url('../img/bgs/bg_main_nav.png') repeat-x center bottom;
+	position:static;
+	width:100%;
+	height:40px;
+	padding-bottom:4px;
+	color:#bbb;
+	text-shadow:#111 0 1px 1px;
+	z-index:100;
+}
+.ie7 .muon { left:0; }
+.muon.muon_init, .js .muon { position:fixed; }
+
+/* Root menu */
+.muon .navigation-wrapper > nav {
+	height:41px;
+	float:left;
+}
+.muon .navigation-wrapper > nav > ul > li > a { font-size:14px; }
+
+/* Reset and normalization for basic elements */
+.muon h1, .muon h2, .muon h3, .muon ul, .muon p {
+	margin:0;
+	padding:0;
+}
+.muon h1, .muon h2, .muon h3 { color:#fff; }
+.muon h1 {
+	font-size:17px;
+	font-weight:bold;
+	margin-bottom:10px;
+}
+.muon h2 {
+	font-size:15px;
+	font-weight:normal;
+	margin-bottom:5px;
+}
+.muon p + h2 { margin-top:10px; }
+.muon li {
+	display:block;
+	float:left;
+	padding:11px;
+	background-image:none;
+}
+
+/* =========================================== 
+Links
+=========================================== */
+/* Common links */
+.muon a {
+	color:#a6a6a6;
+	text-decoration:none;
+	outline:none;
+	cursor:pointer;
+}
+.muon a:hover { color:#fff; }
+/* External link */
+.muon a.muon-outside {
+	background:url('../img/icons/icon_outside.png') right top no-repeat;
+	padding-right:11px;
+}
+.muon .muon-box-list a.muon-outside {
+	background-position:right 3px;
+	margin-right:3px;
+}
+/* Current active item */
+.muon a.muon_current_item { color:#fff; }
+
+/* =========================================== 
+Logo
+=========================================== */
+.muon-logo {
+	display:block;
+	width:200px;
+	height:40px;
+	text-indent:-999em;
+	border:none;
+	background:url('../img/_sample-data/sample_logo.png') no-repeat;
+}
+.muon_init .muon-logo, .js .muon-logo { float:left; }
+.muon-logo > img { border:none; }
+
+/* =========================================== 
+Root menu
+=========================================== */
+.muon .navigation-wrapper > nav > ul { clear:left; }
+.muon_init .muon_root, .js .muon_root { clear:none; }
+.muon .navigation-wrapper > nav > ul > li > nav * { text-align:left; }
+.muon .navigation-wrapper > nav > ul > li:last-child { border-right:none; }
+.js .muon .muon_root > li {
+	width:auto;
+	background:none;
+	padding-left:11px;
+	border-top:none;
+	border-right:#444 1px solid;
+	height:19px;
+}
+.muon_init .muon_root > li:first-child { padding-left:0; }
+.muon_init .muon_root > li:last-child { border-right:none; }
+.muon_init .muon_root > li > a {
+	background-image:url('../img/icons/icon_main_nav_arrows.png');
+	background-repeat:no-repeat;
+	background-position:right -11px;
+	padding-right:16px;
+	text-transform:uppercase;
+}
+.muon_init .muon_root > li > a.muon-no-submenu {
+	background:none;
+	padding-right:0;
+}
+
+/* =========================================== 
+Small notifications
+=========================================== */
+.muon .small-notification {
+	top:0;
+	right:-20px;
+	position:relative;
+}
+.ie7 .muon .small-notification {
+	overflow:hidden;
+	text-align:center;
+}
+.ie7 .muon .small-notification b {
+	display:block;
+	width:26px;
+}
+
+/* =========================================== 
+Submenu block
+=========================================== */
+.muon nav nav {
+	position:static;
+	overflow:hidden;
+	margin-right:20px;
+	padding:0 0 25px;
+	line-height:160%;
+}
+
+.muon_init nav nav {
+	background:none;
+	margin-right:0;
+	position:absolute;
+	border-top:#444 1px solid;
+	right:0;
+	left:0;
+	top:41px;
+}
+
+/* =========================================== 
+Submenu
+=========================================== */
+.muon nav nav > * {
+	display:block;
+	overflow:hidden;
+	float:left;
+}
+.js .muon nav nav { display:none; }
+
+/* =========================================== 
+Submenu layout
+=========================================== */
+/* Defaults and full width layout */
+.muon nav nav > * {
+	width:98%;
+	margin-right:2%;
+	margin-top:20px;
+}
+.ie7 .muon nav nav > * { display:inline-block; }
+/* Halves */
+.muon nav nav.muon-two-columns > * { width:48%; }
+.ie7 .muon nav nav.muon-two-columns > * { width:47.9%; }
+/* Thirds */
+.muon nav nav.muon-three-columns > * { width:31.33%; }
+.ie7 .muon nav nav.muon-three-columns > * { width:31.23%; }
+/* Fourths */
+.muon nav nav.muon-four-columns > * { width:23%; }
+.ie7 .muon nav nav.muon-four-columns > * { width:22.9%; }
+/* Fifths */
+.muon nav nav.muon-five-columns > * { width:18%; }
+.ie7 .muon nav nav.muon-five-columns > * { width:17.9%; }
+
+/* =========================================== 
+Submenu lists
+=========================================== */
+.muon nav nav > ul { min-width:120px; }
+.muon nav nav > ul li {
+	padding:0;
+	float:none;
+}
+.muon ul.muon-wo-subheader { margin-top:49px; }
+
+/* =========================================== 
+Circles style list
+=========================================== */
+.muon-circles li {
+	list-style:none;
+	background:url('../img/icons/lists/icon_list_style_circle.png') left 8px no-repeat;
+	text-indent:12px;
+}
+.muon-circles.muon-w-subheader li:first-child {
+	background:none;
+	text-indent:0;
+}
+
+/* =========================================== 
+Box list
+=========================================== */
+.muon-box-list li {
+	background:#fff;
+	-webkit-border-radius:3px;
+	   -moz-border-radius:3px;
+	        border-radius:3px;
+	margin-bottom:6px;
+	min-height:30px;
+	min-width: 120px;
+	text-shadow:#ccc 0 1px 1px;
+}
+.muon-box-list.muon-w-subheader li:first-child {
+	background:none;
+	margin-bottom:6px;
+	text-indent:0;
+	text-shadow:#111 0 1px 1px;
+}
+.muon-box-list.muon-w-subheader li:first-child > h1 { margin-bottom:8px; }
+.muon ul.muon-wo-subheader.muon-box-list { margin-top:56px; }
+.muon-box-list li a {
+	display:block;
+	padding:4px 8px;
+	color:#666;
+}
+.muon-box-list li a:hover { color:#ae432e; }
+
+/* =========================================== 
+Thumbnail list
+=========================================== */
+.muon-thumbnail-list.muon-no-wrap li * { overflow:hidden; }
+.muon-thumbnail-list li {
+	overflow:hidden;
+	margin-bottom:10px;
+}
+.muon-thumbnail-list li > h1 { margin-bottom:0; }
+.muon-thumbnail-list li:last-child { margin-bottom:0; }
+.muon-thumbnail-list li img {
+	float:left;
+	background:#fff;
+	-webkit-border-radius:3px;
+	   -moz-border-radius:3px;
+	        border-radius:3px;
+	margin:5px 15px 0 0;
+	padding:5px;
+}
+.muon-thumbnail-list-more {
+	display:block;
+	font-size:11px;
+}
+
+/* Thumbnail list images */
+img.muon-float-left {
+	background:#fff;
+	-webkit-border-radius:3px;
+	   -moz-border-radius:3px;
+	        border-radius:3px;
+	padding:5px;
+	float:left;
+	margin:5px 15px 5px 0;
+}
+img.muon-float-right {
+	background:#fff;
+	-webkit-border-radius:3px;
+	   -moz-border-radius:3px;
+	        border-radius:3px;
+	padding:5px;
+	float:right;
+	margin:5px 0 5px 15px;
+}
+
+/* =========================================== 
+Social list
+=========================================== */
+ul.muon-social-list { margin-top:10px; }
+.muon-social-list li {
+	padding:0;
+	text-indent:-999em;
+}
+.muon-social-list li a {
+	display:block;
+	width:32px;
+	height:32px;
+	padding:2px;
+	margin-right:5px;
+	background-repeat:no-repeat;
+}
+.muon-social-list li:last-child a { margin-right:0; }
+.muon-social-list .muon-rss { background-image:url('../img/icons/social/rss.png') }
+.muon-social-list .muon-facebook { background-image:url('../img/icons/social/facebook.png') }
+.muon-social-list .muon-twitter { background-image:url('../img/icons/social/twitter.png') }
+.muon-social-list .muon-forrst { background-image:url('../img/icons/social/forrst.png') }
+.muon-social-list .muon-tumblr { background-image:url('../img/icons/social/tumblr.png') }
+
+/* =========================================== 
+User list
+=========================================== */
+.muon-user-list { float:right; }
+.muon-user-list li {
+	font-size:13px;
+	text-indent:-999em;
+	padding:0;
+}
+.muon-user-list .muon-signup { background-image:url('../img/icons/icon_user_message.png') }
+.muon-user-list .muon-settings { background-image:url('../img/icons/icon_user_settings.png'); }
+.muon-user-list .muon-logout { background-image:url('../img/icons/icon_user_logout.png'); }
+.muon-user-list li a {
+	display:block;
+	width:16px;
+	height:16px;
+	padding:3px;
+	margin:8px 8px 0 0;
+	border:#444 1px solid;
+	background-position:3px 3px;
+	background-repeat:no-repeat;
+	background-color:#ccc;
+	-webkit-box-shadow:0 0 3px #2e2e2e;
+	   -moz-box-shadow:0 0 3px #2e2e2e;
+	        box-shadow:0 0 3px #2e2e2e;
+	border:#888 1px solid;
+	-webkit-border-radius:5px;
+	   -moz-border-radius:5px;
+	        border-radius:5px;
+}
+.muon-user-list li a:hover { background-color:#e5e5e5; }
+.muon-user-list li:last-child a { margin-right:0; }
+
+/* User data */
+li.muon-user-data {
+	text-indent:0;
+	padding:11px;
+	white-space:nowrap;
+}
+li.muon-user-data a, li.muon-user-data a:hover {
+	display:inline;
+	padding:0;
+	margin:0;
+	border:none;
+	background:none;
+}
+
+/* =========================================== 
+Form
+=========================================== */
+.muon form {
+	padding:0;
+	margin-right:25px;
+}
+.muon select, .muon input, .muon textarea {
+	font-size:99%;
+}
+.muon .navigation-wrapper > nav > ul > li > nav fieldset {
+	border:none;
+	margin:0;
+	padding:0;
+	text-align:right;
+}
+.muon legend {
+	display:block;
+	text-align:left;
+	height:36px;
+	font-size:17px;
+	font-weight:bold;
+	color:#fff;
+	margin-bottom:0;
+}
+.muon .navigation-wrapper > nav > ul > li > nav fieldset p {
+	margin-bottom:16px;
+	text-align:right;
+}
+.muon label {
+	margin-right:10px;
+	font-weight:bold;
+	color:#bbb;
+}
+.muon input {
+	width:180px;
+	padding:8px;
+}
+.muon form button { box-shadow:none; }
+
+/* =========================================== 
+Fallback
+=========================================== */
+
+.no-js .muon { height:auto; }
+.no-js .muon .navigation-wrapper > nav {
+	float:none;
+	height:auto;
+}
+.no-js .muon .navigation-wrapper > nav > ul > li {
+	width:100%;
+	border-top:#444 1px solid;
+	text-align:right;
+	float:none;
+	overflow:hidden;
+	background:url('../img/bgs/bg_main_nav.png') repeat-x center top;
+}
+.no-js .muon .navigation-wrapper > nav > ul > li > a {
+	display:block;
+	float:left;
+}
+.no-js .muon nav nav {
+	margin-top:20px;
+	clear:both;
+}
+.no-js .muon .small-notification {
+	right:auto;
+	float:left;
+	top:-2px;
+	margin-left:10px;
+}
+.no-js .muon-user-list {
+	float:none;
+	position:absolute;
+	right:0;
+	top:0;
+}
