@@ -28,6 +28,7 @@ class PreorderTicket(models.Model):
 	valid_until = models.DateTimeField(blank=True, null=True, verbose_name="Ticket can be sold until..")
 
 	limit_amount = models.IntegerField(blank=True, null=True, verbose_name="How many tickets of this type may be sold?")
+	limit_amount_user = models.IntegerField(blank=True, null=True, verbose_name="How many tickets of this type may be sold to a single user?")
 
 	is_ticket = models.BooleanField(default=True, verbose_name="Is this a ticket to redeem at the cashdesk?") # This is the t-shirt option.
 
