@@ -17,7 +17,7 @@ EVENT_NAME_SHORT = 'SIGINT12'
 EVENT_NAME_UNIX = 'sigint12'
 
 # Official name of your event
-EVENT_NAME = 'SIGINT12'
+EVENT_NAME = 'SIGINT 2012'
 
 # Postal address of host (for invoices)
 EVENT_INVOICE_ADDRESS = "CCC Veranstaltungs GmbH\n" + \

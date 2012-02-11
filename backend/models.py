@@ -82,6 +82,8 @@ class Cashdesk(models.Model):
 	allow_supervisor = models.BooleanField(default=False, verbose_name="Allow supervisor login on this cashdesk?")
 	active = models.BooleanField(default=False, verbose_name="Is this cashdesk enabled?")
 
+	active_session = models.ForeignKey("CashdeskSession", related_name="active_session_set", unique=True, blank=True, null=True, verbose_name="Active CashdeskSession object (don't fill in)")
+
 	def __unicode__(self):
 		return "%s (%s)" % (self.name, self.ip)
 	
