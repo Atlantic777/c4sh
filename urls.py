@@ -19,7 +19,7 @@ urlpatterns += patterns('c4sh.desk.views',
 
 urlpatterns += patterns('c4sh.backend.views',
 	url(r'^backend/$', 'dashboard_view', name="backend-dashboard"),
-	url(r'^backend/cashdesks/$', 'dashboard_view', name="backend-cashdesks"),
+	url(r'^backend/cashdesks/$', 'cashdesks_view', name="backend-cashdesks"),
 	url(r'^backend/sale/(?P<sale_id>\d+)/$', 'sale_detail_view', name="backend-sale-detail"),
 	url(r'^fail/', 'static_view', {'template': 'fail.html'}, name="fail"),
 )

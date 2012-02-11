@@ -38,6 +38,8 @@ def session_required(func):
 	def _dec(request, *args, **kwargs):
 		try:
 			cashdesk = get_cashdesk(request)
+			if not cashdesk:
+				return HttpResponseRedirect(reverse('fail'))
 			request.session["cashdesk"] = cashdesk.pk
 			
 			sessions = CashdeskSession.objects.filter(cashdesk=cashdesk, cashier=request.user, valid_from__lte=datetime.datetime.now(), valid_until__gte=datetime.datetime.now())

@@ -7,6 +7,7 @@ from django.http import Http404, HttpResponseServerError, HttpResponseRedirect, 
 from django.template import RequestContext
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from c4sh.backend.models import *
 from c4sh.desk.models import *
 from c4sh.backend.view_helpers import supervisor_required
@@ -30,6 +31,16 @@ def dashboard_view(request):
 	cashdesks_open = Cashdesk.objects.filter(active=True)
 	sales = Sale.objects.all().order_by("-pk")
 	return render_to_response("backend/dashboard.html", locals(), context_instance=RequestContext(request))
+
+@login_required
+@supervisor_required
+def cashdesks_view(request):
+	event = settings.EVENT_NAME_SHORT
+	cashdesks_open = Cashdesk.objects.filter(Q(active=True) & ~Q(active_session=None))
+	cashdesks_closed = Cashdesk.objects.filter(Q(active=True) & Q(active_session=None))
+	cashdesks_inactive = Cashdesk.objects.filter(active=False)
+	cashiers_active = User.objects.filter(is_staff=False)
+	return render_to_response("backend/cashdesks.html", locals(), context_instance=RequestContext(request))
 
 @login_required
 @supervisor_required

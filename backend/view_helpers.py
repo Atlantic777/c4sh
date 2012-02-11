@@ -16,7 +16,7 @@ def get_cashdesk(request=None, ip=None):
 		return Cashdesk.objects.get(ip=ip, active=True)
 	except Cashdesk.DoesNotExist:
 		messages.error(request, "This is not a valid cashdesk.")
-		return HttpResponseRedirect(reverse('fail'))
+		return False
 
 def supervisor_required(func):
 	"""
