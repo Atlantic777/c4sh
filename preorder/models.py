@@ -64,7 +64,8 @@ class Preorder(models.Model):
 	additional_info = models.TextField(blank=True, null=True, verbose_name="Additional identifying information")
 	unique_secret = models.CharField(max_length=255, unique=True, verbose_name="Unique secret to verify ticket ownership at cashdesk (e.g. barcode data)")
 
-	cached_sum = models.DecimalField(max_digits=7, decimal_places=2, verbose_name="Sale amount (cached)")
+	#cached_sum = models.DecimalField(max_digits=7, decimal_places=2, verbose_name="Sale amount (cached)")
+	cached_sum = models.TextField(verbose_name="Sale amount (cached) (json)") # As we "could" have multiple currencies in one preorder, this is a json string with all payment data cached
 	time = models.DateTimeField(verbose_name="Time of sale")
 
 	paid = models.BooleanField(default=False, verbose_name="Is this preorder paid?")
