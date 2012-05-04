@@ -1,4 +1,22 @@
 from django.db import models
+import uuid
+
+class UUIDField(models.CharField) :
+	"""
+	Defining our custom UUIDField field for PreorderPositions
+	""" 
+	def __init__(self, *args, **kwargs):
+		kwargs['max_length'] = kwargs.get('max_length', 64 )
+		kwargs['blank'] = True
+		models.CharField.__init__(self, *args, **kwargs)
+	
+	def pre_save(self, model_instance, add):
+		if add :
+			value = str(uuid.uuid4())
+			setattr(model_instance, self.attname, value)
+			return value
+		else:
+			return super(models.CharField, self).pre_save(model_instance, add)
 
 """
 This data model was created to enable implementation of a preorder system and, foremost,
@@ -53,6 +71,7 @@ class PreorderPosition(models.Model):
 	"""
 	preorder = models.ForeignKey("Preorder")
 	ticket = models.ForeignKey(PreorderTicket)
+	uuid = UUIDField(unique=True, editable=False)
 
 class Preorder(models.Model):
 	"""
