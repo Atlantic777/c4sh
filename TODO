@@ -1,12 +1,13 @@
 = Backend =
-* Kassenübergabe mit Ausdruck
-* Transaktionsansicht
-* Preorderansicht
-* Kassierersetup
-* (Live-)Statistiken
-* LiveView(R)
+(!) Kassenübergabe mit Ausdruck
+(+) Transaktionsansicht
+	* Bon nachdrucken!
+(-) Preorderansicht
+(!) Kassierersetup
+(-) (Live-)Statistiken
+(-) LiveView(R)
 
 = Desk =
-* Einbindung der Preorders
-* Superuser authorization
-* Printer Interface (needs printer)
+(!) Einbindung der Preorders
+(-) Superuser authorization
+(+) Printer Interface (needs printer)
