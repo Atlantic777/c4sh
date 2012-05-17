@@ -4,6 +4,8 @@ from c4sh.backend import models as bmodels
 from c4sh.desk import models as dmodels
 from c4sh.preorder import models as pmodels
 
+from c4sh.desk.tools import open_drawer
+
 class PreorderPositionHandler(BaseHandler):
 	allowed_methods = ('GET',)
 	model = pmodels.PreorderPosition
@@ -29,3 +31,10 @@ class PreorderPositionSearchHandler(BaseHandler):
 			return preorder_positions
 		except pmodels.PreorderPosition.DoesNotExist:
 			return []
+
+class OpenCashDrawerHandler(BaseHandler):
+	allowed_methods = ('GET',)
+
+	def read(self, request):
+		open_drawer()
+		return rc.ALL_OK
