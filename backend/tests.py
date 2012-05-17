@@ -1,16 +1,33 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
+import sys
+from c4sh.backend import models as bmodels
+from c4sh.desk import models as dmodels
+from c4sh.preorder import models as pmodels
 
-Replace this with more appropriate tests for your application.
-"""
+tickets = pmodels.PreorderTicket.objects.all()
 
-from django.test import TestCase
+for ticket in tickets:
+	print "%s (ID: %d)" % (ticket, ticket.backend_id)
 
+	try:
+		bticket = bmodels.Ticket.objects.get(pk=ticket.backend_id)
+		print "Backend ticket does already exist.."
+	except bmodels.Ticket.DoesNotExist:
+		bticket = bmodels.Ticket(
+			id = ticket.backend_id,
+			name = ticket.name,
+			receipt_name = ticket.name,
+			invoice_name = ticket.name,
+			description = "",
+			sale_price = ticket.price,
+			invoice_price = ticket.price,
+			currency = ticket.currency,
+			tax_rate = ticket.tax_rate,
+			rabate_rate = 0,
+			active = 1
+		).save()
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+		print "No backend ticket found, creating.."
+
+	print "=============="
+
+sys.exit(0)

@@ -29,6 +29,10 @@ urlpatterns += patterns('',
 	url(r'^admin/', include(admin.site.urls)),
 )
 
+urlpatterns += patterns('',
+   (r'^api/', include('c4sh.api.urls')),
+)
+
 if settings.DEBUG:
 	urlpatterns += patterns('',
 		(r'^media/(?P<path>.*)$', 'django.views.static.serve',

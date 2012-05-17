@@ -12,6 +12,8 @@ class SalePosition(models.Model):
 	sale_price = models.DecimalField(blank=True, null=True, max_digits=7, decimal_places=2, verbose_name="Manual override for Ticket price (money to collect at cash desk)")
 	invoice_price = models.DecimalField(blank=True, null=True, max_digits=7, decimal_places=2, verbose_name="Manual override for Ticket price (to show on invoice and receipt -- including tax)")
 
+	uuid = models.CharField(max_length=65, blank=True, null=True, verbose_name="Is this position derived by a preorder? If so, we save the UUID here")
+
 	tax_rate = models.SmallIntegerField(blank=True, null=True, verbose_name="Manual override for included tax rate in percent")
 	rabate_rate = models.SmallIntegerField(blank=True, null=True, verbose_name="Manual override for included instant rabate in percent")
 	supervisor = models.ForeignKey(User, related_name="authorized_positions", blank=True, null=True, verbose_name="Supervisor authorizing this position")

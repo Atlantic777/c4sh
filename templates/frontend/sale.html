@@ -1,7 +1,9 @@
 {% extends "base/frontend.html" %}
 {% block content %}
 <script type="text/javascript">
-	/* TODO focus given field */
+	$(document).ready(function(){
+		$('#given').focus();
+	});
 </script>
 		<article class="content-box col-super2p1">
 			<header>
@@ -13,6 +15,9 @@
 					<tr>
 						<td style="text-align:left;padding-left:20px;max-width:300px;">
 							<span style="font-size:large;">{{p.ticket.name}}</span>
+							{% if p.uuid %}
+							<br /><small>{{p.uuid}}</small>
+							{% endif %}
 						</td>
 						<td style="width:150px;">
 							{% if p.sale_price %}<strike>{% endif %}
@@ -38,13 +43,15 @@
 			</header>
 			<section>
 				<table>
+					<thead>
 					<tr>
-						<th>Given</th>
-						<th>Return</th>
+						<th style="width:50%;">Given</th>
+						<th style="width:50%;">Return</th>
 					</tr>
+					</thead>
 					<tr>
 						<td><input id="given" name="given" onKeyUp="$('#changecalc').html((this.value-{{sale.cached_sum|floatformat:2}}).toFixed(2));"/></td>
-						<td id="changecalc"><- enter value</td>
+						<td id="changecalc">enter value</td>
 					</tr>
 					{% for given in cashlist %}
 					{% if given > sale.cached_sum %}

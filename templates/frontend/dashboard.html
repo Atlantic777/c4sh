@@ -4,14 +4,24 @@
 	var tickets = {{tickets_json|safe}};
 	var cartsum = 0;
 	var position = 0;
-	function add(pk){
+	function add(pk, uuid){
 		t = getData(pk);
 		var limit = "";
 		if(t.fields.limit_supervisor){
 			limit = "<button class='icon red tooltip' title='Needs supervisor'><img src='{{STATIC_URL}}img/icons/buttons/alert.png'></button> ";
 		}
+
+		if (typeof(uuid) == "undefined" || !uuid) {
+			var uuid = "";
+			var uuid_short = "";
+			var input = "<input type=\"hidden\" name=\"position\" value=\""+pk+"\"/>";
+		} else {
+			var uuid_short = "<br /><small>"+uuid.substring(0, 8)+"</small>";
+			var input = "<input type=\"hidden\" name=\"uuid\" value=\""+uuid+"\"/>";
+		}
+
 		$("#cart").append("<tr id='cart-"+position+"'>" +
-							"<td class='name'><input type=\"hidden\" name=\"position\" value=\""+pk+"\"/>"+limit+t.fields.name+"</td>" +
+							"<td class='name'>"+input+limit+t.fields.name+uuid_short+"</td>" +
 							"<td class='price'>"+parseFloat(t.fields.sale_price).toFixed(2)+" "+t.fields.currency+"</td>" +
 							"<td class='remove'><button class='icon red tooltip' title='Remove' onClick='remove("+position+","+parseFloat(t.fields.sale_price).toFixed(2)+");return false;'><img src='{{STATIC_URL}}img/icons/buttons/box_outgoing.png'></button></td>" +
 						  "</tr>");
@@ -37,6 +47,85 @@
 		}
 		return false;
 	}
+
+	$(document).ready(function() {
+		$('#preorder_uuid').focus();
+		$('#preorder_uuid').select();
+
+		$('#preorder_uuid').keyup(function() {
+			var uuid = this.value.trim();
+
+			if (uuid.length < 5) {
+				$('#preorder_search').html('');
+				return;
+			}
+
+			if (uuid.length == 36) {
+				$('#preorder_search').html('');
+				return;
+			}
+
+			if (uuid == '') {
+				$('#preorder_search').html('');
+				return;
+			}
+
+			$.ajax({
+				type: 'GET',
+				url: '/api/preorder_position_search/'+uuid+'/',
+				success: function(response) {
+					var html = '';
+					$.each(response, function(i, result) {
+						html = html + '<tr><td style="font-size:medium;height:10px;cursor:pointer;"><span onclick="add('+result.ticket__backend_id+',\''+result.uuid+'\');$(\'#preorder_search\').html(\'\');$(\'#preorder_uuid\').val(\'\');">'+result.uuid+'</span></td></tr>';
+					});
+					$('#preorder_search').html(html);
+				}
+			});
+		});
+
+		$('#preorder_form').submit(function() {
+			var uuid = $('#preorder_form input').val().trim();
+
+			// check if this ticket has already been added to the cart
+			if ($('input[name=uuid][value='+uuid+']').length) {
+				errorNotification('This Ticket has already been added to the cart.');
+				$('#preorder_uuid').focus();
+				$('#preorder_uuid').select();
+				$('#preorder_uuid').val('');
+				return;
+			}
+
+			$.ajax({
+				type: 'GET',
+				url: '/api/preorder_position/'+uuid+'/',
+				statusCode: {
+					410: function() {
+						console.log('Got 410: Gone');
+						errorNotification('Ticket not found!');
+					},
+					404: function() {
+						console.log('Got 404: Not Found');
+						errorNotification('Invalid Ticket ID - UUID required!');
+					},
+					200: function(pk) {
+						console.log('Got 200: OK');
+						add(pk, uuid);
+					}, 
+					401: function() {
+						console.log('Got 401: Forbidden');
+						errorNotification('This Preorder Code has already been redeemed!');
+					}
+				}, 
+				complete: function() {
+					$('#preorder_uuid').focus();
+					$('#preorder_uuid').select();
+					$('#preorder_uuid').val('');
+				}
+			});
+
+			console.info('Scanned', uuid);
+		});
+	});
 </script>
 		<article class="content-box col-super2p1">
 			<header>
@@ -45,25 +134,56 @@
 			<section>
 				<table id="tickets">
 					{% for t in tickets %}
-					<tr>
-						<td style="padding-left:20px;width:50px;"><button class="icon green" onClick="$('#detail-{{t.pk}}').fadeToggle(); return false;"><img src="{{STATIC_URL}}img/icons/buttons/info_about.png"></button></td>
-						<td style="text-align:left;max-width:300px;">
-							<span style="font-size:large;">{{t.name}}</span>
-						</td>
-						<td style="width:100px;">{{t.sale_price|floatformat:2}} {{t.currency}}</td>
-						{#<td style="width: 80px;"><button class="button blue" onclick="return false;">Sell!</button></td>#}
-						<td style="width: 80px; padding-right: 20px;"><button class="button green" onclick="add({{t.pk}})">Add to Cart</button></td>
-					</tr>
-					<tr id="detail-{{t.pk}}" style="display:none;" onClick="$('#detail-{{t.pk}}').fadeToggle()">
-						<td colspan="5" style="text-align:left;padding-left:30px;">{{t.description|safe|linebreaksbr}}</td>
-					</tr>
+					{% if not  t.preorder_sold %}
+						<tr>
+							
+							<td style="padding-left:20px;width:50px;">
+								{% if t.description %}<button class="icon green" onClick="$('#detail-{{t.pk}}').fadeToggle(); return false;"><img src="{{STATIC_URL}}img/icons/buttons/info_about.png"></button>
+								{% endif %}
+							</td>
+							<td style="text-align:left;max-width:300px;">
+								<span style="font-size:large;">{{t.name}}</span>
+							</td>
+							<td style="width:100px;">{{t.sale_price|floatformat:2}} {{t.currency}}</td>
+							{#<td style="width: 80px;"><button class="button blue" onclick="return false;">Sell!</button></td>#}
+							<td style="width: 80px; padding-right: 20px;"><button class="button green" onclick="add({{t.pk}})">Add to Cart</button></td>
+						</tr>
+						{% if t.description %}
+						<tr id="detail-{{t.pk}}" style="display:none;" onClick="$('#detail-{{t.pk}}').fadeToggle()">
+							<td colspan="5" style="text-align:left;padding-left:30px;">{{t.description|safe|linebreaksbr}}</td>
+						</tr>
+						{% endif %}
+						{% endif %}
 					{% empty %}
 					<tr><td>No tickets available for sale.</td></tr>
 					{% endfor %}
 				</table>
 			</section>
 		</article>
+
 		<article class="content-box col-super2p2 clear-rm">
+			<header>
+				<h2>Preorder Code</h2>
+			</header>
+			<section>
+				<table id="preorder">
+				</table>
+				<table>
+					<tr>
+						<td style="padding:10px;">
+							<form action="javascript:;" id="preorder_form">
+								<input type="text" name="preorder_uuid" id="preorder_uuid" style="width:90%;outline:0;" />
+							</form>
+						</td>
+					</tr>
+				</table>
+				</form>
+				<table id="preorder_search" style="position:absolute;width:340px;z-index:10000;">
+				</table>
+			</section>
+		</article>
+
+		<article class="content-box col-super2p2 clear-rm" style="float:right;">
 			<header>
 				<h2>Cart</h2>
 			</header>

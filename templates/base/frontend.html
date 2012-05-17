@@ -21,6 +21,7 @@
 	<link rel="stylesheet" href="{{STATIC_URL}}css/jquery.snippet.css">
 	<link href='http://fonts.googleapis.com/css?family=Droid+Sans+Mono|Open+Sans:400,400italic,700,700italic&amp;v2' rel='stylesheet' type='text/css'>
 	<script src="{{STATIC_URL}}js/libs/modernizr-1.7.min.js"></script>
+	<script src="{{STATIC_URL}}js/libs/jquery-1.5.1.min.js"></script>
 </head>
 <body>
 	<header class="muon">
@@ -46,12 +47,12 @@
 			{% endif %}
 		</h4>
 		<p>{{message|safe}}</p>
-		<a href="#" class="show-notification-details">&#9658; Show Details</a>
+		<!--<a href="#" class="show-notification-details">&#9658; Show Details</a>
 		<ul class="notification-details">
 			<li>Lorem ipsum dolor sit amet</li>
 			<li>Suspendisse et dignissim metus</li>
 			<li>Maecenas id augue ac metus tempus</li>
-		</ul>
+		</ul>-->
 	</div>
 	{% endfor %}
 
@@ -59,7 +60,6 @@
 	{% endblock %}
 	</section>
 	<div class="loading-notification">Loading&hellip;</div>
-	<script src="{{STATIC_URL}}js/libs/jquery-1.5.1.min.js"></script>
 	<!--[if IE]><script src="{{STATIC_URL}}js/jquery/excanvas.js"></script><![endif]--><!-- IE Canvas Fix for Visualize Charts -->
 	<script src="{{STATIC_URL}}js/libs/selectivizr.js"></script>
 	<script src="{{STATIC_URL}}js/jquery/jquery.visualize.js"></script>
@@ -75,6 +75,7 @@
 	<script src="{{STATIC_URL}}js/jquery/jquery.snippet.js"></script>
 	<script src="{{STATIC_URL}}js/jquery/jquery.muonmenu.js"></script>
 	<script src="{{STATIC_URL}}js/script.js"></script>
+	<script src="{{STATIC_URL}}js/frontend.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){
 			$(".loading-notification").hide();
