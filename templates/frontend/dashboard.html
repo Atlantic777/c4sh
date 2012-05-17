@@ -53,6 +53,16 @@
 		$('#preorder_uuid').focus();
 		$('#preorder_uuid').select();
 
+		$('#tools_opendrawer').click(function() {
+			$.ajax({
+				type: 'GET',
+				url: '/api/cashdrawer/open/',
+				success: function(response) {
+					successNotification('Command sent to Cash Drawer!');
+				}
+			});
+		});
+
 		$('#preorder_uuid').keyup(function() {
 			var uuid = this.value.trim();
 
@@ -181,6 +191,24 @@
 				</form>
 				<table id="preorder_search" style="position:absolute;width:340px;z-index:10000;">
 				</table>
+			</section>
+		</article>
+
+		<article class="content-box col-super2p2 clear-rm">
+			<header>
+				<h2>Tools</h2>
+			</header>
+			<section>
+				<table id="tools">
+				</table>
+				<table>
+					<tr>
+						<td style="padding:10px;">
+							<button id="tools_opendrawer" class="button" style="width:90%;">Open Drawer</button>
+						</td>
+					</tr>
+				</table>
+				</form>
 			</section>
 		</article>
 

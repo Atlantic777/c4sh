@@ -6,9 +6,11 @@ from c4sh.api.handlers import *
 
 PreorderPosition = Resource(handler=PreorderPositionHandler)
 PreorderPositionSearch = Resource(handler=PreorderPositionSearchHandler)
+OpenCashDrawer = Resource(handler=OpenCashDrawerHandler)
 
 urlpatterns = patterns('',
 	url(r'^preorder_position/(?P<uuid>([a-fA-F0-9\-])+)/$', PreorderPosition),
 	url(r'^preorder_position_search/(?P<uuid>([a-fA-F0-9\-])+)/$', PreorderPositionSearch),
+	url(r'^cashdrawer/open/$', OpenCashDrawer),
 	url(r'^$', documentation_view)
 )
