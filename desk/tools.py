@@ -4,8 +4,9 @@ import sys, subprocess
 def print_receipt(sale, printer, do_open_drawer=True):
 	logo = "\x1d\x28\x4c\x06\x00\x30\x45\x30\x30\x01\x01"
 	summe = 0
+	positions = ""
 	for pos in sale.positions():
-		positions = " %s%s %.2f\r\n" % (pos.ticket.receipt_name, " "*(36-len(pos.ticket.receipt_name)), pos.ticket.invoice_price)
+		positions += " %s%s %.2f\r\n" % (pos.ticket.receipt_name, " "*(34-len(pos.ticket.receipt_name)), pos.ticket.invoice_price)
 		summe += pos.ticket.invoice_price
 
 
@@ -20,8 +21,8 @@ def print_receipt(sale, printer, do_open_drawer=True):
 """
 	receipt += positions
 	receipt += " -----------------------------------------\r\n"
-	receipt += "                  enthaltene MwSt:   %.2f\r\n" % (float(summe)-float(summe)/1.19)
-	receipt += "                            Summe:   %.2f\r\n" % float(summe)
+	receipt += "                  enthaltene MwSt:  %.2f\r\n" % (float(summe)-float(summe)/1.19)
+	receipt += "                            Summe:  %.2f\r\n" % float(summe)
 	receipt += """
 
     Leistungsdatum gleich Rechnungsdatum
@@ -31,7 +32,7 @@ def print_receipt(sale, printer, do_open_drawer=True):
         AG Charlottenburg, HRB 71629
             USt-ID: DE203286729
 	"""
-	receipt += "        %d.%d.%d - %d:%d %s\r\n" % (sale.time.day, sale.time.month, sale.time.year, sale.time.hour, sale.time.minute, sale.cashdesk.invoice_name)
+	receipt += "        %s %s\r\n" % (sale.time.strftime("%d.%m.%Y %H:%M"), sale.cashdesk.invoice_name)
 	receipt += "            Belegnummer: %d\r\n" % (sale.pk)
 
 
