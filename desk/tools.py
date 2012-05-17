@@ -20,8 +20,8 @@ def print_receipt(sale, printer, do_open_drawer=True):
 	"""
 	receipt += positions
 	receipt += " -----------------------------------------\r\n"
-	receipt += "                  enthaltene MwSt:   %.2f\r\n" % (summe-summe/1.19)
-	receipt += "                            Summe:   %.2f\r\n" % summe
+	receipt += "                  enthaltene MwSt:   %.2f\r\n" % (float(summe)-float(summe)/1.19)
+	receipt += "                            Summe:   %.2f\r\n" % float(summe)
 	receipt += """
 
 	    Leistungsdatum gleich Rechnungsdatum
