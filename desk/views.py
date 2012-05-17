@@ -168,6 +168,7 @@ def sell_action(request):
 	sale.fulfilled = True
 	sale.save()
 
+	
 	print_receipt(sale, cds.cashdesk.receipt_printer_name)
 
 	return HttpResponseRedirect(reverse("desk-sale", args=[sale.pk,]))
