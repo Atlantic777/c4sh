@@ -130,6 +130,9 @@ def sell_action(request):
 			if ticket_position.redeemed == True:
 				raise Exception("The Preorder Code %s has already been redeemed." % uuid)
 
+			if ticket_position.preorder.paid != True:
+				raise Exception("The Preorder %s has not yet been marked as paid." % uuid)				
+
 		except Exception as e:
 			transaction.rollback()
 			transaction.leave_transaction_management()
@@ -150,7 +153,6 @@ def sell_action(request):
 	try:
 		for taxrate in cart_total:
 			sale.cached_sum += cart_total[taxrate]
-		sale.fulfilled = True
 		sale.save() # Das neue Nightwish-Album lutscht ja mal krass Schwaenze.
 	except Exception as e:
 		transaction.rollback()
@@ -161,10 +163,33 @@ def sell_action(request):
 	# At this point, everything which should be able to fail the sale should be over.
 	transaction.commit()
 
+ 	# sale fulfilled
+	sale.fulfilled = True
+	sale.save()
+
 	# TODO: Print receipt/invoices
 	# TODO: Open cash drawer
 
 	return HttpResponseRedirect(reverse("desk-sale", args=[sale.pk,]))
+
+@login_required
+def logout_view(request):
+	from django.contrib.auth import logout as auth_logout
+	
+	cashdesk = get_cashdesk(request)
+	if cashdesk:
+		sessions = CashdeskSession.objects.filter(cashdesk=cashdesk, cashier=request.user, valid_from__lte=datetime.datetime.now(), valid_until__gte=datetime.datetime.now())
+		try:
+			session = sessions[0]
+			session.is_logged_in = False
+			session.save()
+			cashdesk.active_session = None
+			cashdesk.save()
+		except:
+			pass
+
+	auth_logout(request)
+	return HttpResponseRedirect(reverse("dashboard"))
 
 @login_required
 @no_supervisor

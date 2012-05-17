@@ -11,6 +11,8 @@ class UserProfile(models.Model):
 
 	supervisor_auth_code = models.CharField(max_length=64, unique=True, verbose_name="Superuser authentication code for special tickets, UUID", null=True, blank=True)
 
+	created_by = models.ForeignKey(User, null=True, blank=True, verbose_name="User has been created by..", related_name="user_created_by")
+
 	def __unicode__(self):
 		return "%s" % self.user.username
 
@@ -102,13 +104,13 @@ class CashdeskSession(models.Model):
 	cashier = models.ForeignKey(User, verbose_name="Cashier")
 	supervisor_before = models.ForeignKey(User, related_name="supervised_before_cashdisksession_set", verbose_name="Supervisor (before session)")
 
-	valid_from = models.DateTimeField(blank=True, null=True, verbose_name="Cashier can sell from..")
-	valid_until = models.DateTimeField(blank=True, null=True, verbose_name="Cashier can sell until..")
+	valid_from = models.DateTimeField(blank=False, null=False, verbose_name="Cashier can sell from..")
+	valid_until = models.DateTimeField(blank=False, null=False, verbose_name="Cashier can sell until..")
 
 	change = models.DecimalField(max_digits=7, decimal_places=2, verbose_name="Change the cashier has gotten before session start")
 
-	is_logged_in = models.BooleanField(default=False, verbose_name="Is the cashier logged in at the cashdesk? (do not change manually)")
-	was_logged_in = models.BooleanField(default=False, verbose_name="Did the cashier ever log into this session? (do not change manually)")
+	is_logged_in = models.BooleanField(default=False, verbose_name="Is the cashier logged in at the cashdesk? (do not change manually)", editable=False)
+	was_logged_in = models.BooleanField(default=False, verbose_name="Did the cashier ever log into this session? (do not change manually)", editable=False)
 
 	drawer_sum = models.DecimalField(null=True, blank=True, max_digits=7, decimal_places=2, verbose_name="Amount of money in cash drawer after session")
 	drawer_sum_ok = models.NullBooleanField(default=None, blank=True, null=True, verbose_name="Amount of money in cash drawer after session was okay")
@@ -116,8 +118,10 @@ class CashdeskSession(models.Model):
 	supervisor_after = models.ForeignKey(User, null=True, blank=True, related_name="supervised_after_cashdisksession_set", verbose_name="Supervisor (after session)")
 	total = models.DecimalField(null=True, blank=True, max_digits=7, decimal_places=2, verbose_name="Actual winnings (after change)")
 
+	notes = models.TextField(null=True, blank=True, verbose_name="Any additional notes for this cashdesk session")
+
 	def drawer_supposed_sum(self):
-		return 42.23 # TODO
+		return "FIX ME NOW" # TODO
 
 	def __unicode__(self):
 		return "#%d for %s at %s (%s - %s)" % (self.pk, self.cashier.username, self.cashdesk.name, self.valid_from, self.valid_until)

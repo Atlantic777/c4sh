@@ -1,0 +1,89 @@
+{% extends "base/backend.html" %}
+{% block content %}
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		if ($('#id_supervisor_after').val() == "") {
+			$('#id_supervisor_after').val({{request.user.pk}});
+		}
+	});
+</script>
+
+		<article class="content-box col-2">
+			<header>
+				<h2>Edit session</h2>
+			</header>
+			<section>
+				<form method="POST" action="{% url backend-cashdesks-session-edit session.pk %}">
+				<table class="form">
+				{% csrf_token %}
+				{{form}}
+				<tr>
+					<td colspan="2" style="text-align:right;padding:10px 30px;">
+						<input type="submit" class="button green" value="Save session"/>
+					</td>
+				</tr>
+				</table>
+			</form>
+			</section>
+		</article>
+
+		<article class="content-box col-2 clear-rm">
+			<header>
+				<h2>Tickets sold</h2>
+			</header>
+			<section>
+				<table>
+				<thead>
+					<tr>
+						<th>Amount</th>
+						<th>Type</th>
+						<th>Price</th>
+						<th>Total</th>
+					</tr>
+				</thead>
+				{% for p in positions_for_template %}
+				<tr>
+					<td>{{p.amount}}x</td>
+					<td>{{p.ticket.name}}</td>
+					<td>{{p.ticket.sale_price|floatformat:2}}
+					{{p.ticket.currency}}</td>
+					<td>{{p.total}} {{p.ticket.currency}}</td>
+				</tr>
+				{% endfor %}
+				<thead>
+				<tr>
+					<th colspan="4" style="text-align:right;padding-right:20px;font-size:large;" id="cart-sum">{{total_total}} EUR</td>
+				</tr>
+				</thead>
+				</table>
+			</form>
+			</section>
+		</article>
+
+		<article class="content-box col-2 clear-rm">
+			<header>
+				<h2>€€€</h2>
+			</header>
+			<section>
+				<table style="font-size:large;">
+					<tr>
+						<td style="text-align:right;">Change before session:</td>
+						<td style="text-align:right;padding-right:15px;">{{session.change}} EUR</td>
+					</tr>
+					<tr style="border-bottom:2px solid rgb(150,150,150);">
+						<td style="text-align:right;">Received:</td>
+						<td style="text-align:right;padding-right:15px;">{{total_total}} EUR</td>
+					</tr>
+					<tr>
+						<td style="text-align:right;font-weight:bold;"></td>
+						<td style="text-align:right;padding-right:15px;font-weight:bold;">{{new_money}} EUR</td>
+					</tr>
+				</table>
+			</form>
+			<div style="float:right;margin-top:10px;">
+				<a target="_blank" href="{% url backend-cashdesks-session-report session.pk %}"><button class="button green">Print report</button></a>
+			</div>
+			</section>
+		</article>
+{% endblock %}
