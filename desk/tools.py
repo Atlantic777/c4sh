@@ -4,7 +4,7 @@ import sys, subprocess
 def print_receipt(sale, printer, do_open_drawer=True):
 	logo = "\x1d\x28\x4c\x06\x00\x30\x45\x30\x30\x01\x01"
 	summe = 0
-	for pos in sale.positions:
+	for pos in sale.positions():
 		positions = " %s%s %.2f\r\n" % (pos.ticket.receipt_name, " "*(36-len(pos.ticket.receipt_name)), pos.ticket.invoice_price)
 		summe += pos.ticket.invoice_price
 
