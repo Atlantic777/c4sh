@@ -16,6 +16,7 @@ from c4sh.desk.view_helpers import no_supervisor, session_required
 from c4sh.backend.view_helpers import get_cashdesk
 from django.db import transaction
 from django.db.models import Q
+from desk.tools import print_receipt
 
 
 @login_required
@@ -167,8 +168,7 @@ def sell_action(request):
 	sale.fulfilled = True
 	sale.save()
 
-	# TODO: Print receipt/invoices
-	# TODO: Open cash drawer
+	print_receipt(sale, cds.cashdesk.receipt_printer_name)
 
 	return HttpResponseRedirect(reverse("desk-sale", args=[sale.pk,]))
 
