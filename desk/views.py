@@ -16,7 +16,7 @@ from c4sh.desk.view_helpers import no_supervisor, session_required
 from c4sh.backend.view_helpers import get_cashdesk
 from django.db import transaction
 from django.db.models import Q
-from desk.tools import print_receipt
+from c4sh.desk.tools import print_receipt
 
 
 @login_required
