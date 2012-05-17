@@ -31,7 +31,7 @@ def print_receipt(sale, printer, do_open_drawer=True):
 
         AG Charlottenburg, HRB 71629
             USt-ID: DE203286729
-	"""
+"""
 	receipt += "        %s %s\r\n" % (sale.time.strftime("%d.%m.%Y %H:%M"), sale.cashdesk.invoice_name)
 	receipt += "            Belegnummer: %d\r\n" % (sale.pk)
 
