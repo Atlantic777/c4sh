@@ -52,7 +52,7 @@
 	searchTimeout = null;
 
 	doSearch = function(uuid) {
-		$('#preorder_search').html(html);
+		$('#preorder_search').html('');
 
 		if (uuid.length == 36) {
 			$('#preorder_search').html('');
@@ -71,6 +71,7 @@
 				$.each(response, function(i, result) {
 					html = html + '<tr><td style="font-size:medium;height:10px;cursor:pointer;"><span onclick="add('+result.ticket__backend_id+',\''+result.uuid+'\');$(\'#preorder_search\').html(\'\');$(\'#preorder_uuid\').val(\'\');">'+result.uuid+'</span></td></tr>';
 				});
+				$('#preorder_search').html(html);
 				searchTimeout = null;
 			}
 		});
