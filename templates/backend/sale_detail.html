@@ -103,7 +103,13 @@
 						<tbody>
 						{% for pos in sale.positions %}
 							<tr>
-								<td>{{pos.ticket.name}}</td>
+								<td>{{pos.ticket.name}}
+									{% if pos.ticket.limit_supervisor %}
+									<br /><small>Authorized by: {{pos.supervisor}}</small>
+									{% endif %}
+									{% if pos.uuid %}
+									<br /><small>{{pos.uuid}}</small>
+									{% endif %}</td>
 								<td>
 								{% if pos.sale_price %}
 									{{pos.sale_price|floatformat:2}}

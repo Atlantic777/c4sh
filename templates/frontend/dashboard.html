@@ -5,6 +5,7 @@
 	var cartsum = 0;
 	var position = 0;
 	function add(pk, uuid){
+		$('#preorder_search').html('');
 		t = getData(pk);
 		var limit = "";
 		if(t.fields.limit_supervisor){
