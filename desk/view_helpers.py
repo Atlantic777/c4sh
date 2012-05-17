@@ -69,6 +69,8 @@ def session_required(func):
 			# logged back in after logout
 			session.is_logged_in = True
 		try:
+			cashdesk.active_session = session
+			cashdesk.save()
 			session.save()
 		except:
 			raise

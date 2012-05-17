@@ -16,43 +16,40 @@
 			<section>
 				<ul class="stats-summary">
 					<li>
-						<strong class="stats-count">42</strong>
+						<strong class="stats-count">{{tickets_sold}}</strong>
 						<p>Tickets sold</p>
 						<a href="#" class="button stats-view tooltip" title="View transactions">View</a>
 					</li>
 					<li>
-						<strong class="stats-count">2/2</strong>
+						<strong class="stats-count">{{cashdesks_open}}/{{cashdesks}}</strong>
 						<p>Cashdesks open</p>
-						<a href="#" class="button stats-view tooltip" title="Manage cashdesks">View</a>
+						<a href="{% url backend-cashdesks %}" class="button stats-view tooltip" title="Manage cashdesks">View</a>
 					</li>
-					<li>
+					
+					<!--<li>
 						<strong class="stats-count">320.42 &euro;</strong>
 						<p>Money in Cashdesks</p>
 						<a href="#" class="button stats-view tooltip" title="Manage cashdesks">View</a>
-					</li>
+					</li>-->
 				</ul>
-				<div class="progress-bar green huge">
+				
+				<!--<div class="progress-bar green huge">
 					<div style="width:23%;">
 						<span>23<sup>%</sup></span>
 					</div>
 					Venue usage: 42/9000
-				</div>
+				</div>-->
 
 			</section>
 		</article>
 		<div class="clearfix"></div>
+
 		<article class="content-box minimizer">
 			<header>
 				<h2>{{event}} Sales</h2>
-				<nav>
-					<ul class="tab-switch">
-						<li><a class="default-tab tooltip" href="#tab1" title="Sales Graph">Graph</a></li>
-						<li><a class="tooltip" href="#tab2" title="Sales Table">Table</a></li>
-					</ul>
-				</nav>
 			</header>
 			<section>
-				<div class="tab default-tab" id="tab1">
+				<!--<div class="tab default-tab" id="tab1">
 					<h3>Ticket Sales</h3>
 					<table class="data" data-chart="line">
 						<thead>
@@ -96,8 +93,8 @@
 							</tr>
 						</tbody>
 					</table>
-				</div>
-				<div class="tab" id="tab2">
+				</div>-->
+				<div class="tab default-tab" id="tab2">
 					<h3>Ticket sales</h3>
 					<table class="datatable">
 						<thead>
@@ -134,319 +131,6 @@
 							</tr>
 						</tfoot>
 					</table>
-					<h3 class="clearfix">Regular Table</h3>
-					<form class="table-form">
-						<table>
-							<thead>
-								<tr>
-									<th><input type="checkbox" class="check-all"></th>
-									<th>&nbsp;</th>
-									<th>Rendering engine</th>
-									<th>Browser</th>
-									<th>Platform(s)</th>
-									<th>Version</th>
-									<th>Tags</th>
-									<th>Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td>
-										<a class="toggle-table-switch tooltip" href="#" title="Show options">Options</a>
-										<ul class="table-switch">
-											<li><a href="#">view</a></li>
-											<li><a href="#">edit</a></li>
-											<li><a href="#">delete</a></li>
-										</ul>
-									</td>
-									<td>Trident</td>
-									<td>Internet Explorer 4.0</td>
-									<td>Win 95+</td>
-									<td>4</td>
-									<td><span class="tag red">High</span></td>
-									<td>
-										<ul class="actions">
-											<li><a class="view tooltip" href="#" title="View Item">view</a></li>
-											<li><a class="edit tooltip" href="#" title="Edit Item">edit</a></li>
-											<li><a class="delete tooltip" href="#" title="Delete Item">delete</a></li>
-										</ul>
-									</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td>
-										<a class="toggle-table-switch tooltip" href="#" title="Show options">Options</a>
-										<ul class="table-switch">
-											<li><a href="#">view</a></li>
-											<li><a href="#">edit</a></li>
-											<li><a href="#">delete</a></li>
-										</ul>
-									</td>
-									<td>Trident</td>
-									<td>Internet  Explorer 5.0</td>
-									<td>Win 95+</td>
-									<td>5</td>
-									<td><span class="tag orange">Medium</span></td>
-									<td>
-										<ul class="actions">
-											<li><a class="view tooltip" href="#" title="View Item">view</a></li>
-											<li><a class="edit tooltip" href="#" title="Edit Item">edit</a></li>
-											<li><a class="delete tooltip" href="#" title="Delete Item">delete</a></li>
-										</ul>
-									</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td>
-										<a class="toggle-table-switch tooltip" href="#" title="Show options">Options</a>
-										<ul class="table-switch">
-											<li><a href="#">view</a></li>
-											<li><a href="#">edit</a></li>
-											<li><a href="#">delete</a></li>
-										</ul>
-									</td>
-									<td>Trident</td>
-									<td>Internet Explorer 5.5</td>
-									<td>Win 95+</td>
-									<td>5.5</td>
-									<td><span class="tag green">Low</span></td>
-									<td>
-										<ul class="actions">
-											<li><a class="view tooltip" href="#" title="View Item">view</a></li>
-											<li><a class="edit tooltip" href="#" title="Edit Item">edit</a></li>
-											<li><a class="delete tooltip" href="#" title="Delete Item">delete</a></li>
-										</ul>
-									</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td>
-										<a class="toggle-table-switch tooltip" href="#" title="Show options">Options</a>
-										<ul class="table-switch">
-											<li><a href="#">view</a></li>
-											<li><a href="#">edit</a></li>
-											<li><a href="#">delete</a></li>
-										</ul>
-									</td>
-									<td>Trident</td>
-									<td>Internet Explorer 6</td>
-									<td>Win 98+</td>
-									<td>6</td>
-									<td><span class="tag gray">Closed</span></td>
-									<td>
-										<ul class="actions">
-											<li><a class="view tooltip" href="#" title="View Item">view</a></li>
-											<li><a class="edit tooltip" href="#" title="Edit Item">edit</a></li>
-											<li><a class="delete tooltip" href="#" title="Delete Item">delete</a></li>
-										</ul>
-									</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td>
-										<a class="toggle-table-switch tooltip" href="#" title="Show options">Options</a>
-										<ul class="table-switch">
-											<li><a href="#">view</a></li>
-											<li><a href="#">edit</a></li>
-											<li><a href="#">delete</a></li>
-										</ul>
-									</td>
-									<td>Trident</td>
-									<td>Internet Explorer 7</td>
-									<td>Win XP SP2+</td>
-									<td>7</td>
-									<td><span class="tag blue">#337</span></td>
-									<td>
-										<ul class="actions">
-											<li><a class="view tooltip" href="#" title="View Item">view</a></li>
-											<li><a class="edit tooltip" href="#" title="Edit Item">edit</a></li>
-											<li><a class="delete tooltip" href="#" title="Delete Item">delete</a></li>
-										</ul>
-									</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td>
-										<a class="toggle-table-switch tooltip" href="#" title="Show options">Options</a>
-										<ul class="table-switch">
-											<li><a href="#">view</a></li>
-											<li><a href="#">edit</a></li>
-											<li><a href="#">delete</a></li>
-										</ul>
-									</td>
-									<td>Trident</td>
-									<td>AOL browser (AOL desktop)</td>
-									<td>Win XP</td>
-									<td>6</td>
-									<td><span class="tag gray">Closed</span></td>
-									<td>
-										<ul class="actions">
-											<li><a class="view tooltip" href="#" title="View Item">view</a></li>
-											<li><a class="edit tooltip" href="#" title="Edit Item">edit</a></li>
-											<li><a class="delete tooltip" href="#" title="Delete Item">delete</a></li>
-										</ul>
-									</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td>
-										<a class="toggle-table-switch tooltip" href="#" title="Show options">Options</a>
-										<ul class="table-switch">
-											<li><a href="#">view</a></li>
-											<li><a href="#">edit</a></li>
-											<li><a href="#">delete</a></li>
-										</ul>
-									</td>
-									<td>Gecko</td>
-									<td>Firefox 1.0</td>
-									<td>Win 98+ / OSX.2+</td>
-									<td>1.7</td>
-									<td><span class="tag gray">Closed</span></td>
-									<td>
-										<ul class="actions">
-											<li><a class="view tooltip" href="#" title="View Item">view</a></li>
-											<li><a class="edit tooltip" href="#" title="Edit Item">edit</a></li>
-											<li><a class="delete tooltip" href="#" title="Delete Item">delete</a></li>
-										</ul>
-									</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td>
-										<a class="toggle-table-switch tooltip" href="#" title="Show options">Options</a>
-										<ul class="table-switch">
-											<li><a href="#">view</a></li>
-											<li><a href="#">edit</a></li>
-											<li><a href="#">delete</a></li>
-										</ul>
-									</td>
-									<td>Gecko</td>
-									<td>Firefox 1.5</td>
-									<td>Win 98+ / OSX.2+</td>
-									<td>1.8</td>
-									<td><span class="tag gray">Closed</span></td>
-									<td>
-										<ul class="actions">
-											<li><a class="view tooltip" href="#" title="View Item">view</a></li>
-											<li><a class="edit tooltip" href="#" title="Edit Item">edit</a></li>
-											<li><a class="delete tooltip" href="#" title="Delete Item">delete</a></li>
-										</ul>
-									</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td>
-										<a class="toggle-table-switch tooltip" href="#" title="Show options">Options</a>
-										<ul class="table-switch">
-											<li><a href="#">view</a></li>
-											<li><a href="#">edit</a></li>
-											<li><a href="#">delete</a></li>
-										</ul>
-									</td>
-									<td>Gecko</td>
-									<td>Firefox 2.0</td>
-									<td>Win 98+ / OSX.2+</td>
-									<td>1.8</td>
-									<td><span class="tag black">Foo</span></td>
-									<td>
-										<ul class="actions">
-											<li><a class="view tooltip" href="#" title="View Item">view</a></li>
-											<li><a class="edit tooltip" href="#" title="Edit Item">edit</a></li>
-											<li><a class="delete tooltip" href="#" title="Delete Item">delete</a></li>
-										</ul>
-									</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td>
-										<a class="toggle-table-switch tooltip" href="#" title="Show options">Options</a>
-										<ul class="table-switch">
-											<li><a href="#">view</a></li>
-											<li><a href="#">edit</a></li>
-											<li><a href="#">delete</a></li>
-										</ul>
-									</td>
-									<td>Gecko</td>
-									<td>Firefox 3.0</td>
-									<td>Win 2k+ / OSX.3+</td>
-									<td>1.9</td>
-									<td><span class="tag gray">Closed</span></td>
-									<td>
-										<ul class="actions">
-											<li><a class="view tooltip" href="#" title="View Item">view</a></li>
-											<li><a class="edit tooltip" href="#" title="Edit Item">edit</a></li>
-											<li><a class="delete tooltip" href="#" title="Delete Item">delete</a></li>
-										</ul>
-									</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td>
-										<a class="toggle-table-switch tooltip" href="#" title="Show options">Options</a>
-										<ul class="table-switch">
-											<li><a href="#">view</a></li>
-											<li><a href="#">edit</a></li>
-											<li><a href="#">delete</a></li>
-										</ul>
-									</td>
-									<td>Gecko</td>
-									<td>Camino 1.0</td>
-									<td>OSX.2+</td>
-									<td>1.8</td>
-									<td><span class="tag gray">Closed</span></td>
-									<td>
-										<ul class="actions">
-											<li><a class="view tooltip" href="#" title="View Item">view</a></li>
-											<li><a class="edit tooltip" href="#" title="Edit Item">edit</a></li>
-											<li><a class="delete tooltip" href="#" title="Delete Item">delete</a></li>
-										</ul>
-									</td>
-								</tr>
-								<tr>
-									<td><input type="checkbox"></td>
-									<td>
-										<a class="toggle-table-switch tooltip" href="#" title="Show options">Options</a>
-										<ul class="table-switch">
-											<li><a href="#">view</a></li>
-											<li><a href="#">edit</a></li>
-											<li><a href="#">delete</a></li>
-										</ul>
-									</td>
-									<td>Gecko</td>
-									<td>Camino 1.5</td>
-									<td>OSX.3+</td>
-									<td>1.8</td>
-									<td><span class="tag gray">Closed</span></td>
-									<td>
-										<ul class="actions">
-											<li><a class="view tooltip" href="#" title="View Item">view</a></li>
-											<li><a class="edit tooltip" href="#" title="Edit Item">edit</a></li>
-											<li><a class="delete tooltip" href="#" title="Delete Item">delete</a></li>
-										</ul>
-									</td>
-								</tr>
-							</tbody>
-							<tfoot>
-								<tr>
-									<td colspan="8">
-										<ul class="pagination">
-											<li><a class="button gray" href="#">&laquo; first</a></li>
-											<li><a class="button gray" href="#">&lt; next</a></li>
-											<li class="hellip">&hellip;</li>
-											<li><a class="button gray" href="#">5</a></li>
-											<li><a class="button gray" href="#">6</a></li>
-											<li><a class="button" href="#">7</a></li>
-											<li><a class="button gray" href="#">8</a></li>
-											<li><a class="button gray" href="#">9</a></li>
-											<li class="hellip">&hellip;</li>
-											<li><a class="button gray" href="#">prev &gt;</a></li>
-											<li><a class="button gray" href="#">last &raquo;</a></li>
-										</ul>
-									</td>
-								</tr>
-							</tfoot>
-						</table>
 					</form>
 				</div>
 			</section>

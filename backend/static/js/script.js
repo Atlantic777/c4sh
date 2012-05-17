@@ -14,7 +14,7 @@ $(function(){
 	$('.tooltip-wide').tipsy({gravity:'e', fade:true}); // Tooltip Gravity Orientation: n | w | e | s
 	
 	// jQuery dataTables
-	$('.datatable').dataTable({ 'sPaginationType':'full_numbers' });
+	$('.datatable').dataTable({ 'sPaginationType':'full_numbers', "aaSorting": [[ 1, "desc" ]] });
 	
 	// jQuery jWYSIWYG Editor
 	$('.wysiwyg').wysiwyg({ iFrameClass:'wysiwyg-iframe' });

@@ -1,0 +1,27 @@
+{% extends "base/backend.html" %}
+{% block content %}
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#id_supervisor_before').val({{request.user.pk}});
+	});
+</script>
+
+		<article class="content-box col-2">
+			<header>
+				<h2>Add session</h2>
+			</header>
+			<section>
+				<form method="POST" action="{% url backend-cashdesks-session-add %}">
+				<table class="form">
+				{% csrf_token %}
+				{{form}}
+				<tr>
+					<td colspan="2" style="text-align:right;padding:10px 30px;">
+						<input type="submit" class="button green" value="Add session"/>
+					</td>
+				</tr>
+				</table>
+			</form>
+			</section>
+		</article>
+{% endblock %}
