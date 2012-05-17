@@ -7,4 +7,5 @@ def print_receipt(printer):
 	return
 
 def open_drawer(printer):
+	print "Opening drawer at printer %s" % printer
 	return system("echo -e '\033p07y' | lpr -l -P %s" % printer)
