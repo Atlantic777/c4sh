@@ -33,7 +33,7 @@ def print_receipt(sale, printer, do_open_drawer=True):
 	receipt += positions
 	receipt += " -----------------------------------------\r\n"
 	mwst = float(summe)-float(summe)/float(1.19)
-	receipt += "                  enthaltene MwSt:   %s\r\n" % gap(mwst)
+	receipt += "                  enthaltene MwSt:  %s\r\n" % gap(mwst)
 	receipt += "                            Summe:  %s\r\n" % gap(summe)
 	receipt += """
 
