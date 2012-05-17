@@ -1,12 +1,8 @@
 from os import system
 import sys, subprocess
 
-def gap(f, mwst=False):
-	if mwst:
-		foo = 4
-	else:
-		foo = 5
-	return " "*(foo-len(str(float(f))))+"%.2f" % float(f)
+def gap(f):
+	return " "*(5-len(str(float(f))))+"%.2f" % float(f)
 
 def print_receipt(sale, printer, do_open_drawer=True):
 	logo = "\x1d\x28\x4c\x06\x00\x30\x45\x30\x30\x01\x01"
@@ -34,7 +30,7 @@ def print_receipt(sale, printer, do_open_drawer=True):
 """
 	receipt += positions
 	receipt += " -----------------------------------------\r\n"
-	receipt += "                  enthaltene MwSt:  %s\r\n" % gap((float(summe)-float(summe)/1.19),mwst=True)
+	receipt += "                  enthaltene MwSt:  %s\r\n" % gap((float(summe)-float(summe)/1.19))
 	receipt += "                            Summe:  %s\r\n" % gap(summe)
 	receipt += """
 
