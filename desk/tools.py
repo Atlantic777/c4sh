@@ -2,9 +2,16 @@ from os import system
 import sys, subprocess
 
 def gap(f):
+	print f
+	print float(f)
+	print str(float(f))
+	print len(str(float(f)))
 	return " "*(5-len(str(float(f))))+"%.2f" % float(f)
 
 def print_receipt(sale, printer, do_open_drawer=True):
+	# open drawer
+	if do_open_drawer:
+		open_drawer(printer)
 	logo = "\x1d\x28\x4c\x06\x00\x30\x45\x30\x30\x01\x01"
 	summe = 0
 	positions = ""
@@ -15,8 +22,6 @@ def print_receipt(sale, printer, do_open_drawer=True):
 		summe += pos.ticket.invoice_price
 
 	if summe == 0:
-		if do_open_drawer:
-			open_drawer(printer)
 		return
 
 	receipt = logo + """
@@ -51,10 +56,6 @@ def print_receipt(sale, printer, do_open_drawer=True):
 
 	lpr.stdin.write(receipt)
 	lpr.stdin.close()
-
-	# open drawer
-	if do_open_drawer:
-		open_drawer(printer)
 	
 	return
 
