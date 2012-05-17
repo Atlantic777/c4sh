@@ -22,11 +22,26 @@
 	<link href='http://fonts.googleapis.com/css?family=Droid+Sans+Mono|Open+Sans:400,400italic,700,700italic&amp;v2' rel='stylesheet' type='text/css'>
 	<script src="{{STATIC_URL}}js/libs/modernizr-1.7.min.js"></script>
 	<script src="{{STATIC_URL}}js/libs/jquery-1.5.1.min.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#c4shlogo').click(function() {
+				$.ajax({
+					type: 'GET',
+					url: '/api/cashdrawer/open/{{request.session.cashdesk}}/',
+					success: function(response) {
+						successNotification('Command sent to Cash Drawer!');
+					}
+				});
+			});
+		});
+	</script>
+
 </head>
 <body>
 	<header class="muon">
 		<div class="navigation-wrapper">
-			<a href="/" class="muon-logo" title="Back to homepage">Your logo</a>
+			<a href="javascript:;" id="c4shlogo" class="muon-logo" title="Back to homepage">Your logo</a>
 
 			<ul class="muon-user-list">
 				<li class="muon-user-data">logged in as {{user}}</li>

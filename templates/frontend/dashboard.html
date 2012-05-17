@@ -53,16 +53,6 @@
 		$('#preorder_uuid').focus();
 		$('#preorder_uuid').select();
 
-		$('#tools_opendrawer').click(function() {
-			$.ajax({
-				type: 'GET',
-				url: '/api/cashdrawer/open/{{request.session.cashdesk}}/',
-				success: function(response) {
-					successNotification('Command sent to Cash Drawer!');
-				}
-			});
-		});
-
 		$('#preorder_uuid').keyup(function() {
 			var uuid = this.value.trim();
 
@@ -194,7 +184,7 @@
 			</section>
 		</article>
 
-		<article class="content-box col-super2p2 clear-rm">
+		<article class="content-box col-super2p2" style="display:none;">
 			<header>
 				<h2>Tools</h2>
 			</header>
