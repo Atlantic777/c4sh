@@ -31,6 +31,9 @@ def supervisor_required(func):
 				else:
 					messages.error(request, "You don't have supervisor rights.")
 					return HttpResponseRedirect(reverse('fail'))
+			else:
+				messages.error(request, "You don't have supervisor rights.")
+				return HttpResponseRedirect(reverse('fail'))
 		except:
 			raise Exception("Fix your configuration (EVENT_SUPERVISOR_IPS, Cashdesk objects). (DEBUG: backend)")
 		return func(request, *args, **kwargs)
