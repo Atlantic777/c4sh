@@ -2,14 +2,14 @@ from os import system
 import sys, subprocess
 
 def gap(f):
-	return " "*(6-len(str(float(f))))
+	return " "*(6-len(str(float(f))))+"%.2f" % float(f)
 
 def print_receipt(sale, printer, do_open_drawer=True):
 	logo = "\x1d\x28\x4c\x06\x00\x30\x45\x30\x30\x01\x01"
 	summe = 0
 	positions = ""
 	for pos in sale.positions():
-		positions += " %s%s %.2f\r\n" % (pos.ticket.receipt_name, " "*(34-len(pos.ticket.receipt_name)), gap(pos.ticket.invoice_price))
+		positions += " %s%s %s\r\n" % (pos.ticket.receipt_name, " "*(34-len(pos.ticket.receipt_name)), gap(pos.ticket.invoice_price))
 		summe += pos.ticket.invoice_price
 
 
@@ -24,8 +24,8 @@ def print_receipt(sale, printer, do_open_drawer=True):
 """
 	receipt += positions
 	receipt += " -----------------------------------------\r\n"
-	receipt += "                  enthaltene MwSt:  %.2f\r\n" % gap(float(summe)-float(summe)/1.19)
-	receipt += "                            Summe:  %.2f\r\n" % gap(summe)
+	receipt += "                  enthaltene MwSt:  %s\r\n" % gap(float(summe)-float(summe)/1.19)
+	receipt += "                            Summe:  %s\r\n" % gap(summe)
 	receipt += """
 
     Leistungsdatum gleich Rechnungsdatum
