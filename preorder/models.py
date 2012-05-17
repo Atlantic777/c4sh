@@ -1,5 +1,10 @@
 from django.db import models
 import uuid
+from c4sh.backend.models import Ticket
+
+# add UUIDField to south
+from south.modelsinspector import add_introspection_rules
+add_introspection_rules([], ["^c4sh\.preorder\.models.UUIDField"])
 
 class UUIDField(models.CharField) :
 	"""
@@ -72,6 +77,13 @@ class PreorderPosition(models.Model):
 	preorder = models.ForeignKey("Preorder")
 	ticket = models.ForeignKey(PreorderTicket)
 	uuid = UUIDField(unique=True, editable=False)
+	redeemed = models.BooleanField(default=False)
+
+	def get_backend_ticket(self):
+		return Ticket.objects.get(pk=self.ticket.backend_id)
+
+	def __unicode__(self):
+		return "%s %s (%s)" % (self.uuid, self.preorder.unique_secret, self.preorder.username)
 
 class Preorder(models.Model):
 	"""

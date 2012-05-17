@@ -10,10 +10,13 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from c4sh.backend.models import *
 from c4sh.desk.models import *
+from c4sh.preorder.models import *
 import c4sh.settings as settings
 from c4sh.desk.view_helpers import no_supervisor, session_required
 from c4sh.backend.view_helpers import get_cashdesk
 from django.db import transaction
+from django.db.models import Q
+
 
 @login_required
 def static_view(request, template, **args):
@@ -73,7 +76,32 @@ def sell_action(request):
 					raise Exception("You can't sell %s before %s or after %s." % (ticketcache[ticketid].name, ticketcache[ticketid].valid_from, ticketcache[ticketid].valid_until))
 			# Check for supervisor:
 			if ticketcache[ticketid].limit_supervisor:
-				pass # TODO gotta see how this is implemented best; also be sure to set newpos.supervisor
+				shall_pass = False
+				# check if we have supervisor_auth_code in POST
+				if request.POST.get("supervisor_auth_code"):
+					try:
+						supervisor = User.objects.get(userprofile__supervisor_auth_code=request.POST.get("supervisor_auth_code"), is_staff=True, userprofile__supervisor_auth_code__isnull=False)
+						newpos.supervisor = supervisor
+						shall_pass = True
+					except User.DoesNotExist:
+						messages.error(request, "Invalid supervisor auth code or supervisor not found!")
+
+				if not shall_pass:
+					transaction.rollback()
+
+					# get all items from the basket to redisplay it
+					try:
+						tickets = Ticket.objects.filter(pk__in=request.POST.getlist("position"))
+					except Ticket.DoesNotExist:
+						pass
+
+					try:
+						preorder_tickets = PreorderPosition.objects.filter(uuid__in=request.POST.getlist("uuid"))
+					except PreorderPosition.DoesNotExist:
+						pass
+
+					return render_to_response("frontend/sale_supervisor.html", locals(), context_instance=RequestContext(request))
+
 			# Decided against checking for venue limit here.
 		except Exception as e:
 			transaction.rollback()
@@ -89,6 +117,35 @@ def sell_action(request):
 			messages.error(request, e)
 			return HttpResponseRedirect(reverse("dashboard"))
 	
+	# process preorders
+	for uuid in request.POST.getlist("uuid"):
+
+		ticket_position = get_object_or_404(PreorderPosition, uuid=uuid)
+		ticket = get_object_or_404(Ticket, pk=ticket_position.ticket.backend_id, active=True, deleted=False)
+
+		cart_total[ticket.tax_rate] = cart_total.get(ticket.tax_rate, 0) + ticket.sale_price # taxes included
+		newpos = SalePosition(sale=sale, ticket=ticket, uuid=uuid)
+		
+		try:
+			if ticket_position.redeemed == True:
+				raise Exception("The Preorder Code %s has already been redeemed." % uuid)
+
+		except Exception as e:
+			transaction.rollback()
+			transaction.leave_transaction_management()
+			messages.error(request, e)
+			return HttpResponseRedirect(reverse("dashboard"))
+		# Passed requirements, let's sell this thing
+		try:
+			newpos.save()
+			ticket_position.redeemed = True
+			ticket_position.save()
+		except Exception as e:
+			transaction.rollback()
+			transaction.leave_transaction_management()
+			messages.error(request, e)
+			return HttpResponseRedirect(reverse("dashboard"))
+
 	# we now have all sale positions and a local cart_total
 	try:
 		for taxrate in cart_total:
@@ -106,7 +163,7 @@ def sell_action(request):
 
 	# TODO: Print receipt/invoices
 	# TODO: Open cash drawer
-	
+
 	return HttpResponseRedirect(reverse("desk-sale", args=[sale.pk,]))
 
 @login_required
@@ -116,5 +173,5 @@ def sale_view(request, sale_id):
 	sale = get_object_or_404(Sale, pk=sale_id)
 	if sale.cashier != request.user:
 		raise Exception("Not your sale.")
-	cashlist = [5, 10, 20, 50, 100, 200, 500]
+	cashlist = [25, 50, 75, 100, 125, 150]
 	return render_to_response("frontend/sale.html", locals(), context_instance=RequestContext(request))

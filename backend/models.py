@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from c4sh.preorder.models import PreorderTicket
+#from c4sh.preorder.models import PreorderTicket
 
 class UserProfile(models.Model):
 	"""
@@ -8,6 +8,8 @@ class UserProfile(models.Model):
 	It can be constructed using (django.contrib.auth.models.)User.get_profile().
 	"""
 	user = models.ForeignKey(User)
+
+	supervisor_auth_code = models.CharField(max_length=64, unique=True, verbose_name="Superuser authentication code for special tickets, UUID", null=True, blank=True)
 
 	def __unicode__(self):
 		return "%s" % self.user.username
@@ -37,6 +39,8 @@ class Ticket(models.Model):
 
 	limit_supervisor = models.BooleanField(default=False, verbose_name="Does this ticket need supervisor authorization?")
 
+	preorder_sold = models.BooleanField(default=False, verbose_name="Is this a ticket sold through preorder? (If so, it will not be displayed in the ticket list and can only be added with QRCode/UUID)")
+
 	receipt_autoprint = models.BooleanField(default=True, verbose_name="Print a receipt for this ticket automatically?")
 	receipt_advice = models.TextField(blank=True, null=True, verbose_name="Additional text to be printed on receipt when buying this ticket")
 
@@ -57,11 +61,11 @@ class Ticket(models.Model):
 		self.active = False
 		return super(self, Ticket).save()
 
-	def is_preorderable(self):
+	"""def is_preorderable(self):
 		try:
 			return PreorderTicket.objects.get(backend_id=self.pk)
 		except PreorderTicket.DoesNotExist:
-			return False
+			return False"""
 	
 	class Meta:
 		ordering = ['active', 'name', '-sale_price']
