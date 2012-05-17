@@ -141,6 +141,14 @@ def cashdesks_session_report_view(request, session_id):
 	pdf.text(20, i+110, "Money in cashdesk: %s EUR" % session.drawer_sum)
 	pdf.text(20, i+130, "OK? %s" % session.drawer_sum_ok)
 
+	pdf.set_font('Arial','',15)	
+	pdf.text(20, i+160, "Day passes before session: %d" % session.day_passes_before)
+	pdf.text(20, i+175, "Day passes after session: %d" % session.day_passes_after)
+	pdf.text(20, i+191, "Total out: %d" % (session.day_passes_before - session.day_passes_after))
+	pdf.text(20, i+210, "Full passes before session: %d" % session.full_passes_before)
+	pdf.text(20, i+225, "Full passes after session: %d" % session.full_passes_after)
+	pdf.text(20, i+240, "Total out: %d" % (session.full_passes_before - session.full_passes_after))
+
 
 	if session.supervisor_after == None:
 		session.supervisor_after = session.supervisor_before
