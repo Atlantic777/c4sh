@@ -10,26 +10,26 @@ def print_receipt(sale, printer, do_open_drawer=True):
 
 
 	receipt = logo + """
-	            Chaos Computer Club
-	       Veranstaltungsgesellschaft mbH
-	             Postfach 640 23 6
-	               10048 Berlin
+            Chaos Computer Club
+       Veranstaltungsgesellschaft mbH
+             Postfach 640 23 6
+               10048 Berlin
 
-	 Ticket                                EUR
-	 -----------------------------------------
-	"""
+ Ticket                                EUR
+ -----------------------------------------
+"""
 	receipt += positions
 	receipt += " -----------------------------------------\r\n"
 	receipt += "                  enthaltene MwSt:   %.2f\r\n" % (float(summe)-float(summe)/1.19)
 	receipt += "                            Summe:   %.2f\r\n" % float(summe)
 	receipt += """
 
-	    Leistungsdatum gleich Rechnungsdatum
-	           Preise inkl. 19% MwSt
-	               Vielen Dank!
+    Leistungsdatum gleich Rechnungsdatum
+           Preise inkl. 19% MwSt
+               Vielen Dank!
 
-	        AG Charlottenburg, HRB 71629
-	            USt-ID: DE203286729
+        AG Charlottenburg, HRB 71629
+            USt-ID: DE203286729
 	"""
 	receipt += "        %d.%d.%d - %d:%d %s\r\n" % (sale.time.day, sale.time.month, sale.time.year, sale.time.hour, sale.time.minute, sale.cashdesk.invoice_name)
 	receipt += "            Belegnummer: %d\r\n" % (sale.pk)
