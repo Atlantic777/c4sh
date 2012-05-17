@@ -27,6 +27,7 @@ def static_view(request, template, **args):
 def sales_view(request):
 	sales = Sale.objects.all().order_by("-pk")
 	return render_to_response("backend/sales.html", locals(), context_instance=RequestContext(request))
+
 @login_required
 @supervisor_required
 def dashboard_view(request):
