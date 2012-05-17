@@ -2,7 +2,7 @@ from os import system
 import sys, subprocess
 
 def gap(f):
-	return " "*(6-len(str(float(f))))+"%.2f" % float(f)
+	return " "*(5-len(str(float(f))))+"%.2f" % float(f)
 
 def print_receipt(sale, printer, do_open_drawer=True):
 	logo = "\x1d\x28\x4c\x06\x00\x30\x45\x30\x30\x01\x01"
