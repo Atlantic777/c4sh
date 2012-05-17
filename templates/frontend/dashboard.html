@@ -56,7 +56,7 @@
 		$('#tools_opendrawer').click(function() {
 			$.ajax({
 				type: 'GET',
-				url: '/api/cashdrawer/open/',
+				url: '/api/cashdrawer/open/{{request.session.cashdesk}}/',
 				success: function(response) {
 					successNotification('Command sent to Cash Drawer!');
 				}

@@ -35,6 +35,9 @@ class PreorderPositionSearchHandler(BaseHandler):
 class OpenCashDrawerHandler(BaseHandler):
 	allowed_methods = ('GET',)
 
-	def read(self, request):
-		open_drawer()
+	def read(self, request, cashdesk_id):
+
+		cashdesk = bmodels.Cashdesk.objects.get(pk=cashdesk_id)
+
+		open_drawer(cashdesk.receipt_printer_name)
 		return rc.ALL_OK

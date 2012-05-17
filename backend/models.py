@@ -82,6 +82,7 @@ class Cashdesk(models.Model):
 	ip = models.IPAddressField(unique=True, verbose_name="IP Address of this cashdesk (for access control and receipt printers)")
 
 	receipt_printer = models.BooleanField(default=True, verbose_name="Does this cashdesk have a receipt printer?")
+	receipt_printer_name = models.CharField(max_length=255, blank=True, null=True, verbose_name="Receipt printer name (optional)")
 	invoice_printer = models.BooleanField(default=True, verbose_name="Does this cashdesk have an invoice printer?")
 	invoice_printer_name = models.CharField(max_length=255, blank=True, null=True, verbose_name="Invoice printer name (optional)")
 
