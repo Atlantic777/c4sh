@@ -65,6 +65,18 @@ def cashdesks_view(request):
 
 @login_required
 @supervisor_required
+def sale_reverse_view(request, sale_id):
+	sale = get_object_or_404(Sale, pk=sale_id)
+	sale.reversed_by = request.user
+	sale.fulfilled = False
+	sale.reversed = True
+	sale.save()
+
+	messages.success(request, "Sale has been successfully marked as reversed!")
+	return HttpResponseRedirect(reverse("backend-sale-detail", args=[sale_id,]))
+
+@login_required
+@supervisor_required
 def sale_detail_view(request, sale_id):
 	sale = get_object_or_404(Sale, pk=sale_id)
 
