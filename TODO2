@@ -9,3 +9,5 @@ DONE -bon nachdrucken frontend (select feld mit kasse)
 DONE -session überschneidung -> active_session auf None setzen wenn valid_to überschritten
 
 DONE -lade öffnen beim logout
+
+- parktickets feld
