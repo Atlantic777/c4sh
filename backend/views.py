@@ -16,6 +16,8 @@ from datetime import datetime
 
 from c4sh.backend.forms import *
 
+from c4sh.desk.tools import print_session_end_bon, open_drawer
+
 @login_required
 def static_view(request, template, **args):
 	if template == "fail.html":
@@ -295,6 +297,7 @@ def cashdesks_session_add_view(request):
 
 					# open cash drawer
 					open_drawer(cashdesk.receipt_printer_name)
+					print_session_end_bon(cashdesk.receipt_printer_name)
 
 			cashier = pk=form.cleaned_data['cashier']
 			if len(CashdeskSession.objects.filter(cashier=cashier, valid_from__lte=datetime.now(), valid_until__gte=datetime.now(), is_logged_in=True)) > 0:
