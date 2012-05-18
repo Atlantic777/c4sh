@@ -10,4 +10,8 @@ DONE -session überschneidung -> active_session auf None setzen wenn valid_to ü
 
 DONE -lade öffnen beim logout
 
-- parktickets feld
+DONE - parktickets feld
+
+ - statistiken (geld eingenommen heute, insgesamt, tickets verkauft heute, insgesamt -> wie viele leute sind heute theoretisch da)
+
+- bändchen -> physisches element, mit n tickets matchen

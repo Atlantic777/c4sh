@@ -293,6 +293,9 @@ def cashdesks_session_add_view(request):
 					cashdesk.active_session = None
 					cashdesk.save()
 
+					# open cash drawer
+					open_drawer(cashdesk.receipt_printer_name)
+
 			cashier = pk=form.cleaned_data['cashier']
 			if len(CashdeskSession.objects.filter(cashier=cashier, valid_from__lte=datetime.now(), valid_until__gte=datetime.now(), is_logged_in=True)) > 0:
 				messages.error(request, "The cashier has an active session!")	
