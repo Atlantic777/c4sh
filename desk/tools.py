@@ -5,6 +5,36 @@ def gap(f):
 	penis = "%.2f" % float(f)
 	return " "*(5-len(penis))+"%.2f" % float(f)
 
+def print_session_end_bon(printer):
+	text = """
+  -----------------------------------------
+  -----------------------------------------
+  -----------------------------------------
+
+           Your session has ended.
+        Please inform your supervisor!
+
+  -----------------------------------------
+  -----------------------------------------
+  -----------------------------------------
+
+
+
+
+	"""
+
+	try:
+		lpr = subprocess.Popen(['/usr/bin/lpr', '-l', '-P', printer], stdin = subprocess.PIPE)
+
+		lpr.stdin.write(text)
+		lpr.stdin.close()
+	except:
+		pass
+	
+	return
+
+
+
 def print_receipt(sale, printer, do_open_drawer=True):
 	# open drawer
 	if do_open_drawer:
