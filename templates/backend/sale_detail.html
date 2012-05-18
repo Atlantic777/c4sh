@@ -46,13 +46,13 @@
 							<label>Date</label>
 						</dt>
 						<dd class="text">
-							<p>{{sale.time|date:"d.m.y H:i:s"}}</p>
+							<p><a href="{% url backend-cashdesks-session-edit sale.session.pk %}">{{sale.time|date:"d.m.y H:i:s"}}</a></p>
 						</dd>
 						<dt>
-							<label>Value</label>
+							<label>Session</label>
 						</dt>
 						<dd class="text">
-							<p>{{sale.cached_sum}} &euro;</p>
+							<p><a href="{% url backend-cashdesks-session-edit sale.session.pk %}">#{{sale.session.pk}}</a></p>
 						</dd>
 						<dt>
 							<label>Value</label>
@@ -98,11 +98,10 @@
 					</dl>-->
 					<dl>
 						<dt>
-							<label>Refund transaction</label>
+							<label>Reverse transaction</label>
 						</dt>
 						<dd class="text">
-							at {{sale.cashdesk.name}}
-							<button>Refund</button>
+							<a href="{% url backend-sale-reverse sale.pk %}" style="text-decoration:none;"><button class="red">Reverse</button></a>
 						</dd>
 					</dl>
 				</fieldset>

@@ -31,6 +31,8 @@ urlpatterns += patterns('c4sh.backend.views',
 	url(r'^backend/sales/$', 'sales_view', name="backend-sales"),
 
 	url(r'^backend/sale/(?P<sale_id>\d+)/$', 'sale_detail_view', name="backend-sale-detail"),
+	url(r'^backend/sale/reverse/(?P<sale_id>\d+)/$', 'sale_reverse_view', name='backend-sale-reverse'),
+
 	url(r'^fail/', 'static_view', {'template': 'fail.html'}, name="fail"),
 )
 
