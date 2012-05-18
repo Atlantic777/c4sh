@@ -39,7 +39,13 @@ class ReprintReceiptHandler(BaseHandler):
 
 		sale = dmodels.Sale.objects.get(pk=sale_id)
 
-		print_receipt(sale, sale.cashdesk.receipt_printer_name, False)
+		if cashdesk_id:
+			cashdesk = bmodels.Cashdesk.objects.get(pk=cashdesk_id)
+			printer = cashdesk.receipt_printer_name
+		else:
+			printer = sale.cashdesk.receipt_printer_name
+
+		print_receipt(sale, printer, False)
 
 		return rc.ALL_OK
 
