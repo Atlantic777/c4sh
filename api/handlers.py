@@ -4,7 +4,7 @@ from c4sh.backend import models as bmodels
 from c4sh.desk import models as dmodels
 from c4sh.preorder import models as pmodels
 
-from c4sh.desk.tools import open_drawer
+from c4sh.desk.tools import open_drawer, print_receipt
 
 class PreorderPositionHandler(BaseHandler):
 	allowed_methods = ('GET',)
@@ -31,6 +31,17 @@ class PreorderPositionSearchHandler(BaseHandler):
 			return preorder_positions
 		except pmodels.PreorderPosition.DoesNotExist:
 			return []
+
+class ReprintReceiptHandler(BaseHandler):
+	allowed_methods = ('GET',)
+
+	def read(self, request, sale_id, cashdesk_id=None):
+
+		sale = dmodels.Sale.objects.get(pk=sale_id)
+
+		print_receipt(sale, sale.cashdesk.receipt_printer_name, False)
+
+		return rc.ALL_OK
 
 class OpenCashDrawerHandler(BaseHandler):
 	allowed_methods = ('GET',)

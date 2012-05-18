@@ -3,9 +3,9 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		if ($('#id_supervisor_after').val() == "") {
-			$('#id_supervisor_after').val({{request.user.pk}});
-		}
+		//if ($('#id_supervisor_after').val() == "") {
+			//$('#id_supervisor_after').val({{request.user.pk}});
+		//}
 	});
 </script>
 
@@ -60,6 +60,33 @@
 			</form>
 			</section>
 		</article>
+
+		{% if positions_reversed_for_template %}
+
+		<article class="content-box col-2 clear-rm">
+			<header>
+				<h2>Tickets reversed</h2>
+			</header>
+			<section>
+				<table>
+				<thead>
+					<tr>
+						<th>Amount</th>
+						<th>Type</th>
+					</tr>
+				</thead>
+				{% for p in positions_reversed_for_template %}
+				<tr>
+					<td>{{p.amount}}x</td>
+					<td>{{p.ticket.name}}</td>
+				</tr>
+				{% endfor %}
+				</table>
+			</form>
+			</section>
+		</article>
+
+		{% endif %}
 
 		<article class="content-box col-2 clear-rm">
 			<header>

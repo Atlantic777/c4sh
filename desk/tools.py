@@ -49,10 +49,14 @@ def print_receipt(sale, printer, do_open_drawer=True):
 
 
 	receipt += ("\r\n"*8) + "\x1D\x561"
-	lpr = subprocess.Popen(['/usr/bin/lpr', '-l', '-P', printer], stdin = subprocess.PIPE)
 
-	lpr.stdin.write(receipt)
-	lpr.stdin.close()
+	try:
+		lpr = subprocess.Popen(['/usr/bin/lpr', '-l', '-P', printer], stdin = subprocess.PIPE)
+
+		lpr.stdin.write(receipt)
+		lpr.stdin.close()
+	except:
+		pass
 	
 	return
 

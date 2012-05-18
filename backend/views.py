@@ -67,6 +67,9 @@ def cashdesks_view(request):
 @supervisor_required
 def sale_detail_view(request, sale_id):
 	sale = get_object_or_404(Sale, pk=sale_id)
+
+	cashdesks = Cashdesk.objects.all()
+
 	return render_to_response("backend/sale_detail.html", locals(), context_instance=RequestContext(request))
 
 @login_required
@@ -103,7 +106,7 @@ def cashdesks_session_report_view(request, session_id):
 	pdf.text(500,220,"Total")
 
 	i = 250
-	positions = SalePosition.objects.filter(sale__session=session)
+	positions = SalePosition.objects.filter(sale__session=session, sale__fulfilled=True, sale__reversed=False)
 	positions_merged = {}
 
 	for position in positions:
@@ -134,20 +137,54 @@ def cashdesks_session_report_view(request, session_id):
 	pdf.set_font('Arial','B',15)
 	pdf.text(20, i+80, "%s EUR" % ((total_total) + (session.change)))
 
+
+
+	# reversed positions
+	positions_reversed = SalePosition.objects.filter(sale__session=session, sale__fulfilled=False, sale__reversed=True)
+	positions_reversed_merged = {}
+
+	if len(positions_merged) > 0:
+		i = i + 125
+		pdf.set_font('Arial','B',15)
+		pdf.text(20, i,"Reversed tickets")
+		i = i + 25
+
+	for position in positions_reversed:
+		if not positions_reversed_merged.get(position.ticket.pk):
+			positions_reversed_merged[position.ticket.pk] = {
+				'ticket': position.ticket, 
+				'amount': 1
+			}
+		else:
+			positions_reversed_merged[position.ticket.pk]['amount'] = positions_reversed_merged[position.ticket.pk]['amount'] + 1
+
+	for position in positions_reversed_merged:
+		pdf.set_font('Arial','',15)
+		pdf.text(50, i, "%s x" % str(positions_reversed_merged[position]['amount']))
+		pdf.text(150, i, positions_reversed_merged[position]['ticket'].name)
+		i = i + 20
+
+	####
+
+	if len(positions_merged) > 0:
+		i = i + 50
+	else:
+		i = i + 150
+
 	if not session.drawer_sum:
 		session.drawer_sum = "NOT YET SAVED"
 	if not session.drawer_sum_ok:
 		session.drawer_sum_ok = "NOT YET SAVED"
-	pdf.text(20, i+110, "Money in cashdesk: %s EUR" % session.drawer_sum)
-	pdf.text(20, i+130, "OK? %s" % session.drawer_sum_ok)
+	pdf.text(20, i+10, "Money in cashdesk: %s EUR" % session.drawer_sum)
+	pdf.text(20, i+30, "OK? %s" % session.drawer_sum_ok)
 
 	pdf.set_font('Arial','',15)	
-	pdf.text(20, i+160, "Day passes before session: %d" % session.day_passes_before)
-	pdf.text(20, i+175, "Day passes after session: %d" % session.day_passes_after)
-	pdf.text(20, i+191, "Total out: %d" % (session.day_passes_before - session.day_passes_after))
-	pdf.text(20, i+210, "Full passes before session: %d" % session.full_passes_before)
-	pdf.text(20, i+225, "Full passes after session: %d" % session.full_passes_after)
-	pdf.text(20, i+240, "Total out: %d" % (session.full_passes_before - session.full_passes_after))
+	pdf.text(20, i+60, "Day passes before session: %d" % session.day_passes_before)
+	pdf.text(20, i+75, "Day passes after session: %d" % session.day_passes_after)
+	pdf.text(20, i+91, "Total out: %d" % (session.day_passes_before - session.day_passes_after))
+	pdf.text(20, i+110, "Full passes before session: %d" % session.full_passes_before)
+	pdf.text(20, i+125, "Full passes after session: %d" % session.full_passes_after)
+	pdf.text(20, i+140, "Total out: %d" % (session.full_passes_before - session.full_passes_after))
 
 
 	if session.supervisor_after == None:
@@ -175,15 +212,16 @@ def cashdesks_session_edit_view(request, session_id):
 	if request.POST:
 		form = EditSessionForm(request.POST, instance=session)
 		if form.is_valid():
-			if session.cashdesk.active_session == session:
+			"""if session.cashdesk.active_session == session:
 				session.cashdesk.active_session = None
-				session.cashdesk.save()
+				session.cashdesk.save()"""
 			form.save()
 			messages.success(request, "The cashdesk session has been saved!")
 	else:
 		form = EditSessionForm(instance=session)
 
-	positions = SalePosition.objects.filter(sale__session=session)
+	# fetch positions which sale is marked as fulfilled and not reversed
+	positions = SalePosition.objects.filter(sale__session=session, sale__fulfilled=True, sale__reversed=False)
 	positions_merged = {}
 
 	for position in positions:
@@ -203,7 +241,23 @@ def cashdesks_session_edit_view(request, session_id):
 		positions_for_template.append(positions_merged[position])
 		total_total = total_total + positions_merged[position]['total']
 
-	new_money = total_total + session.change
+
+	# fetch positions which sale is marked as not fulfilled and reversed
+	positions_reversed = SalePosition.objects.filter(sale__session=session, sale__fulfilled=False, sale__reversed=True)
+	positions_reversed_merged = {}
+
+	for position in positions_reversed:
+		if not positions_reversed_merged.get(position.ticket.pk):
+			positions_reversed_merged[position.ticket.pk] = {
+				'ticket': position.ticket, 
+				'amount': 1
+			}
+		else:
+			positions_reversed_merged[position.ticket.pk]['amount'] = positions_reversed_merged[position.ticket.pk]['amount'] + 1
+
+	positions_reversed_for_template = []
+	for position in positions_reversed_merged:
+		positions_reversed_for_template.append(positions_reversed_merged[position])
 
 	return render_to_response("backend/cashdesks_session_edit.html", locals(), context_instance=RequestContext(request))
 
@@ -218,8 +272,13 @@ def cashdesks_session_add_view(request):
 
 			cashdesk = form.cleaned_data['cashdesk']
 			if cashdesk.active_session is not None:
-				messages.error(request, "The cashdesk has an active session!")	
-				return render_to_response("backend/cashdesks_session_add.html", locals(), context_instance=RequestContext(request))
+				if cashdesk.active_session.valid_until > datetime.datetime.now():
+					messages.error(request, "The cashdesk has an active session: %s" % cashdesk.active_session)
+					return render_to_response("backend/cashdesks_session_add.html", locals(), context_instance=RequestContext(request))
+				else:
+					# delete active_session on cash desk now
+					cashdesk.active_session = None
+					cashdesk.save()
 
 			cashier = pk=form.cleaned_data['cashier']
 			if len(CashdeskSession.objects.filter(cashier=cashier, valid_from__lte=datetime.now(), valid_until__gte=datetime.now(), is_logged_in=True)) > 0:
