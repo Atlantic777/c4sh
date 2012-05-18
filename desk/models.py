@@ -32,6 +32,7 @@ class Sale(models.Model):
 
 	fulfilled = models.BooleanField(default=False, verbose_name="Has this sale been fulfilled?")
 	reversed = models.BooleanField(default=False, verbose_name="Has this sale been reversed?")
+	reversed_by = models.ForeignKey(User, related_name="authorized_reversals", blank=True, null=True, verbose_name="Superuser authorizing this reversal")
 
 	def positions(self):
 		try:

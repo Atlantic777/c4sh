@@ -1,5 +1,22 @@
 {% extends "base/backend.html" %}
 {% block content %}
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#reprint_receipt').click(function() {
+			var cashdesk = $('#reprint_receipt_cashdesk').val();
+			$.ajax({
+				type: 'GET',
+				url: '/api/receipt/print/{{sale.pk}}/'+cashdesk+'/',
+				success: function(response) {
+					successNotification('Command sent to Printer!');
+				}, 
+				error: function() {
+					errorNotification('Error while sending this command to the printer!')
+				}
+			});
+		});
+	});
+</script>
 		<article class="content-box col-2">
 			<header>
 				<h2>Sale Detail</h2>
@@ -7,6 +24,9 @@
 			<section>
 				<h3>Sale #{{sale.pk}}</h3>
 				<form class="horizontal-form">
+				{% if sale.reversed %}
+				<h2 style="color:red;">This sale has been reversed by {{sale.reversed_by}}!</h3>
+				{% endif %}
 				<fieldset>
 					<legend>Data</legend>
 					<dl>
@@ -43,7 +63,7 @@
 					</dl>
 				</fieldset>
 				</form>
-				<form class="horizontal-form">
+				<form class="horizontal-form" action="javascript:;">
 				<fieldset>
 					<legend>Actions</legend>
 					<dl>
@@ -52,14 +72,18 @@
 						</dt>
 						<dd class="text">
 							at
-							<select name="cashdesk">
-								<option>Cashdesk 1</option>
-								<option>Cashdesk 2</option>
+							<select name="cashdesk" id="reprint_receipt_cashdesk">
+								<!--<option>Cashdesk 1</option>
+								<option>Cashdesk 2</option>-->
+								{% for cashdesk in cashdesks %}
+									<option value="{{cashdesk.pk}}">{{cashdesk.name}}
+									</option>
+								{% endfor %}
 							</select>
-							<button>Print</button>
+							<button id="reprint_receipt">Print</button>
 						</dd>
 					</dl>
-					<dl>
+					<!--<dl>
 						<dt>
 							<label>Reprint invoice</label>
 						</dt>
@@ -71,7 +95,7 @@
 							</select>
 							<button>Print</button>
 						</dd>
-					</dl>
+					</dl>-->
 					<dl>
 						<dt>
 							<label>Refund transaction</label>

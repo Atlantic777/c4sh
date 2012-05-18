@@ -168,7 +168,6 @@ def sell_action(request):
 	sale.fulfilled = True
 	sale.save()
 
-	
 	print_receipt(sale, cds.cashdesk.receipt_printer_name)
 
 	return HttpResponseRedirect(reverse("desk-sale", args=[sale.pk,]))
@@ -179,6 +178,10 @@ def logout_view(request):
 	
 	cashdesk = get_cashdesk(request)
 	if cashdesk:
+
+		# open cash drawer
+		open_drawer(cashdesk.receipt_printer_name)
+
 		sessions = CashdeskSession.objects.filter(cashdesk=cashdesk, cashier=request.user, valid_from__lte=datetime.datetime.now(), valid_until__gte=datetime.datetime.now())
 		try:
 			session = sessions[0]
@@ -191,6 +194,32 @@ def logout_view(request):
 
 	auth_logout(request)
 	return HttpResponseRedirect(reverse("dashboard"))
+
+@login_required
+@no_supervisor
+@session_required
+def reverse_sale_view(request, sale_id):
+	sale = get_object_or_404(Sale, pk=sale_id)
+	if sale.cashier != request.user:
+		raise Exception("Not your sale.")
+
+	# check if we have supervisor_auth_code in POST
+	if request.POST.get("supervisor_auth_code"):
+		try:
+			supervisor = User.objects.get(userprofile__supervisor_auth_code=request.POST.get("supervisor_auth_code"), is_staff=True, userprofile__supervisor_auth_code__isnull=False)
+			sale.reversed_by = supervisor
+			sale.fulfilled = False
+			sale.reversed = True
+			sale.save()
+
+			messages.success(request, "Sale has been successfully marked as reversed!")
+			return HttpResponseRedirect(reverse("dashboard"))
+
+		except User.DoesNotExist:
+			messages.error(request, "Invalid supervisor auth code or supervisor not found!")
+
+	return render_to_response("frontend/reversal_supervisor.html", locals(), context_instance=RequestContext(request))
+
 
 @login_required
 @no_supervisor
