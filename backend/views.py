@@ -285,7 +285,7 @@ def cashdesks_session_add_view(request):
 
 			cashdesk = form.cleaned_data['cashdesk']
 			if cashdesk.active_session is not None:
-				if cashdesk.active_session.valid_until > datetime.datetime.now():
+				if cashdesk.active_session.valid_until > datetime.now():
 					messages.error(request, "The cashdesk has an active session: %s" % cashdesk.active_session)
 					return render_to_response("backend/cashdesks_session_add.html", locals(), context_instance=RequestContext(request))
 				else:
