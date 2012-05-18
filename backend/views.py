@@ -253,6 +253,7 @@ def cashdesks_session_edit_view(request, session_id):
 		positions_for_template.append(positions_merged[position])
 		total_total = total_total + positions_merged[position]['total']
 
+	new_money = total_total + session.change
 
 	# fetch positions which sale is marked as not fulfilled and reversed
 	positions_reversed = SalePosition.objects.filter(sale__session=session, sale__fulfilled=False, sale__reversed=True)
