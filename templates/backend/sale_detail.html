@@ -63,6 +63,9 @@
 					</dl>
 				</fieldset>
 				</form>
+
+					{% if not sale.reversed %}
+
 				<form class="horizontal-form" action="javascript:;">
 				<fieldset>
 					<legend>Actions</legend>
@@ -96,6 +99,7 @@
 							<button>Print</button>
 						</dd>
 					</dl>-->
+
 					<dl>
 						<dt>
 							<label>Reverse transaction</label>
@@ -106,6 +110,7 @@
 					</dl>
 				</fieldset>
 				</form>
+									{% endif %}
 			</section>
 		</article>
 		<article class="content-box col-2 clear-rm">
