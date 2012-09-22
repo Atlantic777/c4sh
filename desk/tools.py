@@ -22,6 +22,7 @@ def print_session_end_bon(printer):
 
 
 """
+	text += ("\r\n"*8) + "\x1D\x561"
 
 	try:
 		lpr = subprocess.Popen(['/usr/bin/lpr', '-l', '-P', printer], stdin = subprocess.PIPE)
