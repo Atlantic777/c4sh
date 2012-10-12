@@ -234,45 +234,21 @@ def cashdesks_session_edit_view(request, session_id):
 	else:
 		form = EditSessionForm(instance=session)
 
-	# fetch positions which sale is marked as fulfilled and not reversed
-	positions = SalePosition.objects.filter(sale__session=session, sale__fulfilled=True, sale__reversed=False)
-	positions_merged = {}
 
-	for position in positions:
-		if not positions_merged.get(position.ticket.pk):
-			positions_merged[position.ticket.pk] = {
-				'ticket': position.ticket, 
-				'amount': 1,
-				'total': position.ticket.sale_price
-			}
-		else:
-			positions_merged[position.ticket.pk]['amount'] = positions_merged[position.ticket.pk]['amount'] + 1
-			positions_merged[position.ticket.pk]['total'] = positions_merged[position.ticket.pk]['amount'] * positions_merged[position.ticket.pk]['ticket'].sale_price
+	# moved all the fancy stuff© to CashdeskSession model
+
+	positions = session.get_merged_positions()
+	positions_reversed = session.get_reversed_positions()
+	
+	total = positions['total']
 
 	positions_for_template = []
-	total_total = 0
-	for position in positions_merged:
-		positions_for_template.append(positions_merged[position])
-		total_total = total_total + positions_merged[position]['total']
-
-	new_money = total_total + session.change
-
-	# fetch positions which sale is marked as not fulfilled and reversed
-	positions_reversed = SalePosition.objects.filter(sale__session=session, sale__fulfilled=False, sale__reversed=True)
-	positions_reversed_merged = {}
-
-	for position in positions_reversed:
-		if not positions_reversed_merged.get(position.ticket.pk):
-			positions_reversed_merged[position.ticket.pk] = {
-				'ticket': position.ticket, 
-				'amount': 1
-			}
-		else:
-			positions_reversed_merged[position.ticket.pk]['amount'] = positions_reversed_merged[position.ticket.pk]['amount'] + 1
+	for position in positions['positions']:
+		positions_for_template.append(positions['positions'][position])
 
 	positions_reversed_for_template = []
-	for position in positions_reversed_merged:
-		positions_reversed_for_template.append(positions_reversed_merged[position])
+	for position in positions_reversed['positions']:
+		positions_reversed_for_template.append(positions_reversed['positions'][position])
 
 	return render_to_response("backend/cashdesks_session_edit.html", locals(), context_instance=RequestContext(request))
 

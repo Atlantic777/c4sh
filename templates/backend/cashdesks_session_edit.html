@@ -53,7 +53,7 @@
 				{% endfor %}
 				<thead>
 				<tr>
-					<th colspan="4" style="text-align:right;padding-right:20px;font-size:large;" id="cart-sum">{{total_total}} EUR</td>
+					<th colspan="4" style="text-align:right;padding-right:20px;font-size:large;" id="cart-sum">{{total}} EUR</td>
 				</tr>
 				</thead>
 				</table>
@@ -73,12 +73,17 @@
 					<tr>
 						<th>Amount</th>
 						<th>Type</th>
+						<th>Price</th>
+						<th>Total</th>
 					</tr>
 				</thead>
 				{% for p in positions_reversed_for_template %}
 				<tr>
 					<td>{{p.amount}}x</td>
 					<td>{{p.ticket.name}}</td>
+					<td>{{p.ticket.sale_price|floatformat:2}}
+					{{p.ticket.currency}}</td>
+					<td>{{p.total}} {{p.ticket.currency}}</td>
 				</tr>
 				{% endfor %}
 				</table>
@@ -100,11 +105,11 @@
 					</tr>
 					<tr style="border-bottom:2px solid rgb(150,150,150);">
 						<td style="text-align:right;">Received:</td>
-						<td style="text-align:right;padding-right:15px;">{{total_total}} EUR</td>
+						<td style="text-align:right;padding-right:15px;">{{total}} EUR</td>
 					</tr>
 					<tr>
 						<td style="text-align:right;font-weight:bold;"></td>
-						<td style="text-align:right;padding-right:15px;font-weight:bold;">{{new_money}} EUR</td>
+						<td style="text-align:right;padding-right:15px;font-weight:bold;">{{session.drawer_supposed_sum}} EUR</td>
 					</tr>
 				</table>
 			</form>

@@ -130,8 +130,49 @@ class CashdeskSession(models.Model):
 
 	notes = models.TextField(null=True, blank=True, verbose_name="Any additional notes for this cashdesk session")
 
+	def get_reversed_positions(self):
+		from c4sh.desk.models import SalePosition
+		# fetch positions which sale is marked as not fulfilled and reversed
+		positions_reversed = SalePosition.objects.filter(sale__session=self, sale__fulfilled=False, sale__reversed=True)
+		positions_reversed_merged = {}
+		total = 0
+		for position in positions_reversed:
+			if not positions_reversed_merged.get(position.ticket.pk):
+				positions_reversed_merged[position.ticket.pk] = {
+					'ticket': position.ticket, 
+					'amount': 1,
+					'total': position.ticket.sale_price
+				}
+			else:
+				positions_reversed_merged[position.ticket.pk]['amount'] = positions_reversed_merged[position.ticket.pk]['amount'] + 1
+				positions_reversed_merged[position.ticket.pk]['total'] = positions_reversed_merged[position.ticket.pk]['amount'] * positions_reversed_merged[position.ticket.pk]['ticket'].sale_price
+			total = total + position.ticket.sale_price
+
+		return {'positions': positions_reversed_merged, 'total': total }
+
+	def get_merged_positions(self):
+		from c4sh.desk.models import SalePosition
+		# fetch positions which sale is marked as fulfilled and not reversed
+		positions = SalePosition.objects.filter(sale__session=self, sale__fulfilled=True, sale__reversed=False)
+		positions_merged = {}
+		total = 0
+		for position in positions:
+			if not positions_merged.get(position.ticket.pk):
+				positions_merged[position.ticket.pk] = {
+					'ticket': position.ticket, 
+					'amount': 1,
+					'total': position.ticket.sale_price
+				}
+			else:
+				positions_merged[position.ticket.pk]['amount'] = positions_merged[position.ticket.pk]['amount'] + 1
+				positions_merged[position.ticket.pk]['total'] = positions_merged[position.ticket.pk]['amount'] * positions_merged[position.ticket.pk]['ticket'].sale_price
+
+			total = total + position.ticket.sale_price
+
+		return {'positions': positions_merged, 'total': total }
+
 	def drawer_supposed_sum(self):
-		return "FIX ME NOW" # TODO
+		return self.get_merged_positions()['total'] + self.change
 
 	def __unicode__(self):
 		return "#%d for %s at %s (%s - %s)" % (self.pk, self.cashier.username, self.cashdesk.name, self.valid_from, self.valid_until)
