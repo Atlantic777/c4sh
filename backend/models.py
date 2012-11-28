@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 #from c4sh.preorder.models import PreorderTicket
+from c4sh.desk.models import SalePosition
 
 class UserProfile(models.Model):
 	"""
@@ -68,7 +69,7 @@ class Ticket(models.Model):
 			return PreorderTicket.objects.get(backend_id=self.pk)
 		except PreorderTicket.DoesNotExist:
 			return False"""
-	
+
 	class Meta:
 		ordering = ['active', 'name', '-sale_price']
 
@@ -93,7 +94,7 @@ class Cashdesk(models.Model):
 
 	def __unicode__(self):
 		return "%s (%s)" % (self.name, self.ip)
-	
+
 	class Meta:
 		ordering = ['name']
 
@@ -124,14 +125,13 @@ class CashdeskSession(models.Model):
 
 	drawer_sum = models.DecimalField(null=True, blank=True, max_digits=7, decimal_places=2, verbose_name="Amount of money in cash drawer after session")
 	drawer_sum_ok = models.NullBooleanField(default=None, blank=True, null=True, verbose_name="Amount of money in cash drawer after session was okay")
-	
+
 	supervisor_after = models.ForeignKey(User, null=True, blank=True, related_name="supervised_after_cashdisksession_set", verbose_name="Supervisor (after session)")
 	total = models.DecimalField(null=True, blank=True, max_digits=7, decimal_places=2, verbose_name="Actual winnings (after change)")
 
 	notes = models.TextField(null=True, blank=True, verbose_name="Any additional notes for this cashdesk session")
 
 	def get_reversed_positions(self):
-		from c4sh.desk.models import SalePosition
 		# fetch positions which sale is marked as not fulfilled and reversed
 		positions_reversed = SalePosition.objects.filter(sale__session=self, sale__fulfilled=False, sale__reversed=True)
 		positions_reversed_merged = {}
@@ -139,19 +139,18 @@ class CashdeskSession(models.Model):
 		for position in positions_reversed:
 			if not positions_reversed_merged.get(position.ticket.pk):
 				positions_reversed_merged[position.ticket.pk] = {
-					'ticket': position.ticket, 
+					'ticket': position.ticket,
 					'amount': 1,
 					'total': position.ticket.sale_price
 				}
 			else:
-				positions_reversed_merged[position.ticket.pk]['amount'] = positions_reversed_merged[position.ticket.pk]['amount'] + 1
+				positions_reversed_merged[position.ticket.pk]['amount'] += 1
 				positions_reversed_merged[position.ticket.pk]['total'] = positions_reversed_merged[position.ticket.pk]['amount'] * positions_reversed_merged[position.ticket.pk]['ticket'].sale_price
 			total = total + position.ticket.sale_price
 
-		return {'positions': positions_reversed_merged, 'total': total }
+		return {'positions': positions_reversed_merged, 'total': total}
 
 	def get_merged_positions(self):
-		from c4sh.desk.models import SalePosition
 		# fetch positions which sale is marked as fulfilled and not reversed
 		positions = SalePosition.objects.filter(sale__session=self, sale__fulfilled=True, sale__reversed=False)
 		positions_merged = {}
@@ -159,24 +158,24 @@ class CashdeskSession(models.Model):
 		for position in positions:
 			if not positions_merged.get(position.ticket.pk):
 				positions_merged[position.ticket.pk] = {
-					'ticket': position.ticket, 
+					'ticket': position.ticket,
 					'amount': 1,
 					'total': position.ticket.sale_price
 				}
 			else:
-				positions_merged[position.ticket.pk]['amount'] = positions_merged[position.ticket.pk]['amount'] + 1
+				positions_merged[position.ticket.pk]['amount'] += 1
 				positions_merged[position.ticket.pk]['total'] = positions_merged[position.ticket.pk]['amount'] * positions_merged[position.ticket.pk]['ticket'].sale_price
 
 			total = total + position.ticket.sale_price
 
-		return {'positions': positions_merged, 'total': total }
+		return {'positions': positions_merged, 'total': total}
 
 	def drawer_supposed_sum(self):
 		return self.get_merged_positions()['total'] + self.change
 
 	def __unicode__(self):
 		return "#%d for %s at %s (%s - %s)" % (self.pk, self.cashier.username, self.cashdesk.name, self.valid_from, self.valid_until)
-	
+
 	class Meta:
 		ordering = ['valid_from', 'cashdesk']
 
@@ -191,7 +190,7 @@ class PaymentType(models.Model):
 		else:
 			cash = "no cash"
 		return "%s (%s)" % (self.name, cash)
-	
+
 	class Meta:
 		ordering = ['is_cash', 'name']
 """
