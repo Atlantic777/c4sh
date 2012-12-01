@@ -1,27 +1,13 @@
 from os import system
 import sys, subprocess
+import c4sh.settings as settings
 
 def gap(f):
-	penis = "%.2f" % float(f)
-	return " "*(5-len(penis))+"%.2f" % float(f)
+	formatted_value = "%.2f" % float(f)
+	return " "*(7-len(formatted_value))+"%.2f" % float(f)
 
 def print_session_end_bon(printer):
-	text = """
-  -----------------------------------------
-  -----------------------------------------
-  -----------------------------------------
-
-           Your session has ended.
-        Please inform your supervisor!
-
-  -----------------------------------------
-  -----------------------------------------
-  -----------------------------------------
-
-
-
-
-"""
+	text = settings.EVENT_RECEIPT_SESSION_ENDED
 	text += ("\r\n"*8) + "\x1D\x561"
 
 	try:
