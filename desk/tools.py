@@ -70,14 +70,14 @@ def print_receipt(sale, printer, do_open_drawer=True):
 
 	# print actual tax rates and amounts
 	for a_tax in sorted(list(tax_symbol))[::-1]:
-		receipt += settings.EVENT_RECEIPT_SALES_TAX_FORMAT % (str(a_tax), tax_symbol[str(a_tax)], gap(tax_sums[str(a_tax)]))
+		receipt += settings.EVENT_RECEIPT_SALES_TAX_FORMAT % {'tax_rate':str(a_tax), 'tax_identifier':tax_symbol[str(a_tax)], 'tax_amount':gap(tax_sums[str(a_tax)])}
 
 	# print total
 	receipt += settings.EVENT_RECEIPT_TOTAL_FORMAT % gap(total_sum)
 
 	# footer
 	receipt += settings.EVENT_RECEIPT_FOOTER
-	receipt += settings.EVENT_RECEIPT_TIMESTAMP_FORMAT % (sale.time.strftime("%d.%m.%Y %H:%M"), sale.cashdesk.invoice_name)
+	receipt += settings.EVENT_RECEIPT_TIMESTAMP_FORMAT % {'timestamp':sale.time.strftime("%d.%m.%Y %H:%M"), 'cashdesk_identifier':sale.cashdesk.invoice_name}
 	receipt += settings.EVENT_RECEIPT_SERIAL_FORMAT % (sale.pk)
 
 	# newlines and cut
