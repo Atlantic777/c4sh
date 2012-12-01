@@ -20,51 +20,67 @@ def print_session_end_bon(printer):
 	
 	return
 
-
-
 def print_receipt(sale, printer, do_open_drawer=True):
 	# open drawer
 	if do_open_drawer:
 		open_drawer(printer)
-	logo = "\x1d\x28\x4c\x06\x00\x30\x45\x30\x30\x01\x01"
-	summe = 0
+	total_sum = 0
 	positions = ""
+	tax_rates = set()
+	tax_sums = dict()
+	tax_symbol = dict()
+
 	for pos in sale.positions():
 		if pos.ticket.invoice_price == 0:
 			continue
-		positions += " %s%s %s\r\n" % (pos.ticket.receipt_name, " "*(34-len(pos.ticket.receipt_name)), gap(pos.ticket.invoice_price))
-		summe += pos.ticket.invoice_price
+		total_sum += pos.ticket.invoice_price
+		current_tax_rate = pos.ticket.tax_rate
+		tax_rates.add(current_tax_rate)
+		if str(current_tax_rate) not in tax_sums:
+			tax_sums.update({str(current_tax_rate):pos.ticket.invoice_price})
+			tax_symbol.update({str(current_tax_rate):str(unichr(0x40+len(tax_rates)))})
+		else:
+			tax_sums[str(current_tax_rate)] += pos.ticket.invoice_price
 
-	if summe == 0:
+		positions += " %s (%s)%s %s\r\n" % (pos.ticket.receipt_name, tax_symbol[str(current_tax_rate)], " "*(29-len(pos.ticket.receipt_name)), gap(pos.ticket.invoice_price))
+
+
+	if total_sum == 0:
 		return
 
-	receipt = logo + """
-            Chaos Computer Club
-       Veranstaltungsgesellschaft mbH
-             Postfach 640 23 6
-               10048 Berlin
+	# print header block
+	receipt =  settings.EVENT_RECEIPT_HEADER
+	receipt += settings.EVENT_RECEIPT_ADDRESS
+	receipt += settings.EVENT_RECEIPT_SEPERATOR
+	receipt += settings.EVENT_RECEIPT_POS_LIST_HEADER
 
- Ticket                                EUR
- -----------------------------------------
-"""
+	# print positions block
 	receipt += positions
-	receipt += " -----------------------------------------\r\n"
-	mwst = float(summe)-float(summe)/float(1.19)
-	receipt += "                  enthaltene MwSt:  %s\r\n" % gap(mwst)
-	receipt += "                            Summe:  %s\r\n" % gap(summe)
-	receipt += """
+	receipt += settings.EVENT_RECEIPT_SEPERATOR
 
-    Leistungsdatum gleich Rechnungsdatum
-           Preise inkl. 19% MwSt
-               Vielen Dank!
+	# calculate total exluding taxes and amount of paid taxes for every tax rate
+	sum_of_all_taxes = 0
+	for a_tax in tax_rates:
+		current_tax_sum = float(tax_sums[str(a_tax)])-float(tax_sums[str(a_tax)])/float(float(100+a_tax)/float(100))
+		sum_of_all_taxes += current_tax_sum
+		tax_sums[str(a_tax)] = current_tax_sum
 
-        AG Charlottenburg, HRB 71629
-            USt-ID: DE203286729
-"""
-	receipt += "          %s %s\r\n" % (sale.time.strftime("%d.%m.%Y %H:%M"), sale.cashdesk.invoice_name)
-	receipt += "              Belegnummer: %d\r\n" % (sale.pk)
+	# print total excluding taxes
+	receipt += settings.EVENT_RECEIPT_TOTAL_EXCL_TAX_FORMAT % gap(float(total_sum)-sum_of_all_taxes)
 
+	# print actual tax rates and amounts
+	for a_tax in sorted(list(tax_symbol))[::-1]:
+		receipt += settings.EVENT_RECEIPT_SALES_TAX_FORMAT % (str(a_tax), tax_symbol[str(a_tax)], gap(tax_sums[str(a_tax)]))
 
+	# print total
+	receipt += settings.EVENT_RECEIPT_TOTAL_FORMAT % gap(total_sum)
+
+	# footer
+	receipt += settings.EVENT_RECEIPT_FOOTER
+	receipt += settings.EVENT_RECEIPT_TIMESTAMP_FORMAT % (sale.time.strftime("%d.%m.%Y %H:%M"), sale.cashdesk.invoice_name)
+	receipt += settings.EVENT_RECEIPT_SERIAL_FORMAT % (sale.pk)
+
+	# newlines and cut
 	receipt += ("\r\n"*8) + "\x1D\x561"
 
 	try:
