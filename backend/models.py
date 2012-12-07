@@ -182,7 +182,7 @@ class CashdeskSession(models.Model):
 		ordering = ['valid_from', 'cashdesk']
 
 class HonoraryMember(models.Model):
-	membership_number = models.CharField(max_length=50, null=False, blank=False, verbose_name="Membership number of this member (e.g. Chausnummer)")
+	membership_number = models.CharField(unique=True, max_length=50, null=False, blank=False, verbose_name="Membership number of this member (e.g. Chausnummer). This is unique!")
 	full_name = models.CharField(max_length=255, null=False, blank=False, verbose_name="Name of this member")
 
 	def __unicode__(self):
