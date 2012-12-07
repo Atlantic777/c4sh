@@ -78,41 +78,6 @@ def sell_action(request):
 				if not ticketcache[ticketid].valid_from < datetime.datetime.now() < ticketcache[ticketid].valid_until:
 					raise Exception("You can't sell %s before %s or after %s." % (ticketcache[ticketid].name, ticketcache[ticketid].valid_from, ticketcache[ticketid].valid_until))
 
-			# Check for honorary member:
-			if ticketcache[ticketid].limit_honorary_member:
-				shall_pass = False
-				# check if we have supervisor_auth_code in POST
-				if request.POST.get("honoary_member_number"):
-					try:
-						honorary_member_number = request.POST.get("honoary_member_number")
-						try:
-							honorary_member = HonoraryMember.objects.get(Q(membership_number=honorary_member_number) & Q(saleposition=None))
-
-							newpos.honorary_member = honorary_member
-							shall_pass = True
-						except HonoraryMember.DoesNotExist:
-								messages.error(request, "Invalid honoary member identification or not found!")
-								shall_pass = False
-
-					except User.DoesNotExist:
-						messages.error(request, "Invalid honoary member identification or not found!")
-
-				if not shall_pass:
-					transaction.rollback()
-
-					# get all items from the basket to redisplay it
-					try:
-						tickets = Ticket.objects.filter(pk__in=request.POST.getlist("position"))
-					except Ticket.DoesNotExist:
-						pass
-
-					try:
-						preorder_tickets = PreorderPosition.objects.filter(uuid__in=request.POST.getlist("uuid"))
-					except PreorderPosition.DoesNotExist:
-						pass
-
-					return render_to_response("frontend/sale_honorary_member.html", locals(), context_instance=RequestContext(request))
-
 			# Check for supervisor:
 			if ticketcache[ticketid].limit_supervisor:
 				shall_pass = False
@@ -172,41 +137,6 @@ def sell_action(request):
 			if ticket_position.preorder.paid != True:
 				raise Exception("The Preorder %s has not yet been marked as paid." % uuid)
 
-			# Check for honorary member:
-			if ticket.limit_honorary_member:
-				shall_pass = False
-				# check if we have supervisor_auth_code in POST
-				if request.POST.get("honoary_member_number"):
-					try:
-						honorary_member_number = request.POST.get("honoary_member_number")
-						try:
-							honorary_member = HonoraryMember.objects.get(Q(membership_number=honorary_member_number) & Q(saleposition=None))
-
-							newpos.honorary_member = honorary_member
-							shall_pass = True
-						except HonoraryMember.DoesNotExist:
-								messages.error(request, "Invalid honoary member identification or not found!")
-								shall_pass = False
-
-					except User.DoesNotExist:
-						messages.error(request, "Invalid honoary member identification or not found!")
-
-				if not shall_pass:
-					transaction.rollback()
-
-					# get all items from the basket to redisplay it
-					try:
-						tickets = Ticket.objects.filter(pk__in=request.POST.getlist("position"))
-					except Ticket.DoesNotExist:
-						pass
-
-					try:
-						preorder_tickets = PreorderPosition.objects.filter(uuid__in=request.POST.getlist("uuid"))
-					except PreorderPosition.DoesNotExist:
-						pass
-
-					return render_to_response("frontend/sale_honorary_member.html", locals(), context_instance=RequestContext(request))
-
 		except Exception as e:
 			transaction.rollback()
 			transaction.leave_transaction_management()
@@ -224,6 +154,37 @@ def sell_action(request):
 			return HttpResponseRedirect(reverse("dashboard"))
 
 	# we now have all sale positions and a local cart_total
+	# therefore, we need to check for tickets which require honorary member identification
+	# we need a sale position PK for this, that's why we're doing this last
+	all_positions = SalePosition.objects.filter(sale=sale)
+	for pos in all_positions:
+		if pos.ticket.limit_honorary_member:
+			shall_pass = False
+
+			# check if we have supervisor_auth_codes in POST
+			if request.POST.get("honoary_member_number_%d" % pos.pk):
+				honorary_member_number = request.POST.get("honoary_member_number_%d" % pos.pk)
+				try:
+					honorary_member = HonoraryMember.objects.get(Q(membership_number=honorary_member_number) & Q(saleposition=None))
+
+					pos.honorary_member = honorary_member
+					pos.save()
+					shall_pass = True
+				except HonoraryMember.DoesNotExist:
+					messages.error(request, "Invalid honoary member identification or not found or has already been used: #%s" % honorary_member_number)
+					shall_pass = False
+
+			if not shall_pass:
+				transaction.rollback()
+
+				# did we need a supervisor auth code?
+				supervisor_auth_code = request.POST.get("supervisor_auth_code")
+
+				# get all items from the basket to redisplay it
+				positions = all_positions
+				return render_to_response("frontend/sale_honorary_member.html", locals(), context_instance=RequestContext(request))
+
+	# save everything!1
 	try:
 		for taxrate in cart_total:
 			sale.cached_sum += cart_total[taxrate]
