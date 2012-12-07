@@ -40,6 +40,7 @@ class Ticket(models.Model):
 	valid_until = models.DateTimeField(blank=True, null=True, verbose_name="Ticket can be sold until..")
 
 	limit_supervisor = models.BooleanField(default=False, verbose_name="Does this ticket need supervisor authorization?")
+	limit_honorary_member = models.BooleanField(default=False, verbose_name="Can this ticket only be bought by a honorary member? (e.g. Chaosnummer required)")
 
 	preorder_sold = models.BooleanField(default=False, verbose_name="Is this a ticket sold through preorder? (If so, it will not be displayed in the ticket list and can only be added with QRCode/UUID)")
 
@@ -179,6 +180,13 @@ class CashdeskSession(models.Model):
 
 	class Meta:
 		ordering = ['valid_from', 'cashdesk']
+
+class HonoraryMember(models.Model):
+	membership_number = models.CharField(max_length=50, null=False, blank=False, verbose_name="Membership number of this member (e.g. Chausnummer)")
+	full_name = models.CharField(max_length=255, null=False, blank=False, verbose_name="Name of this member")
+
+	def __unicode__(self):
+		return "#%s (%s)" % (self.membership_number, self.full_name)
 
 """
 class PaymentType(models.Model):

@@ -33,7 +33,7 @@ def dashboard_view(request):
 	# TODO: honor validity times of tickets in selection
 	tickets = Ticket.objects.filter(active=True, deleted=False)
 	tickets_json = serializers.serialize('json', tickets,
-				 	fields=('name', 'sale_price', 'currency', 'tax_rate', 'rabate_rate', 'limit_supervisor', 'valid_payment_types'),
+				 	fields=('name', 'sale_price', 'currency', 'tax_rate', 'rabate_rate', 'limit_supervisor', 'limit_honorary_member', 'valid_payment_types'),
 					ensure_ascii=False)
 	#payment_types_json = serializers.serialize('json', PaymentType.objects.all(), ensure_ascii=False)
 	return render_to_response("frontend/dashboard.html", locals(), context_instance=RequestContext(request))
@@ -64,6 +64,8 @@ def sell_action(request):
 	sale.save() # we need a primary key
 
 	for ticketid in request.POST.getlist("position"):
+		ticket_list = request.POST.getlist("position")
+
 		if not ticketcache.get(ticketid):
 			ticketcache[ticketid] = get_object_or_404(Ticket, pk=ticketid, active=True, deleted=False) # sale time restriction will be honored later to give an useful error
 		cart_total[ticketcache[ticketid].tax_rate] = cart_total.get(ticketcache[ticketid].tax_rate, 0) + ticketcache[ticketid].sale_price # taxes included
@@ -75,6 +77,42 @@ def sell_action(request):
 			if ticketcache[ticketid].limit_timespan:
 				if not ticketcache[ticketid].valid_from < datetime.datetime.now() < ticketcache[ticketid].valid_until:
 					raise Exception("You can't sell %s before %s or after %s." % (ticketcache[ticketid].name, ticketcache[ticketid].valid_from, ticketcache[ticketid].valid_until))
+
+			# Check for honorary member:
+			if ticketcache[ticketid].limit_honorary_member:
+				shall_pass = False
+				# check if we have supervisor_auth_code in POST
+				if request.POST.get("honoary_member_number"):
+					try:
+						honorary_member_number = request.POST.get("honoary_member_number")
+						try:
+							honorary_member = HonoraryMember.objects.get(Q(membership_number=honorary_member_number) & Q(saleposition=None))
+
+							newpos.honorary_member = honorary_member
+							shall_pass = True
+						except HonoraryMember.DoesNotExist:
+								messages.error(request, "Invalid honoary member identification or not found!")
+								shall_pass = False
+
+					except User.DoesNotExist:
+						messages.error(request, "Invalid honoary member identification or not found!")
+
+				if not shall_pass:
+					transaction.rollback()
+
+					# get all items from the basket to redisplay it
+					try:
+						tickets = Ticket.objects.filter(pk__in=request.POST.getlist("position"))
+					except Ticket.DoesNotExist:
+						pass
+
+					try:
+						preorder_tickets = PreorderPosition.objects.filter(uuid__in=request.POST.getlist("uuid"))
+					except PreorderPosition.DoesNotExist:
+						pass
+
+					return render_to_response("frontend/sale_honorary_member.html", locals(), context_instance=RequestContext(request))
+
 			# Check for supervisor:
 			if ticketcache[ticketid].limit_supervisor:
 				shall_pass = False
@@ -133,6 +171,41 @@ def sell_action(request):
 
 			if ticket_position.preorder.paid != True:
 				raise Exception("The Preorder %s has not yet been marked as paid." % uuid)
+
+			# Check for honorary member:
+			if ticket.limit_honorary_member:
+				shall_pass = False
+				# check if we have supervisor_auth_code in POST
+				if request.POST.get("honoary_member_number"):
+					try:
+						honorary_member_number = request.POST.get("honoary_member_number")
+						try:
+							honorary_member = HonoraryMember.objects.get(Q(membership_number=honorary_member_number) & Q(saleposition=None))
+
+							newpos.honorary_member = honorary_member
+							shall_pass = True
+						except HonoraryMember.DoesNotExist:
+								messages.error(request, "Invalid honoary member identification or not found!")
+								shall_pass = False
+
+					except User.DoesNotExist:
+						messages.error(request, "Invalid honoary member identification or not found!")
+
+				if not shall_pass:
+					transaction.rollback()
+
+					# get all items from the basket to redisplay it
+					try:
+						tickets = Ticket.objects.filter(pk__in=request.POST.getlist("position"))
+					except Ticket.DoesNotExist:
+						pass
+
+					try:
+						preorder_tickets = PreorderPosition.objects.filter(uuid__in=request.POST.getlist("uuid"))
+					except PreorderPosition.DoesNotExist:
+						pass
+
+					return render_to_response("frontend/sale_honorary_member.html", locals(), context_instance=RequestContext(request))
 
 		except Exception as e:
 			transaction.rollback()

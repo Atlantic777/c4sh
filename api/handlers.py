@@ -3,6 +3,7 @@ from piston.utils import *
 from c4sh.backend import models as bmodels
 from c4sh.desk import models as dmodels
 from c4sh.preorder import models as pmodels
+from django.db.models import Q
 
 from c4sh.desk.tools import open_drawer, print_receipt
 
@@ -13,7 +14,7 @@ class PreorderPositionHandler(BaseHandler):
 	def read(self, request, uuid):
 		try:
 			preorder_position = pmodels.PreorderPosition.objects.get(uuid=uuid)
-	
+
 			if preorder_position.redeemed == True:
 				return rc.FORBIDDEN
 
@@ -30,6 +31,17 @@ class PreorderPositionSearchHandler(BaseHandler):
 			preorder_positions = pmodels.PreorderPosition.objects.filter(uuid__icontains=uuid, ticket__backend_id__in=bmodels.Ticket.objects.all()).values('ticket__backend_id', 'uuid')[:10]
 			return preorder_positions
 		except pmodels.PreorderPosition.DoesNotExist:
+			return []
+
+class HonoraryMemberNumberSearchHandler(BaseHandler):
+	allowed_methods = ('GET',)
+	model = bmodels.HonoraryMember
+
+	def read(self, request, number):
+		try:
+			members = bmodels.HonoraryMember.objects.filter((Q(membership_number__icontains=number) | Q(full_name__icontains=number)) & Q(saleposition=None)).values('membership_number', 'full_name')[:10]
+			return members
+		except bmodels.HonoraryMember.DoesNotExist:
 			return []
 
 class ReprintReceiptHandler(BaseHandler):
