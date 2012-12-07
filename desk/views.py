@@ -64,8 +64,6 @@ def sell_action(request):
 	sale.save() # we need a primary key
 
 	for ticketid in request.POST.getlist("position"):
-		ticket_list = request.POST.getlist("position")
-
 		if not ticketcache.get(ticketid):
 			ticketcache[ticketid] = get_object_or_404(Ticket, pk=ticketid, active=True, deleted=False) # sale time restriction will be honored later to give an useful error
 		cart_total[ticketcache[ticketid].tax_rate] = cart_total.get(ticketcache[ticketid].tax_rate, 0) + ticketcache[ticketid].sale_price # taxes included
@@ -165,7 +163,7 @@ def sell_action(request):
 		if pos.ticket.limit_honorary_member:
 			shall_pass = False
 
-			# check if we have supervisor_auth_codes in POST
+			# check if we have honorary_member_numbers in POST
 			if request.POST.get("honoary_member_number_%d" % pos.pk):
 				honorary_member_number = request.POST.get("honoary_member_number_%d" % pos.pk)
 				try:
