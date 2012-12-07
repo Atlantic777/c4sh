@@ -5,3 +5,4 @@ django-piston==0.2.3
 ipython==0.13.1
 readline==6.2.4.1
 wsgiref==0.1.2
+django-extensions==1.0.1

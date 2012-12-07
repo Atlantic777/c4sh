@@ -81,7 +81,8 @@ INSTALLED_APPS = (
 	'c4sh.backend',
 	'c4sh.preorder',
 	'south',
-	'django.contrib.markup' # required for piston-documentation
+	'django.contrib.markup', # required for piston-documentation
+	'django_extensions',
 )
 
 # See http://docs.djangoproject.com/en/dev/topics/logging for
