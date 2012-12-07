@@ -158,6 +158,10 @@ def sell_action(request):
 	# we need a sale position PK for this, that's why we're doing this last
 	all_positions = SalePosition.objects.filter(sale=sale)
 	for pos in all_positions:
+
+		list_positions = request.POST.getlist("position")
+		list_preorders = request.POST.getlist("uuid")
+
 		if pos.ticket.limit_honorary_member:
 			shall_pass = False
 
