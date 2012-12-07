@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 #from c4sh.preorder.models import PreorderTicket
-from c4sh.desk.models import SalePosition
 
 class UserProfile(models.Model):
 	"""
@@ -132,6 +131,7 @@ class CashdeskSession(models.Model):
 	notes = models.TextField(null=True, blank=True, verbose_name="Any additional notes for this cashdesk session")
 
 	def get_reversed_positions(self):
+		from c4sh.desk.models import SalePosition # this needs to be done here to avoid circular dependencies
 		# fetch positions which sale is marked as not fulfilled and reversed
 		positions_reversed = SalePosition.objects.filter(sale__session=self, sale__fulfilled=False, sale__reversed=True)
 		positions_reversed_merged = {}
@@ -151,6 +151,7 @@ class CashdeskSession(models.Model):
 		return {'positions': positions_reversed_merged, 'total': total}
 
 	def get_merged_positions(self):
+		from c4sh.desk.models import SalePosition # this needs to be done here to avoid circular dependencies
 		# fetch positions which sale is marked as fulfilled and not reversed
 		positions = SalePosition.objects.filter(sale__session=self, sale__fulfilled=True, sale__reversed=False)
 		positions_merged = {}
