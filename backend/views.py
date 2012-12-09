@@ -53,10 +53,10 @@ def cashdesks_view(request):
 	cashdesks_open = Cashdesk.objects.filter(Q(active=True) & ~Q(active_session=None))
 	cashdesks_closed = Cashdesk.objects.filter(Q(active=True) & Q(active_session=None))
 	cashdesks_inactive = Cashdesk.objects.filter(active=False)
-	
+
 	#cashiers_active = User.objects.filter(is_staff=False)
 	cashiers_active = CashdeskSession.objects.filter(cashier__is_active=True, cashier__is_staff=False, valid_from__lte=datetime.now(), valid_until__gte=datetime.now(), is_logged_in=True)
-	
+
 	cashiers_inactive = User.objects.exclude(pk__in=CashdeskSession.objects.filter(cashier__is_active=True, cashier__is_staff=False, valid_from__lte=datetime.now(), valid_until__gte=datetime.now(), is_logged_in=True).values("cashier__pk"))
 
 	sessions_upcoming = CashdeskSession.objects.filter(Q(valid_from__gte=datetime.now()) | Q(valid_until__gte=datetime.now()) & Q(was_logged_in=False)).order_by('-valid_from')
@@ -126,7 +126,7 @@ def cashdesks_session_report_view(request, session_id):
 	for position in positions:
 		if not positions_merged.get(position.ticket.pk):
 			positions_merged[position.ticket.pk] = {
-				'ticket': position.ticket, 
+				'ticket': position.ticket,
 				'amount': 1,
 				'total': position.ticket.sale_price
 			}
@@ -166,7 +166,7 @@ def cashdesks_session_report_view(request, session_id):
 	for position in positions_reversed:
 		if not positions_reversed_merged.get(position.ticket.pk):
 			positions_reversed_merged[position.ticket.pk] = {
-				'ticket': position.ticket, 
+				'ticket': position.ticket,
 				'amount': 1
 			}
 		else:
@@ -192,7 +192,7 @@ def cashdesks_session_report_view(request, session_id):
 	pdf.text(20, i+10, "Money in cashdesk: %s EUR" % session.drawer_sum)
 	pdf.text(20, i+30, "OK? %s" % session.drawer_sum_ok)
 
-	pdf.set_font('Arial','',15)	
+	pdf.set_font('Arial','',15)
 	pdf.text(20, i+60, "Day passes before session: %d" % session.day_passes_before)
 	pdf.text(20, i+75, "Day passes after session: %d" % session.day_passes_after)
 	pdf.text(20, i+91, "Total out: %d" % (session.day_passes_before - session.day_passes_after))
@@ -239,7 +239,7 @@ def cashdesks_session_edit_view(request, session_id):
 
 	positions = session.get_merged_positions()
 	positions_reversed = session.get_reversed_positions()
-	
+
 	total = positions['total']
 
 	positions_for_template = []
@@ -277,8 +277,8 @@ def cashdesks_session_add_view(request):
 
 			cashier = pk=form.cleaned_data['cashier']
 			if len(CashdeskSession.objects.filter(cashier=cashier, valid_from__lte=datetime.now(), valid_until__gte=datetime.now(), is_logged_in=True)) > 0:
-				messages.error(request, "The cashier has an active session!")	
-				return render_to_response("backend/cashdesks_session_add.html", locals(), context_instance=RequestContext(request))				
+				messages.error(request, "The cashier has an active session!")
+				return render_to_response("backend/cashdesks_session_add.html", locals(), context_instance=RequestContext(request))
 
 			form.save()
 			messages.success(request, "The session has been successfully created!")
@@ -304,3 +304,10 @@ def cashdesks_cashier_add_view(request):
 	else:
 		form = AddCashierForm()
 	return render_to_response("backend/cashdesks_cashier_add.html", locals(), context_instance=RequestContext(request))
+
+@login_required
+@supervisor_required
+def monitor_view(request):
+
+	cashdesks = Cashdesk.objects.filter(active=True)
+	return render_to_response("backend/monitor.html", locals(), context_instance=RequestContext(request))

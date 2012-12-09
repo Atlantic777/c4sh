@@ -230,9 +230,3 @@ def sale_view(request, sale_id):
 		raise Exception("Not your sale.")
 	cashlist = [25, 50, 75, 100, 125, 150]
 	return render_to_response("frontend/sale.html", locals(), context_instance=RequestContext(request))
-
-def monitor_view(request):
-
-	cashdesks = Cashdesk.objects.filter(active=True)
-
-	return render_to_response("frontend/monitor.html", locals(), context_instance=RequestContext(request))

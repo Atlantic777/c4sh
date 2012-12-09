@@ -55,6 +55,14 @@
 					Closed
 				{% endif %}
 			</div>
+			{% if cashdesk.active_session %}
+				<div style="font-size:x-large;float:left;width:49%;">
+					{{cashdesk.active_session.drawer_supposed_sum}} EUR
+				</div>
+				<div style="font-size:large;float:right;width:49%;">
+
+				</div>
+			{% endif %}
 		</section>
 	</article>
 	{% endfor %}
