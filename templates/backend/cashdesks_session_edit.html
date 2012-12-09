@@ -8,114 +8,140 @@
 		//}
 	});
 </script>
+		<form method="POST" action="{% url backend-cashdesks-session-edit session.pk %}">
+			<article class="content-box col-2">
+				<header>
+					<h2>Basic settings</h2>
+				</header>
+				<section>
 
-		<article class="content-box col-2">
-			<header>
-				<h2>Edit session</h2>
-			</header>
-			<section>
-				<form method="POST" action="{% url backend-cashdesks-session-edit session.pk %}">
-				<table class="form">
-				{% csrf_token %}
-				{{form}}
-				<tr>
-					<td colspan="2" style="text-align:right;padding:10px 30px;">
-						<input type="submit" class="button green" value="Save session"/>
-					</td>
-				</tr>
-				</table>
-			</form>
-			</section>
-		</article>
+					<table class="form">
+					{% csrf_token %}
+					{{form}}
+					</table>
+				</section>
+			</article>
 
-		<article class="content-box col-2 clear-rm">
-			<header>
-				<h2>Tickets sold</h2>
-			</header>
-			<section>
-				<table>
-				<thead>
+			<article class="content-box col-2 clear-rm">
+				<header>
+					<h2>Tickets sold</h2>
+				</header>
+				<section>
+					<table>
+					<thead>
+						<tr>
+							<th>Amount</th>
+							<th>Type</th>
+							<th>Price</th>
+							<th>Total</th>
+						</tr>
+					</thead>
+					{% for p in positions_for_template %}
 					<tr>
-						<th>Amount</th>
-						<th>Type</th>
-						<th>Price</th>
-						<th>Total</th>
+						<td>{{p.amount}}x</td>
+						<td>{{p.ticket.name}}</td>
+						<td>{{p.ticket.sale_price|floatformat:2}}
+						{{p.ticket.currency}}</td>
+						<td>{{p.total}} {{p.ticket.currency}}</td>
 					</tr>
-				</thead>
-				{% for p in positions_for_template %}
-				<tr>
-					<td>{{p.amount}}x</td>
-					<td>{{p.ticket.name}}</td>
-					<td>{{p.ticket.sale_price|floatformat:2}}
-					{{p.ticket.currency}}</td>
-					<td>{{p.total}} {{p.ticket.currency}}</td>
-				</tr>
-				{% endfor %}
-				<thead>
-				<tr>
-					<th colspan="4" style="text-align:right;padding-right:20px;font-size:large;" id="cart-sum">{{total}} EUR</td>
-				</tr>
-				</thead>
-				</table>
-			</form>
-			</section>
-		</article>
-
-		{% if positions_reversed_for_template %}
-
-		<article class="content-box col-2 clear-rm">
-			<header>
-				<h2>Tickets reversed</h2>
-			</header>
-			<section>
-				<table>
-				<thead>
+					{% endfor %}
+					<thead>
 					<tr>
-						<th>Amount</th>
-						<th>Type</th>
-						<th>Price</th>
-						<th>Total</th>
+						<th colspan="4" style="text-align:right;padding-right:20px;font-size:large;" id="cart-sum">{{total}} EUR</td>
 					</tr>
-				</thead>
-				{% for p in positions_reversed_for_template %}
-				<tr>
-					<td>{{p.amount}}x</td>
-					<td>{{p.ticket.name}}</td>
-					<td>{{p.ticket.sale_price|floatformat:2}}
-					{{p.ticket.currency}}</td>
-					<td>{{p.total}} {{p.ticket.currency}}</td>
-				</tr>
-				{% endfor %}
-				</table>
-			</form>
-			</section>
-		</article>
+					</thead>
+					</table>
+				</section>
+			</article>
 
-		{% endif %}
+			{% if positions_reversed_for_template %}
 
-		<article class="content-box col-2 clear-rm">
-			<header>
-				<h2>€€€</h2>
-			</header>
-			<section>
-				<table style="font-size:large;">
+			<article class="content-box col-2 clear-rm">
+				<header>
+					<h2>Tickets reversed</h2>
+				</header>
+				<section>
+					<table>
+					<thead>
+						<tr>
+							<th>Amount</th>
+							<th>Type</th>
+							<th>Price</th>
+							<th>Total</th>
+						</tr>
+					</thead>
+					{% for p in positions_reversed_for_template %}
 					<tr>
-						<td style="text-align:right;">Change before session:</td>
-						<td style="text-align:right;padding-right:15px;">{{session.change}} EUR</td>
+						<td>{{p.amount}}x</td>
+						<td>{{p.ticket.name}}</td>
+						<td>{{p.ticket.sale_price|floatformat:2}}
+						{{p.ticket.currency}}</td>
+						<td>{{p.total}} {{p.ticket.currency}}</td>
 					</tr>
-					<tr style="border-bottom:2px solid rgb(150,150,150);">
-						<td style="text-align:right;">Received:</td>
-						<td style="text-align:right;padding-right:15px;">{{total}} EUR</td>
-					</tr>
-					<tr>
-						<td style="text-align:right;font-weight:bold;"></td>
-						<td style="text-align:right;padding-right:15px;font-weight:bold;">{{session.drawer_supposed_sum}} EUR</td>
-					</tr>
-				</table>
-			</form>
-			<div style="float:right;margin-top:10px;">
-				<a target="_blank" href="{% url backend-cashdesks-session-report session.pk %}"><button class="button green">Print report</button></a>
-			</div>
-			</section>
-		</article>
+					{% endfor %}
+					</table>
+				</section>
+			</article>
+
+			{% endif %}
+
+			<article class="content-box col-2 clear-rm">
+				<header>
+					<h2>Passes</h2>
+				</header>
+				<section>
+					<table>
+						<thead>
+							<tr>
+								<th>Pass type</th>
+								<th>Amount before</th>
+								<th>Amount after</th>
+							</tr>
+						</thead>
+						{% for pass in passes %}
+						<tr>
+							<td>{{pass.pass_type.name}}</td>
+							<td><input style="width:50px;" type="text" maxlength="6" name="passes_before[{{pass.pk}}]" value="{{pass.before_session}}" /></td>
+							<td><input style="width:50px;" type="text" maxlength="6" name="passes_after[{{pass.pk}}]" value="{% if pass.after_session %}{{pass.after_session}}{% endif %}"/></td>
+							</tr>
+						{% endfor %}
+					</table>
+				</section>
+			</article>
+
+			<article class="content-box col-2 clear-rm">
+				<header>
+					<h2>€€€ &nbsp;</h2>
+				</header>
+				<section>
+					<table style="font-size:large;">
+						<tr>
+							<td style="text-align:right;">Change before session:</td>
+							<td style="text-align:right;padding-right:15px;">{{session.change}} EUR</td>
+						</tr>
+						<tr style="border-bottom:2px solid rgb(150,150,150);">
+							<td style="text-align:right;">Received:</td>
+							<td style="text-align:right;padding-right:15px;">{{total}} EUR</td>
+						</tr>
+						<tr>
+							<td style="text-align:right;font-weight:bold;"></td>
+							<td style="text-align:right;padding-right:15px;font-weight:bold;">{{session.drawer_supposed_sum}} EUR</td>
+						</tr>
+					</table>
+				<div style="float:right;margin-top:10px;">
+					<a target="_blank" href="{% url backend-cashdesks-session-report session.pk %}"><button class="button green">Print report</button></a>
+				</div>
+				</section>
+			</article>
+
+			<article class="content-box col-2 clear-rm">
+				<header>
+					<h2>Edit session</h2>
+				</header>
+				<section>
+					<p style="float:left;">Please make sure everything is alright before editing the session.</p>
+					<input type="submit" class="button green" style="float:right;" value="Save session"/>
+				</section>
+			</article>
+		</form>
 {% endblock %}
