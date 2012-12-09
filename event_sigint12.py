@@ -25,7 +25,9 @@ EVENT_INVOICE_ADDRESS = "CCC Veranstaltungs GmbH\n" + \
                         "01234 Berlin"
 
 # Your name (yes, your name. You, the one setting up this software!)
-EVENT_C4SH_SUPPORT_CONTACT = "zakx, DECT 2666, +4915140418284, <zakx@koeln.ccc.de>"
+# It makes sense to include real-time contact information suitable
+# for your event (i.e. a DECT number if you have a POC).
+EVENT_C4SH_SUPPORT_CONTACT = "Your Name, DECT 1234, +49123456789, <your@mail>"
 
 # Do you have preorders (see c4sh.preorder.models)?
 EVENT_PREORDERS = True
