@@ -110,15 +110,6 @@ class CashdeskSession(models.Model):
 
 	change = models.DecimalField(max_digits=7, decimal_places=2, verbose_name="Change the cashier has gotten before session start")
 
-	day_passes_before = models.IntegerField(null=False, blank=False, verbose_name="Day passes before session")
-	day_passes_after = models.IntegerField(null=True, blank=True, verbose_name="Day passes after session")
-
-	full_passes_before = models.IntegerField(null=False, blank=False, verbose_name="Full passes before session")
-	full_passes_after = models.IntegerField(null=True, blank=True, verbose_name="Full passes after session")
-
-	parktickets_before = models.IntegerField(null=False, blank=False, verbose_name="Parktickets before session")
-	parktickets_after = models.IntegerField(null=True, blank=True, verbose_name="Parktickets after session")
-
 	is_logged_in = models.BooleanField(default=False, verbose_name="Is the cashier logged in at the cashdesk? (do not change manually)", editable=False)
 	was_logged_in = models.BooleanField(default=False, verbose_name="Did the cashier ever log into this session? (do not change manually)", editable=False)
 
@@ -179,6 +170,29 @@ class CashdeskSession(models.Model):
 
 	class Meta:
 		ordering = ['valid_from', 'cashdesk']
+
+class Pass(models.Model):
+	name = models.CharField(max_length=255, null=False, blank=False, verbose_name="Name of this pass type")
+	description = models.TextField(null=True, blank=True, verbose_name="Description of this pass type")
+	is_active = models.BooleanField(default=True, verbose_name="Is active? When active, this pass type will be shown on cashdesk session creation")
+
+	class Meta:
+		verbose_name_plural = "Passes"
+
+	def __unicode__(self):
+		return "%s%s" % (self.name, " (Inactive)" if not self.is_active else "")
+
+class CashdeskSessionPass(models.Model):
+	pass_type = models.ForeignKey("Pass", verbose_name="Pass type")
+	session = models.ForeignKey("CashdeskSession", verbose_name="Cashdesk session")
+	before_session = models.IntegerField(null=False, blank=False, verbose_name="Amount before session")
+	after_session = models.IntegerField(null=True, blank=True, verbose_name="Amount after session")
+
+	class Meta:
+		verbose_name_plural = "Cashdesk session passes"
+
+	def __unicode__(self):
+		return "%s -- %s" % (self.session, self.pass_type)
 
 """
 class PaymentType(models.Model):
