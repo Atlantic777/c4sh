@@ -54,7 +54,6 @@ def cashdesks_view(request):
 	cashdesks_closed = Cashdesk.objects.filter(Q(active=True) & Q(active_session=None))
 	cashdesks_inactive = Cashdesk.objects.filter(active=False)
 
-	#cashiers_active = User.objects.filter(is_staff=False)
 	cashiers_active = CashdeskSession.objects.filter(cashier__is_active=True, cashier__is_staff=False, valid_from__lte=datetime.now(), valid_until__gte=datetime.now(), is_logged_in=True)
 
 	cashiers_inactive = User.objects.exclude(pk__in=CashdeskSession.objects.filter(cashier__is_active=True, cashier__is_staff=False, valid_from__lte=datetime.now(), valid_until__gte=datetime.now(), is_logged_in=True).values("cashier__pk"))
@@ -262,7 +261,7 @@ def cashdesks_session_edit_view(request, session_id):
 
 					pass_data.append({'pass': p, 'before_session': before_session, 'after_session': after_session})
 				except:
-					messages.error(request, "An error occurred while saving the pass data. Please report this to a supervisor as this should never happen!")
+					messages.error(request, "An error occurred while saving the pass data. Please report this to %s as this should never happen!" % settings.EVENT_C4SH_SUPPORT_CONTACT)
 					return render_to_response("backend/cashdesks_session_edit.html", locals(), context_instance=RequestContext(request))
 
 			for p in pass_data:
