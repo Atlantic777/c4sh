@@ -48,20 +48,30 @@
 			<h2>{{ cashdesk.name }}</h2>
 		</header>
 		<section>
-			<div style="font-size:xx-large;">
+			<div style="font-size:x-large;float:left;width:40%;font-weight:bold;">
 				{% if cashdesk.active_session %}
-					{{ cashdesk.active_session.valid_until|timeuntil }}
+					{% if cashdesk.active_session.valid_until > now %}
+						{{ cashdesk.active_session.valid_until|timeuntil }}
+					{% else %}
+						Session has ended
+					{% endif %}
 				{% else %}
 					Closed
 				{% endif %}
 			</div>
 			{% if cashdesk.active_session %}
-				<div style="font-size:x-large;float:left;width:49%;">
-					{{cashdesk.active_session.drawer_supposed_sum}} EUR
-				</div>
-				<div style="font-size:large;float:right;width:49%;">
-
-				</div>
+			<div style="float:right;width:59%;text-align:right;">
+				{% if cashdesk.active_session.valid_until > now %}
+					<div style="font-size:x-large;">
+						{{cashdesk.active_session.drawer_supposed_sum}} EUR
+					</div>
+					<div style="font-size:large;">
+						{% for pass in cashdesk.active_session.get_passes %}
+							{{pass.pass_type.name}} - {{pass.before_session}}<br />
+						{% endfor %}
+					</div>
+				{% endif %}
+			</div>
 			{% endif %}
 		</section>
 	</article>
