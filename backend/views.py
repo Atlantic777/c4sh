@@ -192,14 +192,23 @@ def cashdesks_session_report_view(request, session_id):
 	pdf.text(20, i+10, "Money in cashdesk: %s EUR" % session.drawer_sum)
 	pdf.text(20, i+30, "OK? %s" % session.drawer_sum_ok)
 
-	pdf.set_font('Arial','',15)
-	pdf.text(20, i+60, "Day passes before session: %d" % session.day_passes_before)
-	pdf.text(20, i+75, "Day passes after session: %d" % session.day_passes_after)
-	pdf.text(20, i+91, "Total out: %d" % (session.day_passes_before - session.day_passes_after))
-	pdf.text(20, i+110, "Full passes before session: %d" % session.full_passes_before)
-	pdf.text(20, i+125, "Full passes after session: %d" % session.full_passes_after)
-	pdf.text(20, i+140, "Total out: %d" % (session.full_passes_before - session.full_passes_after))
+	### passes ###
 
+	passes = CashdeskSessionPass.objects.filter(session=session)
+
+	pdf.set_font('Arial','',15)
+	ii = 60
+	for p in passes:
+		pdf.text(20, i+ii, "%s before session: %d" % (p.pass_type.name, p.before_session))
+		try:
+			pdf.text(20, i+ii+18, "%s after session: %d" % (p.pass_type.name, p.after_session))
+		except:
+			pass
+		try:
+			pdf.text(20, i+ii+36, "Total out: %d" % (p.before_session - p.after_session))
+		except:
+			pass
+		ii += 22
 
 	if session.supervisor_after == None:
 		session.supervisor_after = session.supervisor_before
