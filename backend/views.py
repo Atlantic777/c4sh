@@ -54,7 +54,6 @@ def cashdesks_view(request):
 	cashdesks_closed = Cashdesk.objects.filter(Q(active=True) & Q(active_session=None))
 	cashdesks_inactive = Cashdesk.objects.filter(active=False)
 
-	#cashiers_active = User.objects.filter(is_staff=False)
 	cashiers_active = CashdeskSession.objects.filter(cashier__is_active=True, cashier__is_staff=False, valid_from__lte=datetime.now(), valid_until__gte=datetime.now(), is_logged_in=True)
 
 	cashiers_inactive = User.objects.exclude(pk__in=CashdeskSession.objects.filter(cashier__is_active=True, cashier__is_staff=False, valid_from__lte=datetime.now(), valid_until__gte=datetime.now(), is_logged_in=True).values("cashier__pk"))
@@ -192,14 +191,23 @@ def cashdesks_session_report_view(request, session_id):
 	pdf.text(20, i+10, "Money in cashdesk: %s EUR" % session.drawer_sum)
 	pdf.text(20, i+30, "OK? %s" % session.drawer_sum_ok)
 
-	pdf.set_font('Arial','',15)
-	pdf.text(20, i+60, "Day passes before session: %d" % session.day_passes_before)
-	pdf.text(20, i+75, "Day passes after session: %d" % session.day_passes_after)
-	pdf.text(20, i+91, "Total out: %d" % (session.day_passes_before - session.day_passes_after))
-	pdf.text(20, i+110, "Full passes before session: %d" % session.full_passes_before)
-	pdf.text(20, i+125, "Full passes after session: %d" % session.full_passes_after)
-	pdf.text(20, i+140, "Total out: %d" % (session.full_passes_before - session.full_passes_after))
+	### passes ###
 
+	passes = CashdeskSessionPass.objects.filter(session=session)
+
+	pdf.set_font('Arial','',15)
+	ii = 60
+	for p in passes:
+		pdf.text(20, i+ii, "%s before session: %d" % (p.pass_type.name, p.before_session))
+		try:
+			pdf.text(20, i+ii+18, "%s after session: %d" % (p.pass_type.name, p.after_session))
+		except:
+			pass
+		try:
+			pdf.text(20, i+ii+36, "Total out: %d" % (p.before_session - p.after_session))
+		except:
+			pass
+		ii += 22
 
 	if session.supervisor_after == None:
 		session.supervisor_after = session.supervisor_before
@@ -223,12 +231,44 @@ def cashdesks_session_report_view(request, session_id):
 def cashdesks_session_edit_view(request, session_id):
 	session = get_object_or_404(CashdeskSession, pk=session_id)
 
+	# passes
+	passes = CashdeskSessionPass.objects.filter(session=session)
+
 	if request.POST:
 		form = EditSessionForm(request.POST, instance=session)
 		if form.is_valid():
 			"""if session.cashdesk.active_session == session:
 				session.cashdesk.active_session = None
 				session.cashdesk.save()"""
+
+			# saving pass stuff here
+			pass_data = []
+			for p in passes:
+				try:
+					if request.POST.get('passes_before[%d]' % p.pk):
+						before_session = int(request.POST.get('passes_before[%d]' % p.pk))
+					else:
+						before_session = None
+
+					if request.POST.get('passes_after[%d]' % p.pk):
+						after_session = int(request.POST.get('passes_after[%d]' % p.pk))
+					else:
+						after_session = None
+
+					if before_session <= 0:
+						messages.error(request, "Error: The amount of passes before the session starts cannot be <= 0!")
+						return render_to_response("backend/cashdesks_session_edit.html", locals(), context_instance=RequestContext(request))
+
+					pass_data.append({'pass': p, 'before_session': before_session, 'after_session': after_session})
+				except:
+					messages.error(request, "An error occurred while saving the pass data. Please report this to %s as this should never happen!" % settings.EVENT_C4SH_SUPPORT_CONTACT)
+					return render_to_response("backend/cashdesks_session_edit.html", locals(), context_instance=RequestContext(request))
+
+			for p in pass_data:
+				p['pass'].before_session = p['before_session']
+				p['pass'].after_session = p['after_session']
+				p['pass'].save()
+
 			form.save()
 			messages.success(request, "The cashdesk session has been saved!")
 	else:
@@ -257,9 +297,20 @@ def cashdesks_session_edit_view(request, session_id):
 @supervisor_required
 def cashdesks_session_add_view(request):
 
+	passes = Pass.objects.filter(is_active=True)
+
 	if request.POST:
 		form = AddSessionForm(request.POST)
 		if form.is_valid():
+
+			# check what kind of passes have been given to the cashier
+			passes_given = []
+			for p in passes:
+				try:
+					if int(request.POST.get('passes_before[%d]' % p.pk)) > 0:
+						passes_given.append({'pass': p, 'amount': int(request.POST.get('passes_before[%d]' % p.pk))})
+				except:
+					pass
 
 			cashdesk = form.cleaned_data['cashdesk']
 			if cashdesk.active_session is not None:
@@ -280,7 +331,12 @@ def cashdesks_session_add_view(request):
 				messages.error(request, "The cashier has an active session!")
 				return render_to_response("backend/cashdesks_session_add.html", locals(), context_instance=RequestContext(request))
 
-			form.save()
+			cashdesk_session = form.save()
+
+			# save passes associacted with this cashdesk session
+			for p in passes_given:
+				CashdeskSessionPass(pass_type=p['pass'], session=cashdesk_session, before_session=p['amount']).save()
+
 			messages.success(request, "The session has been successfully created!")
 			return HttpResponseRedirect(reverse("backend-cashdesks"))
 	else:

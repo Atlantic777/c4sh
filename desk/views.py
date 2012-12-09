@@ -33,7 +33,7 @@ def dashboard_view(request):
 	# TODO: honor validity times of tickets in selection
 	tickets = Ticket.objects.filter(active=True, deleted=False)
 	tickets_json = serializers.serialize('json', tickets,
-				 	fields={'name', 'sale_price', 'currency', 'tax_rate', 'rabate_rate', 'limit_supervisor', 'valid_payment_types'},
+				 	fields=('name', 'sale_price', 'currency', 'tax_rate', 'rabate_rate', 'limit_supervisor', 'limit_honorary_member', 'valid_payment_types'),
 					ensure_ascii=False)
 	#payment_types_json = serializers.serialize('json', PaymentType.objects.all(), ensure_ascii=False)
 	return render_to_response("frontend/dashboard.html", locals(), context_instance=RequestContext(request))
