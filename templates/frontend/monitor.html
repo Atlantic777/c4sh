@@ -22,45 +22,46 @@
 	<link href='http://fonts.googleapis.com/css?family=Droid+Sans+Mono|Open+Sans:400,400italic,700,700italic&amp;v2' rel='stylesheet' type='text/css'>
 	<script src="{{STATIC_URL}}js/libs/modernizr-1.7.min.js"></script>
 	<script src="{{STATIC_URL}}js/libs/jquery-1.5.1.min.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var reloadPage = function() {
+				window.location = window.location;
+			};
+			setInterval(reloadPage, 60000);
+		});
+	</script>
+
 </head>
 <body>
 	<header class="muon">
 		<div class="navigation-wrapper">
-			<a href="/" class="muon-logo" title="c4sh">c4sh</a>
-			<nav>
-				<ul>
-					<li><a href="/" class="muon-no-submenu">Dashboard</a></li>
-					<li><a href="{% url backend-sales %}" class="muon-no-submenu">Sales</a></li>
-					<li><a href="{% url backend-cashdesks %}" class="muon-no-submenu">Cashdesks</a></li>
-					<li><a href="/admin" class="muon-no-submenu">Backend</a></li>
-					<li><nav/></li>
-				</ul>
-			</nav>
-			<ul class="muon-user-list">
-				<li class="muon-user-data">logged in as {{user}}</li>
-				<li><a class="muon-settings" title="Settings" href="#">Settings</a></li>
-				<li><a class="muon-logout" title="Logout" href="{% url logout %}">Logout</a></li>
-			</ul>
+			<a href="javascript:;" id="c4shlogo" class="muon-logo" title="c4sh">c4sh</a>
 		</div>
 	</header>
 	<section role="main" class="page-wrapper">
-	{% for message in messages %}
-	<div class="notification {{message.tags}}">
-		<a href="#" class="close-notification tooltip" title="Hide Notification">x</a>
-		<h4>
-			{% if message.tags == "error" %}
-				Error
-			{% endif %}
-			{% if message.tags == "success" %}
-				Success
-			{% endif %}
-		</h4>
-		<p>{{message|safe}}</p>
-	</div>
-	{% endfor %}
 	{% block content %}
+
+	{% for cashdesk in cashdesks %}
+	<article class="content-box col-2 clear-rm">
+		<header>
+			<h2>{{ cashdesk.name }}</h2>
+		</header>
+		<section>
+			<div style="font-size:xx-large;">
+				{% if cashdesk.active_session %}
+					{{ cashdesk.active_session.valid_until|timeuntil }}
+				{% else %}
+					Closed
+				{% endif %}
+			</div>
+		</section>
+	</article>
+	{% endfor %}
+
 	{% endblock %}
 	</section>
+
 	<div class="loading-notification">Loading&hellip;</div>
 	<!--[if IE]><script src="{{STATIC_URL}}js/jquery/excanvas.js"></script><![endif]--><!-- IE Canvas Fix for Visualize Charts -->
 	<script src="{{STATIC_URL}}js/libs/selectivizr.js"></script>
@@ -76,10 +77,8 @@
 	<script src="{{STATIC_URL}}js/jquery/jquery.ui.totop.js"></script>
 	<script src="{{STATIC_URL}}js/jquery/jquery.snippet.js"></script>
 	<script src="{{STATIC_URL}}js/jquery/jquery.muonmenu.js"></script>
-	<script src="{{STATIC_URL}}js/jquery/jquery.datepicker2.js"></script>
-	<script src="{{STATIC_URL}}js/jquery/jquery-ui-timepicker-addon.js"></script>
 	<script src="{{STATIC_URL}}js/script.js"></script>
-	<script src="{{STATIC_URL}}js/backend.js"></script>
+	<script src="{{STATIC_URL}}js/frontend.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){
 			$(".loading-notification").hide();
