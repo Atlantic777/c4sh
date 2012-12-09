@@ -5,6 +5,14 @@ from c4sh.desk import models as dmodels
 from c4sh.preorder import models as pmodels
 
 from c4sh.desk.tools import open_drawer, print_receipt
+from c4sh.desk.templatetags.cashdesk_session import cashdesk_session
+
+class SessionTimeLeftHandler(BaseHandler):
+	allowed_methods = ('GET',)
+
+	def read(self, request):
+		return cashdesk_session(request.session)
+
 
 class PreorderPositionHandler(BaseHandler):
 	allowed_methods = ('GET',)
@@ -13,7 +21,7 @@ class PreorderPositionHandler(BaseHandler):
 	def read(self, request, uuid):
 		try:
 			preorder_position = pmodels.PreorderPosition.objects.get(uuid=uuid)
-	
+
 			if preorder_position.redeemed == True:
 				return rc.FORBIDDEN
 

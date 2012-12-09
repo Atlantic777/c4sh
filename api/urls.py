@@ -8,6 +8,7 @@ PreorderPosition = Resource(handler=PreorderPositionHandler)
 PreorderPositionSearch = Resource(handler=PreorderPositionSearchHandler)
 OpenCashDrawer = Resource(handler=OpenCashDrawerHandler)
 ReprintReceipt = Resource(handler=ReprintReceiptHandler)
+SessionTimeLeft = Resource(handler=SessionTimeLeftHandler)
 
 urlpatterns = patterns('',
 	url(r'^preorder_position/(?P<uuid>([a-fA-F0-9\-])+)/$', PreorderPosition),
@@ -15,6 +16,8 @@ urlpatterns = patterns('',
 	url(r'^cashdrawer/open/(?P<cashdesk_id>\d+)/$', OpenCashDrawer),
 	url(r'^receipt/print/(?P<sale_id>\d+)/$', ReprintReceipt),
 	url(r'^receipt/print/(?P<sale_id>\d+)/(?P<cashdesk_id>\d+)/$', ReprintReceipt),
+
+	url(r'^session_time_left/$', SessionTimeLeft),
 
 	url(r'^$', documentation_view)
 )
