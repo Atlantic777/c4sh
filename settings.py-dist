@@ -81,7 +81,7 @@ INSTALLED_APPS = (
 	'c4sh.backend',
 	'c4sh.preorder',
 	'south',
-	'django-extensions',
+	'django_extensions',
 	'django.contrib.markup' # required for piston-documentation
 )
 
