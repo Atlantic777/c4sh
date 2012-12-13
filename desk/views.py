@@ -32,8 +32,8 @@ def dashboard_view(request):
 	"""
 	# TODO: honor validity times of tickets in selection
 	tickets = Ticket.objects.filter(active=True, deleted=False)
-	tickets_json = serializers.serialize('json', tickets, 
-				 	fields={'name', 'sale_price', 'currency', 'tax_rate', 'rabate_rate', 'limit_supervisor', 'valid_payment_types'},
+	tickets_json = serializers.serialize('json', tickets,
+				 	fields=('name', 'sale_price', 'currency', 'tax_rate', 'rabate_rate', 'limit_supervisor', 'limit_honorary_member', 'valid_payment_types'),
 					ensure_ascii=False)
 	#payment_types_json = serializers.serialize('json', PaymentType.objects.all(), ensure_ascii=False)
 	return render_to_response("frontend/dashboard.html", locals(), context_instance=RequestContext(request))
@@ -117,7 +117,7 @@ def sell_action(request):
 			transaction.leave_transaction_management()
 			messages.error(request, e)
 			return HttpResponseRedirect(reverse("dashboard"))
-	
+
 	# process preorders
 	for uuid in request.POST.getlist("uuid"):
 
@@ -126,13 +126,13 @@ def sell_action(request):
 
 		cart_total[ticket.tax_rate] = cart_total.get(ticket.tax_rate, 0) + ticket.sale_price # taxes included
 		newpos = SalePosition(sale=sale, ticket=ticket, uuid=uuid)
-		
+
 		try:
 			if ticket_position.redeemed == True:
 				raise Exception("The Preorder Code %s has already been redeemed." % uuid)
 
 			if ticket_position.preorder.paid != True:
-				raise Exception("The Preorder %s has not yet been marked as paid." % uuid)				
+				raise Exception("The Preorder %s has not yet been marked as paid." % uuid)
 
 		except Exception as e:
 			transaction.rollback()
@@ -175,7 +175,7 @@ def sell_action(request):
 @login_required
 def logout_view(request):
 	from django.contrib.auth import logout as auth_logout
-	
+
 	cashdesk = get_cashdesk(request)
 	if cashdesk:
 
