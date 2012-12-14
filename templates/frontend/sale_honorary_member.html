@@ -18,7 +18,7 @@
 						<tr>
 							<th>Ticket</th>
 							<th>Price</th>
-							<th>Honorary member identification</th>
+							<th>Honorary member identification<br/><small>(or supervisor token)</small></th>
 						</tr>
 					</thead>
 					{% for p in positions %}
@@ -45,6 +45,27 @@
 									<td style="padding:10px;border:0px;">
 											{% csrf_token %}
 											<input type="text" name="honoary_member_number_{{p.pk}}" id="honoary_member_number_{{p.pk}}" style="width:90%;outline:0;" />
+											<script type="text/javascript">
+												$("#honoary_member_number_{{p.pk}}").keypress(function(e){
+													// Obfuscate input if supervisor token
+													if (this.value.length > 16) {
+														this.type = "password";
+													} else {
+														this.type = "text";
+													}
+												});
+											</script>
+											{% if not forloop.last %}
+											<script type="text/javascript">
+												{# we need to prevent form submitting for all fields but the last one #}
+												{# so that cashiers can scan supervisor codes here #}
+												$("#honoary_member_number_{{p.pk}}").keypress(function(e){
+													if (e.which == 13) {
+														e.preventDefault(); return false;
+													}
+												});
+											</script>
+											{% endif %}
 										</form>
 									</td>
 								</tr>
@@ -57,7 +78,7 @@
 									searchTimeout_{{p.pk}} = null;
 
 									doSearch_{{p.pk}} = function() {
-										searchTimeout = null;
+										searchTimeout_{{p.pk}} = null;
 										var number = $('#honoary_member_number_{{p.pk}}').val();
 
 										$('#honoary_member_number_search_{{p.pk}}').html('');
@@ -89,7 +110,7 @@
 										}
 
 										if (searchTimeout_{{p.pk}} == null)
-											searchTimeout_{{p.pk}} = setTimeout(function(){doSearch_{{p.pk}}()}, 1000);
+											searchTimeout_{{p.pk}} = setTimeout(function(){doSearch_{{p.pk}}()}, 300);
 									});
 								});
 							</script>
