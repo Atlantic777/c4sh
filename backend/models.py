@@ -180,6 +180,9 @@ class HonoraryMember(models.Model):
 	def __unicode__(self):
 		return "#%s (%s)" % (self.membership_number, self.full_name)
 
+	class Meta:
+		ordering = ['membership_number']
+
 class Pass(models.Model):
 	name = models.CharField(max_length=255, null=False, blank=False, verbose_name="Name of this pass type")
 	description = models.TextField(null=True, blank=True, verbose_name="Description of this pass type")
