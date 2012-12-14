@@ -10,6 +10,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from c4sh.backend.models import *
 from c4sh.desk.models import *
+from c4sh.desk.view_helpers import reverse_sale
 from c4sh.backend.view_helpers import supervisor_required
 import c4sh.settings as settings
 from datetime import datetime
@@ -68,10 +69,7 @@ def cashdesks_view(request):
 @supervisor_required
 def sale_reverse_view(request, sale_id):
 	sale = get_object_or_404(Sale, pk=sale_id)
-	sale.reversed_by = request.user
-	sale.fulfilled = False
-	sale.reversed = True
-	sale.save()
+	reverse_sale(sale, request.user)
 
 	messages.success(request, "Sale has been successfully marked as reversed!")
 	return HttpResponseRedirect(reverse("backend-sale-detail", args=[sale_id,]))

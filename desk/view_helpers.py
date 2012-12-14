@@ -9,6 +9,19 @@ from c4sh.settings import EVENT_SUPERVISOR_IPS
 from c4sh.backend.view_helpers import get_cashdesk
 from django.db import transaction
 
+def reverse_sale(sale, supervisor):
+	sale.reversed_by = supervisor
+	sale.fulfilled = False
+	sale.reversed = True
+	sale.save()
+
+	# reset honorary members so they can buy a ticket again
+	for pos in sale.saleposition_set.all():
+		pos.honorary_member = None
+		pos.save()
+
+	return True
+
 ### Decorators
 def no_supervisor(func):
 	"""
@@ -25,7 +38,7 @@ def no_supervisor(func):
 				else:
 					logout(request)
 					# logout user
-					return HttpResponseRedirect(reverse('login'), ["nohomo=1"])
+					return HttpResponseRedirect(reverse('login'), ["fail=1"])
 		except:
 			raise Exception("Fix your configuration (EVENT_SUPERVISOR_IPS, Cashdesk objects)")
 		return func(request, *args, **kwargs)
@@ -55,7 +68,7 @@ def session_required(func):
 					return HttpResponseRedirect(reverse('backend-dashboard'))
 				else:
 					logout(request)
-					return HttpResponseRedirect(reverse('login'), ["nohomo=1"])
+					return HttpResponseRedirect(reverse('login'), ["fail=1"])
 		except:
 			raise
 			messages.error(request, "You cannot login here. Check your EVENT_SUPERVISOR_IPS and Cashdesk objects.")
