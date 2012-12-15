@@ -47,7 +47,8 @@ def print_receipt(sale, printer, do_open_drawer=True):
 	if total_sum == 0:
 		return
 
-	receipt = settings.EVENT_RECEIPT_ADDRESS
+	receipt = str(bytearray([0x1B,0x61,1]))
+	receipt += settings.EVENT_RECEIPT_ADDRESS
 	receipt += settings.EVENT_RECEIPT_SEPERATOR
 	receipt += settings.EVENT_RECEIPT_POS_LIST_HEADER
 
@@ -84,11 +85,11 @@ def print_receipt(sale, printer, do_open_drawer=True):
 		send_data_to_printer(image_tools.get_imagedata(settings.STATIC_ROOT + '/' + settings.EVENT_RECEIPT_HEADER), printer)
 		send_data_to_printer(receipt, printer)
 		send_data_to_printer(image_tools.get_imagedata(settings.STATIC_ROOT + '/sigint13-printad.png'), printer)
-		send_data_to_printer(bytearray([0x1D, 0x56, 66, 128]), printer) #cut
+		send_data_to_printer(bytearray([0x1D, 0x56, 66, 100]), printer) #cut
 	except Exception, e:
-		return False
+		pass
 	
-	return True
+	return
 
 def send_data_to_printer(data, printer):
 	#('ssh c4sh@172.23.23.3 \'echo -ne "%s" |/usr/bin/lpr -l -P %s\'' % cmd, printer) #debug
@@ -100,3 +101,4 @@ def open_drawer(printer):
 	cmd = bytearray([0x1B,'p',48,255,255])
 	send_data_to_printer(cmd, printer)
 	return
+
