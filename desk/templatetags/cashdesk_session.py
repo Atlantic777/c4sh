@@ -17,5 +17,4 @@ def cashdesk_session(session):
 			timeleft = timeuntil(cashdesk_session.valid_until)
 		return timeleft
 	except:
-		raise
 		return "-"
