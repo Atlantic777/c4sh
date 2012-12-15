@@ -79,7 +79,7 @@
 					<li style="font-style: italic;">None</li>
 				{% endfor %}
 				</ul>
-	
+
 				<h3 class="bb">Active</h3>
 				<ul>
 				{% for as in sessions_active %}
@@ -88,9 +88,36 @@
 					<li style="font-style: italic;">None</li>
 				{% endfor %}
 				</ul>
-				<h3 class="bb">Old</h3>
+
+				<h3 class="bb">Paused</h3>
 				<ul>
-				{% for os in sessions_old %}
+				{% for ps in sessions_paused %}
+					<li><a href="{% url backend-cashdesks-session-edit ps.pk %}">{{ps}}</a></li>
+				{% empty %}
+					<li style="font-style: italic;">None</li>
+				{% endfor %}
+				</ul>
+
+				<h3 class="bb">Recently ended</h3>
+				<ul>
+				{% for rs in sessions_old %}
+					<li><a href="{% url backend-cashdesks-session-edit rs.pk %}">{{rs}}</a></li>
+				{% empty %}
+					<li style="font-style: italic;">None</li>
+				{% endfor %}
+				</ul>
+
+			</section>
+		</article>
+
+		<article class="content-box col-2 clear-rm">
+			<header>
+				<h2>Archive</h2>
+			</header>
+			<section>
+
+				<ul>
+				{% for os in sessions_archive %}
 					<li><a href="{% url backend-cashdesks-session-edit os.pk %}">{{os}}</a></li>
 				{% empty %}
 					<li style="font-style: italic;">None</li>

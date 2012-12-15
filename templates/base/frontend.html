@@ -57,12 +57,12 @@
 			<a href="javascript:;" id="c4shlogo" class="muon-logo" title="c4sh">c4sh</a>
 
 			<ul>
-				<li>Session time left: <span id="session_time_left">{{request.session|cashdesk_session}}</span></li>
+				<li>Session time left: <span id="session_time_left">{{request.session|cashdesk_session|safe}}</span></li>
 			</ul>
 
 			<ul class="muon-user-list">
 				<li class="muon-user-data">logged in as {{user}}</li>
-				<li><a class="muon-logout" title="Logout" href="{% url logout %}">Logout</a></li>
+				<li><a class="muon-logout" title="Logout" href="{% url ask-logout %}">Logout</a></li>
 			</ul>
 		</div>
 	</header>

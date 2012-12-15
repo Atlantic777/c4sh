@@ -221,22 +221,39 @@ def sell_action(request):
 	return HttpResponseRedirect(reverse("desk-sale", args=[sale.pk,]))
 
 @login_required
+def ask_logout_view(request):
+	return render_to_response("frontend/ask_logout.html", locals(), context_instance=RequestContext(request))
+
+@login_required
 def logout_view(request):
 	from django.contrib.auth import logout as auth_logout
 
 	cashdesk = get_cashdesk(request)
 	if cashdesk:
 
-		# open cash drawer
-		open_drawer(cashdesk.receipt_printer_name)
-
-		sessions = CashdeskSession.objects.filter(cashdesk=cashdesk, cashier=request.user, valid_from__lte=datetime.datetime.now(), valid_until__gte=datetime.datetime.now())
+		sessions = CashdeskSession.objects.filter(cashdesk=cashdesk, cashier=request.user, valid_from__lte=datetime.datetime.now(), cashier_has_ended=False)
 		try:
+			print sessions
 			session = sessions[0]
-			session.is_logged_in = False
-			session.save()
-			cashdesk.active_session = None
-			cashdesk.save()
+
+			print request.GET.get('type')
+
+			if request.GET.get('type') == 'session_end':
+				# we have an active session -- end it and open the cash drawer
+				open_drawer(cashdesk.receipt_printer_name)
+
+				session.is_logged_in = False
+
+				# set the session end time to NOW
+				session.valid_until = datetime.datetime.now()
+				session.cashier_has_ended = True
+
+				session.save()
+				cashdesk.active_session = None
+				cashdesk.save()
+			else:
+				session.is_logged_in = False
+				session.save()
 		except:
 			pass
 

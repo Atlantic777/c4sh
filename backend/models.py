@@ -113,6 +113,7 @@ class CashdeskSession(models.Model):
 
 	is_logged_in = models.BooleanField(default=False, verbose_name="Is the cashier logged in at the cashdesk? (do not change manually)", editable=False)
 	was_logged_in = models.BooleanField(default=False, verbose_name="Did the cashier ever log into this session? (do not change manually)", editable=False)
+	cashier_has_ended = models.BooleanField(default=False, verbose_name="Did the cashier ended his session with logout? (do not change manually)", editable=True)
 
 	drawer_sum = models.DecimalField(null=True, blank=True, max_digits=7, decimal_places=2, verbose_name="Amount of money in cash drawer after session")
 	drawer_sum_ok = models.NullBooleanField(default=None, blank=True, null=True, verbose_name="Amount of money in cash drawer after session was okay")
@@ -170,7 +171,7 @@ class CashdeskSession(models.Model):
 		return CashdeskSessionPass.objects.filter(session=self)
 
 	def __unicode__(self):
-		return "#%d for %s at %s (%s - %s)" % (self.pk, self.cashier.username, self.cashdesk.name, self.valid_from, self.valid_until)
+		return "#%d - %s at %s (%s - %s)" % (self.pk, self.cashier.username, self.cashdesk.name, self.valid_from.strftime("%d.%m. %H:%M"), self.valid_until.strftime("%d.%m. %H:%M"))
 
 	class Meta:
 		ordering = ['valid_from', 'cashdesk']
