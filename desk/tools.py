@@ -47,12 +47,6 @@ def print_receipt(sale, printer, do_open_drawer=True):
 	if total_sum == 0:
 		return
 
-	# print header block
-	try:
-		send_data_to_printer(image_tools.get_imagedata(settings.STATIC_ROOT + '/' + settings.EVENT_RECEIPT_HEADER), printer)
-	except Exception, e:
-		pass
-
 	receipt = settings.EVENT_RECEIPT_ADDRESS
 	receipt += settings.EVENT_RECEIPT_SEPERATOR
 	receipt += settings.EVENT_RECEIPT_POS_LIST_HEADER
@@ -83,15 +77,17 @@ def print_receipt(sale, printer, do_open_drawer=True):
 	receipt += settings.EVENT_RECEIPT_TIMESTAMP_FORMAT % {'timestamp':sale.time.strftime("%d.%m.%Y %H:%M"), 'cashdesk_identifier':sale.cashdesk.invoice_name}
 	receipt += settings.EVENT_RECEIPT_SERIAL_FORMAT % (sale.pk)
 
-	# newlines and cut
-	receipt += ("\r\n"*8) + "\x1D\x561"
+	# newlines
+	receipt += ("\r\n"*2)
 
 	try:
+		send_data_to_printer(image_tools.get_imagedata(settings.STATIC_ROOT + '/' + settings.EVENT_RECEIPT_HEADER), printer)
 		send_data_to_printer(receipt, printer)
+		send_data_to_printer(bytearray([0x1D, 0x56, 66, 128]), printer) #cut
 	except Exception, e:
-		pass
+		return False
 	
-	return
+	return True
 
 def send_data_to_printer(data, printer):
 	#('ssh c4sh@172.23.23.3 \'echo -ne "%s" |/usr/bin/lpr -l -P %s\'' % cmd, printer) #debug
