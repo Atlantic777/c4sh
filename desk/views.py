@@ -235,8 +235,6 @@ def logout_view(request):
 		try:
 			session = sessions[0]
 
-			print request.GET.get('type')
-
 			if request.GET.get('type') == 'session_end':
 				# we have an active session -- end it and open the cash drawer
 				open_drawer(cashdesk.receipt_printer_name)
