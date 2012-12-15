@@ -65,7 +65,7 @@ def cashdesks_view(request):
 
 	sessions_paused = CashdeskSession.objects.filter(valid_from__lte=datetime.now(), was_logged_in=True, is_logged_in=False, cashier_has_ended=False).order_by('-valid_from')
 
-	sessions_old = CashdeskSession.objects.filter(Q(was_logged_in=True) & Q(is_logged_in=False) & Q(supervisor_after=None)).order_by('-valid_until')
+	sessions_old = CashdeskSession.objects.filter(Q(was_logged_in=True) & Q(is_logged_in=False) & Q(supervisor_after=None) & Q(cashier_has_ended=True)).order_by('-valid_until')
 
 	sessions_archive = CashdeskSession.objects.filter(~Q(supervisor_after=None)).order_by('-valid_until')
 
