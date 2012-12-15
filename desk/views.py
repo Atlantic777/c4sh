@@ -233,7 +233,6 @@ def logout_view(request):
 
 		sessions = CashdeskSession.objects.filter(cashdesk=cashdesk, cashier=request.user, valid_from__lte=datetime.datetime.now(), cashier_has_ended=False)
 		try:
-			print sessions
 			session = sessions[0]
 
 			print request.GET.get('type')
