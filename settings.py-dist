@@ -29,6 +29,11 @@ elif socket.gethostname() == "$livebox":
 	# stuff from above, plus:
 	SESSION_COOKIE_SECURE = True
 	SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+	# ensure we are using InnoDB to enable transactions
+	DATABASE_OPTIONS = {
+		"init_command": "SET storage_engine=INNODB",
+	}
 else:
 	import sys
 	print "Please configure c4sh in settings.py. Your hostname is %s." % socket.gethostname()
