@@ -83,6 +83,7 @@ def print_receipt(sale, printer, do_open_drawer=True):
 	try:
 		send_data_to_printer(image_tools.get_imagedata(settings.STATIC_ROOT + '/' + settings.EVENT_RECEIPT_HEADER), printer)
 		send_data_to_printer(receipt, printer)
+		send_data_to_printer(image_tools.get_imagedata(settings.STATIC_ROOT + '/sigint13-printad.png'), printer)
 		send_data_to_printer(bytearray([0x1D, 0x56, 66, 128]), printer) #cut
 	except Exception, e:
 		return False
