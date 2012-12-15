@@ -67,7 +67,6 @@ def session_required(func):
 			if cashdesk.active_session != None:
 				if cashdesk.active_session.cashier != request.user:
 					messages.error(request, "There is an active session left at cashdesk %s" % cashdesk.name)
-					#logout(request)
 					return HttpResponseRedirect(reverse('fail'))
 
 			if request.user.is_superuser:
