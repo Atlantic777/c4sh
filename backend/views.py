@@ -60,8 +60,14 @@ def cashdesks_view(request):
 	cashiers_inactive = User.objects.exclude(pk__in=CashdeskSession.objects.filter(cashier__is_active=True, cashier__is_staff=False, valid_from__lte=datetime.now(), valid_until__gte=datetime.now(), is_logged_in=True).values("cashier__pk"))
 
 	sessions_upcoming = CashdeskSession.objects.filter(Q(valid_from__gte=datetime.now()) | Q(valid_until__gte=datetime.now()) & Q(was_logged_in=False)).order_by('-valid_from')
-	sessions_active = CashdeskSession.objects.filter(valid_from__lte=datetime.now(), valid_until__gte=datetime.now(), was_logged_in=True, is_logged_in=True).order_by('-valid_from')
-	sessions_old = CashdeskSession.objects.filter(Q(valid_until__lte=datetime.now()) | Q(was_logged_in=True) & Q(is_logged_in=False)).order_by('-valid_until')
+
+	sessions_active = CashdeskSession.objects.filter(valid_from__lte=datetime.now(), cashier_has_ended=False, was_logged_in=True, is_logged_in=True).order_by('-valid_from')
+
+	sessions_paused = CashdeskSession.objects.filter(valid_from__lte=datetime.now(), was_logged_in=True, is_logged_in=False, cashier_has_ended=False).order_by('-valid_from')
+
+	sessions_old = CashdeskSession.objects.filter(Q(was_logged_in=True) & Q(is_logged_in=False) & Q(supervisor_after=None) & Q(cashier_has_ended=True)).order_by('-valid_until')
+
+	sessions_archive = CashdeskSession.objects.filter(~Q(supervisor_after=None)).order_by('-valid_until')
 
 	return render_to_response("backend/cashdesks.html", locals(), context_instance=RequestContext(request))
 
@@ -311,7 +317,8 @@ def cashdesks_session_add_view(request):
 					pass
 
 			cashdesk = form.cleaned_data['cashdesk']
-			if cashdesk.active_session is not None:
+			# we ignore this stuff as the session ends now after cashier logout
+			"""if cashdesk.active_session is not None:
 				if cashdesk.active_session.valid_until > datetime.now():
 					messages.error(request, "The cashdesk has an active session: %s" % cashdesk.active_session)
 					return render_to_response("backend/cashdesks_session_add.html", locals(), context_instance=RequestContext(request))
@@ -322,7 +329,7 @@ def cashdesks_session_add_view(request):
 
 					# open cash drawer
 					open_drawer(cashdesk.receipt_printer_name)
-					print_session_end_bon(cashdesk.receipt_printer_name)
+					print_session_end_bon(cashdesk.receipt_printer_name)"""
 
 			cashier = pk=form.cleaned_data['cashier']
 			if len(CashdeskSession.objects.filter(cashier=cashier, valid_from__lte=datetime.now(), valid_until__gte=datetime.now(), is_logged_in=True)) > 0:
@@ -338,7 +345,7 @@ def cashdesks_session_add_view(request):
 			messages.success(request, "The session has been successfully created!")
 			return HttpResponseRedirect(reverse("backend-cashdesks"))
 	else:
-		form = AddSessionForm()
+		form = AddSessionForm(initial={"valid_from": datetime.now()})
 	return render_to_response("backend/cashdesks_session_add.html", locals(), context_instance=RequestContext(request))
 
 @login_required
