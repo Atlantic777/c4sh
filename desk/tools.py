@@ -13,8 +13,7 @@ def print_session_end_bon(printer):
 	text += ("\r\n"*8) + "\x1D\x561"
 
 	try:
-		#lpr = subprocess.Popen(['/usr/bin/lpr', '-l', '-P', printer], stdin = subprocess.PIPE)
-		system("ssh c4sh@172.23.23.3 \'echo %s |/usr/bin/lpr -l -P KASSE01\'" % text)
+		send_data_to_printer(text, printer)
 	except:
 		pass
 	
@@ -50,7 +49,6 @@ def print_receipt(sale, printer, do_open_drawer=True):
 
 	# print header block
 	try:
-
 		send_data_to_printer(image_tools.get_imagedata(settings.STATIC_ROOT + '/' + settings.EVENT_RECEIPT_HEADER), printer)
 	except Exception, e:
 		pass
