@@ -1,6 +1,8 @@
 from os import system
+from os import path
 import sys, subprocess
 import c4sh.settings as settings
+import image_tools
 
 def gap(f):
 	formatted_value = "%.2f" % float(f)
@@ -11,10 +13,8 @@ def print_session_end_bon(printer):
 	text += ("\r\n"*8) + "\x1D\x561"
 
 	try:
-		lpr = subprocess.Popen(['/usr/bin/lpr', '-l', '-P', printer], stdin = subprocess.PIPE)
-
-		lpr.stdin.write(text)
-		lpr.stdin.close()
+		#lpr = subprocess.Popen(['/usr/bin/lpr', '-l', '-P', printer], stdin = subprocess.PIPE)
+		system("ssh c4sh@172.23.23.3 \'echo %s |/usr/bin/lpr -l -P KASSE01\'" % text)
 	except:
 		pass
 	
@@ -49,8 +49,13 @@ def print_receipt(sale, printer, do_open_drawer=True):
 		return
 
 	# print header block
-	receipt =  settings.EVENT_RECEIPT_HEADER
-	receipt += settings.EVENT_RECEIPT_ADDRESS
+	try:
+
+		send_data_to_printer(image_tools.get_imagedata(settings.STATIC_ROOT + '/' + settings.EVENT_RECEIPT_HEADER), printer)
+	except Exception, e:
+		pass
+
+	receipt = settings.EVENT_RECEIPT_ADDRESS
 	receipt += settings.EVENT_RECEIPT_SEPERATOR
 	receipt += settings.EVENT_RECEIPT_POS_LIST_HEADER
 
@@ -84,15 +89,19 @@ def print_receipt(sale, printer, do_open_drawer=True):
 	receipt += ("\r\n"*8) + "\x1D\x561"
 
 	try:
-		lpr = subprocess.Popen(['/usr/bin/lpr', '-l', '-P', printer], stdin = subprocess.PIPE)
-
-		lpr.stdin.write(receipt)
-		lpr.stdin.close()
-	except:
+		send_data_to_printer(receipt, printer)
+	except Exception, e:
 		pass
 	
 	return
 
+def send_data_to_printer(data, printer):
+	#('ssh c4sh@172.23.23.3 \'echo -ne "%s" |/usr/bin/lpr -l -P %s\'' % cmd, printer) #debug
+	lpr = subprocess.Popen(['/usr/bin/lpr', '-l', '-P', printer], stdin = subprocess.PIPE)
+	lpr.stdin.write(data)
+	lpr.stdin.close()
+
 def open_drawer(printer):
-	print "Opening drawer at printer %s" % printer
-	return system("echo -e '\033p07y' | lpr -l -P %s" % printer)
+	cmd = bytearray([0x1B,'p',48,255,255])
+	send_data_to_printer(cmd, printer)
+	return
