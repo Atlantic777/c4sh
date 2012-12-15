@@ -17,6 +17,7 @@ class SalePosition(models.Model):
 	tax_rate = models.SmallIntegerField(blank=True, null=True, verbose_name="Manual override for included tax rate in percent")
 	rabate_rate = models.SmallIntegerField(blank=True, null=True, verbose_name="Manual override for included instant rabate in percent")
 	supervisor = models.ForeignKey(User, related_name="authorized_positions", blank=True, null=True, verbose_name="Supervisor authorizing this position")
+	honorary_member = models.ForeignKey(backend.HonoraryMember, blank=True, null=True, verbose_name="Member which was eligible to obtain a ticket to a reduced price if any")
 
 class Sale(models.Model):
 	"""
@@ -25,7 +26,7 @@ class Sale(models.Model):
 	cashier = models.ForeignKey(User)
 	cashdesk = models.ForeignKey(backend.Cashdesk)
 	session = models.ForeignKey(backend.CashdeskSession)
-	
+
 	cached_sum = models.DecimalField(max_digits=7, decimal_places=2, verbose_name="Sale amount (cached)")
 
 	time = models.DateTimeField()
@@ -42,6 +43,6 @@ class Sale(models.Model):
 
 	def __unicode__(self):
 		return "#%d: sum=%.2f, %d items (desk %s/%s/%s)" % (self.pk, self.cached_sum, len(SalePosition.objects.filter(sale=self)), self.cashdesk, self.cashier.username, self.time)
-	
+
 
 

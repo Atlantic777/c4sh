@@ -11,6 +11,9 @@
 		if(t.fields.limit_supervisor){
 			limit = "<button class='icon red tooltip' title='Needs supervisor'><img src='{{STATIC_URL}}img/icons/buttons/alert.png'></button> ";
 		}
+		if(t.fields.limit_honorary_member){
+			limit = "<button class='icon red tooltip' title='Needs Chaosnummer'><img src='{{STATIC_URL}}img/icons/buttons/alert.png'></button> ";
+		}
 
 		if (typeof(uuid) == "undefined" || !uuid) {
 			var uuid = "";
@@ -75,7 +78,7 @@
 					html = html + '<tr><td style="font-size:medium;height:10px;cursor:pointer;"><span onclick="add('+result.ticket__backend_id+',\''+result.uuid+'\');$(\'#preorder_search\').html(\'\');$(\'#preorder_uuid\').val(\'\');">'+result.uuid+'</span></td></tr>';
 				});
 				$('#preorder_search').html(html);
-				
+
 			}
 		});
 	}
@@ -123,12 +126,12 @@
 					200: function(pk) {
 						console.log('Got 200: OK');
 						add(pk, uuid);
-					}, 
+					},
 					401: function() {
 						console.log('Got 401: Forbidden');
 						errorNotification('This Preorder Code has already been redeemed!');
 					}
-				}, 
+				},
 				complete: function() {
 					$('#preorder_uuid').focus();
 					$('#preorder_uuid').select();
@@ -149,7 +152,7 @@
 					{% for t in tickets %}
 					{% if not  t.preorder_sold %}
 						<tr>
-							
+
 							<td style="padding-left:20px;width:50px;">
 								{% if t.description %}<button class="icon green" onClick="$('#detail-{{t.pk}}').fadeToggle(); return false;"><img src="{{STATIC_URL}}img/icons/buttons/info_about.png"></button>
 								{% endif %}

@@ -9,7 +9,7 @@
 				url: '/api/receipt/print/{{sale.pk}}/'+cashdesk+'/',
 				success: function(response) {
 					successNotification('Command sent to Printer!');
-				}, 
+				},
 				error: function() {
 					errorNotification('Error while sending this command to the printer!')
 				}
@@ -58,7 +58,7 @@
 							<label>Value</label>
 						</dt>
 						<dd class="text">
-							<p>{{sale.cached_sum}} &euro;</p>
+							<p>{{sale.cached_sum|floatformat:2}} &euro;</p>
 						</dd>
 					</dl>
 				</fieldset>
@@ -105,7 +105,7 @@
 							<label>Reverse transaction</label>
 						</dt>
 						<dd class="text">
-							<a href="{% url backend-sale-reverse sale.pk %}" style="text-decoration:none;"><button class="red">Reverse</button></a>
+							<a href="{% url backend-sale-reverse sale.pk %}" class="button red">Reverse</a>
 						</dd>
 					</dl>
 				</fieldset>
@@ -135,6 +135,12 @@
 									{% if pos.ticket.limit_supervisor %}
 									<br /><small>Authorized by: {{pos.supervisor}}</small>
 									{% endif %}
+									{% if pos.ticket.limit_honorary_member %}
+									<br /><small>Honorary member: {{pos.honorary_member}}</small>
+									{% endif %}
+									{% if pos.supervisor %}
+									<br /><small><em>Authorized by {{pos.supervisor.username}}</em></small>
+									{% endif %}
 									{% if pos.uuid %}
 									<br /><small>{{pos.uuid}}</small>
 									{% endif %}</td>
@@ -143,7 +149,7 @@
 									{{pos.sale_price|floatformat:2}}
 								{% else %}
 									{{pos.ticket.sale_price|floatformat:2}}
-								{% endif %} 
+								{% endif %}
 									&euro;
 								</td>
 								<td>
@@ -151,7 +157,7 @@
 									{{pos.invoice_price|floatformat:2}}
 								{% else %}
 									{{pos.ticket.invoice_price|floatformat:2}}
-								{% endif %} 
+								{% endif %}
 									&euro;
 								</td>
 								<td>
@@ -159,14 +165,14 @@
 									{{pos.tax_rate}}%
 								{% else %}
 									{{pos.ticket.tax_rate}}%
-								{% endif %} 
+								{% endif %}
 								</td>
 								<td>
 								{% if pos.rabate_rate %}
 									{{pos.rabate_rate}}%
 								{% else %}
 									{{pos.ticket.rabate_rate}}%
-								{% endif %} 
+								{% endif %}
 								</td>
 							</tr>
 						{% endfor %}

@@ -12,7 +12,7 @@ from c4sh.backend.models import *
 from c4sh.desk.models import *
 from c4sh.preorder.models import *
 import c4sh.settings as settings
-from c4sh.desk.view_helpers import no_supervisor, session_required
+from c4sh.desk.view_helpers import no_supervisor, session_required, reverse_sale
 from c4sh.backend.view_helpers import get_cashdesk
 from django.db import transaction
 from django.db.models import Q
@@ -75,6 +75,7 @@ def sell_action(request):
 			if ticketcache[ticketid].limit_timespan:
 				if not ticketcache[ticketid].valid_from < datetime.datetime.now() < ticketcache[ticketid].valid_until:
 					raise Exception("You can't sell %s before %s or after %s." % (ticketcache[ticketid].name, ticketcache[ticketid].valid_from, ticketcache[ticketid].valid_until))
+
 			# Check for supervisor:
 			if ticketcache[ticketid].limit_supervisor:
 				shall_pass = False
@@ -104,6 +105,7 @@ def sell_action(request):
 					return render_to_response("frontend/sale_supervisor.html", locals(), context_instance=RequestContext(request))
 
 			# Decided against checking for venue limit here.
+			# If they got here, let them in.
 		except Exception as e:
 			transaction.rollback()
 			transaction.leave_transaction_management()
@@ -151,6 +153,52 @@ def sell_action(request):
 			return HttpResponseRedirect(reverse("dashboard"))
 
 	# we now have all sale positions and a local cart_total
+	# therefore, we need to check for tickets which require honorary member identification
+	# we need a sale position PK for this, that's why we're doing this last
+	all_positions = SalePosition.objects.filter(sale=sale)
+	list_positions = request.POST.getlist("position")
+	list_preorders = request.POST.getlist("uuid")
+
+	for pos in all_positions:
+		if pos.ticket.limit_honorary_member:
+			shall_pass = False
+
+			# check if we have honorary_member_numbers in POST
+			if request.POST.get("honoary_member_number_%d" % pos.pk):
+				honorary_member_number = request.POST.get("honoary_member_number_%d" % pos.pk)
+				try:
+					honorary_member = HonoraryMember.objects.get(Q(membership_number=honorary_member_number) & Q(saleposition=None))
+
+					pos.honorary_member = honorary_member
+					pos.save()
+					shall_pass = True
+				except HonoraryMember.DoesNotExist:
+					honorary_supervisor_override = False
+					if len(honorary_member_number) > 10:
+						# check for superuser
+						try:
+							supervisor = User.objects.get(userprofile__supervisor_auth_code=honorary_member_number, is_staff=True, userprofile__supervisor_auth_code__isnull=False)
+							pos.supervisor = supervisor
+							pos.save()
+							shall_pass = True
+							honorary_supervisor_override = True
+						except User.DoesNotExist:
+							pass
+					if not honorary_supervisor_override:
+						messages.error(request, "Invalid honoary member identification or not found or has already been used: #%s" % honorary_member_number)
+						shall_pass = False
+
+			if not shall_pass:
+				transaction.rollback()
+
+				# did we need a supervisor auth code?
+				supervisor_auth_code = request.POST.get("supervisor_auth_code")
+
+				# get all items from the basket to redisplay it
+				positions = all_positions
+				return render_to_response("frontend/sale_honorary_member.html", locals(), context_instance=RequestContext(request))
+
+	# save everything!1
 	try:
 		for taxrate in cart_total:
 			sale.cached_sum += cart_total[taxrate]
@@ -207,10 +255,8 @@ def reverse_sale_view(request, sale_id):
 	if request.POST.get("supervisor_auth_code"):
 		try:
 			supervisor = User.objects.get(userprofile__supervisor_auth_code=request.POST.get("supervisor_auth_code"), is_staff=True, userprofile__supervisor_auth_code__isnull=False)
-			sale.reversed_by = supervisor
-			sale.fulfilled = False
-			sale.reversed = True
-			sale.save()
+
+			reverse_sale(sale, supervisor)
 
 			messages.success(request, "Sale has been successfully marked as reversed!")
 			return HttpResponseRedirect(reverse("dashboard"))
