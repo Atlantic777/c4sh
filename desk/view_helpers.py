@@ -54,14 +54,21 @@ def session_required(func):
 			if not cashdesk:
 				return HttpResponseRedirect(reverse('fail'))
 			request.session["cashdesk"] = cashdesk.pk
-			
-			sessions = CashdeskSession.objects.filter(cashdesk=cashdesk, cashier=request.user, valid_from__lte=datetime.datetime.now(), valid_until__gte=datetime.datetime.now())
+
+			sessions = CashdeskSession.objects.filter(cashdesk=cashdesk, cashier=request.user, valid_from__lte=datetime.datetime.now(), cashier_has_ended=False)
 			if len(sessions) <> 1:
 				if len(sessions) < 1:
 					messages.error(request, "There is no Cashdesk session scheduled for you at cashdesk %s" % cashdesk.name)
 				else:
 					messages.error(request, "There are too many Cashdesk session scheduled for you at cashdesk %s" % cashdesk.name)
 				return HttpResponseRedirect(reverse('fail'))
+
+			# check if there is an active session left at this cashdesk
+			if cashdesk.active_session != None:
+				if cashdesk.active_session.cashier != request.user:
+					messages.error(request, "There is an active session left at cashdesk %s" % cashdesk.name)
+					return HttpResponseRedirect(reverse('fail'))
+
 			if request.user.is_superuser:
 				if request.META['REMOTE_ADDR'] in EVENT_SUPERVISOR_IPS or Cashdesk.objects.get(ip=remote.META['REMOTE_ADDR'], allow_supervisor=True):
 					# User is authorized to use the backend on this machine.

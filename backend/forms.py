@@ -31,8 +31,10 @@ class AddCashierForm(forms.Form):
 class AddSessionForm(forms.ModelForm):
 	class Meta:
 		model = bmodels.CashdeskSession
+		exclude = ('drawer_sum', 'drawer_sum_ok', 'supervisor_after', 'total', 'cashier_has_ended', )
 
 class EditSessionForm(forms.ModelForm):
 	class Meta:
 		model = bmodels.CashdeskSession
+		#exclude = ('cashier_has_ended',)
 

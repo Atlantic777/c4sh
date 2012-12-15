@@ -13,6 +13,7 @@ urlpatterns = patterns('django.contrib.auth.views',
 
 urlpatterns += patterns('c4sh.desk.views',
 	url(r'^logout/$', 'logout_view', name="logout"),
+	url(r'^ask-logout/$', 'ask_logout_view', name="ask-logout"),
 	url(r'^$', 'dashboard_view', name="dashboard"),
 	url(r'^sell/$', 'sell_action', name="desk-sell"),
 	url(r'^sale/(?P<sale_id>\d+)/$', 'sale_view', name='desk-sale'),
