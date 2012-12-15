@@ -358,3 +358,10 @@ def cashdesks_cashier_add_view(request):
 	else:
 		form = AddCashierForm()
 	return render_to_response("backend/cashdesks_cashier_add.html", locals(), context_instance=RequestContext(request))
+
+@login_required
+@supervisor_required
+def monitor_view(request):
+	now = datetime.now()
+	cashdesks = Cashdesk.objects.filter(active=True)
+	return render_to_response("backend/monitor.html", locals(), context_instance=RequestContext(request))

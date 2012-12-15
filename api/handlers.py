@@ -6,6 +6,14 @@ from c4sh.preorder import models as pmodels
 from django.db.models import Q
 
 from c4sh.desk.tools import open_drawer, print_receipt
+from c4sh.desk.templatetags.cashdesk_session import cashdesk_session
+
+class SessionTimeLeftHandler(BaseHandler):
+	allowed_methods = ('GET',)
+
+	def read(self, request):
+		return cashdesk_session(request.session)
+
 
 class PreorderPositionHandler(BaseHandler):
 	allowed_methods = ('GET',)

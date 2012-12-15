@@ -16,10 +16,11 @@ urlpatterns += patterns('c4sh.desk.views',
 	url(r'^$', 'dashboard_view', name="dashboard"),
 	url(r'^sell/$', 'sell_action', name="desk-sell"),
 	url(r'^sale/(?P<sale_id>\d+)/$', 'sale_view', name='desk-sale'),
-	url(r'^reverse/(?P<sale_id>\d+)/$', 'reverse_sale_view', name='desk-sale-reverse')
+	url(r'^reverse/(?P<sale_id>\d+)/$', 'reverse_sale_view', name='desk-sale-reverse'),
 )
 
 urlpatterns += patterns('c4sh.backend.views',
+	url(r'^monitor/$', 'monitor_view', name="monitor"),
 	url(r'^backend/$', 'dashboard_view', name="backend-dashboard"),
 	url(r'^backend/cashdesks/$', 'cashdesks_view', name="backend-cashdesks"),
 	url(r'^backend/cashdesks/cashier/add/$', 'cashdesks_cashier_add_view', name="backend-cashdesks-cashier-add"),

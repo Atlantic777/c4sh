@@ -1,3 +1,4 @@
+{% load cashdesk_session %}
 <!doctype html>
 <!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
 <!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
@@ -34,6 +35,18 @@
 					}
 				});
 			});
+
+			var updateSessionTimeLeft = function() {
+				$.ajax({
+					type: 'GET',
+					url: '/api/session_time_left/',
+					success: function(response) {
+						$('#session_time_left').html(response);
+					}
+				});
+			}
+
+			setInterval(updateSessionTimeLeft, 60000);
 		});
 	</script>
 
@@ -41,7 +54,11 @@
 <body>
 	<header class="muon">
 		<div class="navigation-wrapper">
-			<a href="javascript:;" id="c4shlogo" class="muon-logo" title="Back to homepage">Your logo</a>
+			<a href="javascript:;" id="c4shlogo" class="muon-logo" title="c4sh">c4sh</a>
+
+			<ul>
+				<li>Session time left: <span id="session_time_left">{{request.session|cashdesk_session}}</span></li>
+			</ul>
 
 			<ul class="muon-user-list">
 				<li class="muon-user-data">logged in as {{user}}</li>
@@ -97,4 +114,4 @@
 		});
 	</script>
 </body>
-</html>	
+</html>

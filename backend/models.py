@@ -166,6 +166,9 @@ class CashdeskSession(models.Model):
 	def drawer_supposed_sum(self):
 		return self.get_merged_positions()['total'] + self.change
 
+	def get_passes(self):
+		return CashdeskSessionPass.objects.filter(session=self)
+
 	def __unicode__(self):
 		return "#%d for %s at %s (%s - %s)" % (self.pk, self.cashier.username, self.cashdesk.name, self.valid_from, self.valid_until)
 
