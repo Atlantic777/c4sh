@@ -80,9 +80,8 @@ EVENT_RECEIPT_POS_LIST_HEADER = """ Ticket                                EUR
 
 EVENT_RECEIPT_SEPERATOR = " -----------------------------------------\r\n"
 
-# DO NOT CHANGE :-)
-# Receipt printer header (default is the logo that is flashed into the printer)  
-EVENT_RECEIPT_HEADER = "\x1d\x28\x4c\x06\x00\x30\x45\x30\x30\x01\x01\r\n"
+# Receipt printer header logo file name relative to STATIC_ROOT
+EVENT_RECEIPT_HEADER = "29c3-header.png"
 
 # Address on receipt. Automaticaly centered.
 EVENT_RECEIPT_ADDRESS = """
