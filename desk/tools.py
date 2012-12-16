@@ -92,7 +92,6 @@ def print_receipt(sale, printer, do_open_drawer=True):
 	return
 
 def send_data_to_printer(data, printer):
-	#('ssh c4sh@172.23.23.3 \'echo -ne "%s" |/usr/bin/lpr -l -P %s\'' % cmd, printer) #debug
 	lpr = subprocess.Popen(['/usr/bin/lpr', '-l', '-P', printer], stdin = subprocess.PIPE)
 	lpr.stdin.write(data)
 	lpr.stdin.close()
