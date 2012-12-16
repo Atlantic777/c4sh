@@ -1,8 +1,10 @@
 from os import system
 from os import path
-import sys, subprocess
-import c4sh.settings as settings
+import sys
+import subprocess
+import time
 import image_tools
+import c4sh.settings as settings
 
 def gap(f):
 	formatted_value = "%.2f" % float(f)
@@ -95,6 +97,7 @@ def send_data_to_printer(data, printer):
 	lpr = subprocess.Popen(['/usr/bin/lpr', '-l', '-P', printer], stdin = subprocess.PIPE)
 	lpr.stdin.write(data)
 	lpr.stdin.close()
+	time.sleep(0.1)
 
 def open_drawer(printer):
 	cmd = bytearray([0x1B,'p',48,255,255])
