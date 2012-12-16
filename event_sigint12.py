@@ -57,16 +57,16 @@ Printers used at CCC events: EPSON TM-88IV
 
 # Printed on each session end
 EVENT_RECEIPT_SESSION_ENDED = """
-  -----------------------------------------
-  -----------------------------------------
-  -----------------------------------------
+ -----------------------------------------
+ -----------------------------------------
+ -----------------------------------------
 
-           Your session has ended.
-        Please inform your supervisor!
+          Your session has ended.
+       Please inform your supervisor!
 
-  -----------------------------------------
-  -----------------------------------------
-  -----------------------------------------
+ -----------------------------------------
+ -----------------------------------------
+ -----------------------------------------
 
 
 
@@ -80,31 +80,31 @@ EVENT_RECEIPT_POS_LIST_HEADER = """ Ticket                                EUR
 
 EVENT_RECEIPT_SEPERATOR = " -----------------------------------------\r\n"
 
-# DO NOT CHANGE :-)
-# Receipt printer header (default is the logo that is flashed into the printer)  
-EVENT_RECEIPT_HEADER = "\x1d\x28\x4c\x06\x00\x30\x45\x30\x30\x01\x01\r\n"
+# Receipt printer header logo file name relative to STATIC_ROOT
+EVENT_RECEIPT_HEADER = "29c3-header.png"
 
-# Address on receipt. Automaticaly centered.
+# Address on receipt. Automatically centered.
 EVENT_RECEIPT_ADDRESS = """
-            Chaos Computer Club
-       Veranstaltungsgesellschaft mbH
-             Postfach 000 00 0
-               10000 Berlin
+
+Chaos Computer Club
+Veranstaltungsgesellschaft mbH
+Postfach 000 00 0
+10000 Berlin
 
 """
 
 # Receipt printer footer
 EVENT_RECEIPT_FOOTER = """
 
-    Leistungsdatum gleich Rechnungsdatum
-               Vielen Dank!
+Leistungsdatum gleich Rechnungsdatum
+Vielen Dank!
 
-        AG Charlottenburg, HRB 12345
-            USt-ID: DE12345677
+AG Charlottenburg, HRB 12345
+USt-ID: DE12345677
 """
 
 # Localized receipt number description, must have %d format specifier
-EVENT_RECEIPT_SERIAL_FORMAT = "              Belegnummer: %d\r\n"
+EVENT_RECEIPT_SERIAL_FORMAT = "Belegnummer: %d\r\n"
 
 # Localized receipt sum excl. sales tax, must have %s format specifier
 EVENT_RECEIPT_TOTAL_EXCL_TAX_FORMAT = "                      Nettosumme:  %s\r\n"
@@ -117,4 +117,4 @@ EVENT_RECEIPT_SALES_TAX_FORMAT = "                    MwSt %(tax_rate)s%% (%(tax
 EVENT_RECEIPT_TOTAL_FORMAT = "                           Summe:  %s\r\n"
 
 # Localized receipt total, must have 2 %s format specifiers. first date, second cashdesk identifier
-EVENT_RECEIPT_TIMESTAMP_FORMAT = "            %(timestamp)s %(cashdesk_identifier)s\r\n"
+EVENT_RECEIPT_TIMESTAMP_FORMAT = "%(timestamp)s %(cashdesk_identifier)s\r\n"
