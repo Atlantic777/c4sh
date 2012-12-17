@@ -18,7 +18,6 @@ from django.db import transaction
 from django.db.models import Q
 from c4sh.desk.tools import print_receipt, open_drawer
 
-
 @login_required
 def static_view(request, template, **args):
 	return render_to_response(template, locals(), context_instance=RequestContext(request))
@@ -30,8 +29,7 @@ def dashboard_view(request):
 	"""
 	This is the main seller action. Tickets are being sold here.
 	"""
-	# TODO: honor validity times of tickets in selection
-	tickets = Ticket.objects.filter(active=True, deleted=False)
+	tickets = Ticket.objects.filter((Q(limit_timespan=False) | Q(valid_from__lte=datetime.datetime.now()) & Q(valid_until__gte=datetime.datetime.now())), active=True, deleted=False)
 	tickets_json = serializers.serialize('json', tickets,
 				 	fields=('name', 'sale_price', 'currency', 'tax_rate', 'rabate_rate', 'limit_supervisor', 'limit_honorary_member', 'valid_payment_types'),
 					ensure_ascii=False)
