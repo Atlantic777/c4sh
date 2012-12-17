@@ -25,14 +25,14 @@
 						<p>Cashdesks open</p>
 						<a href="{% url backend-cashdesks %}" class="button stats-view tooltip" title="Manage cashdesks">View</a>
 					</li>
-					
+
 					<!--<li>
 						<strong class="stats-count">320.42 &euro;</strong>
 						<p>Money in Cashdesks</p>
 						<a href="#" class="button stats-view tooltip" title="Manage cashdesks">View</a>
 					</li>-->
 				</ul>
-				
+
 				<!--<div class="progress-bar green huge">
 					<div style="width:23%;">
 						<span>23<sup>%</sup></span>
@@ -100,6 +100,7 @@
 						<thead>
 							<tr>
 								<th>Sale no.</th>
+								<th>Fulfilled</th>
 								<th>Cashdesk</th>
 								<th>Cashier</th>
 								<th>Value</th>
@@ -110,6 +111,11 @@
 						{% for sale in sales %}
 							<tr>
 								<td>{{sale.pk}}</td>
+								<td>{% if sale.fulfilled %}
+									<img src="{{MEDIA_URL}}admin/img/admin/icon_success.gif" />
+									{% else %}
+									<img src="{{MEDIA_URL}}admin/img/admin/icon_error.gif" />
+									{% endif %}</td>
 								<td>{{sale.cashdesk}}</td>
 								<td>{{sale.cashier}}</td>
 								<td>{{sale.cached_sum|floatformat:2}}</td>
@@ -124,6 +130,7 @@
 						<tfoot>
 							<tr>
 								<th>Sale no.</th>
+								<th>Fulfilled</th>
 								<th>Cashdesk</th>
 								<th>Cashier</th>
 								<th>Value</th>

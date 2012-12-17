@@ -11,6 +11,7 @@
 						<thead>
 							<tr>
 								<th>Sale no.</th>
+								<th>Fulfilled</th>
 								<th>Cashdesk</th>
 								<th>Cashier</th>
 								<th>Date</th>
@@ -22,6 +23,11 @@
 						{% for sale in sales %}
 							<tr>
 								<td>{{sale.pk}}</td>
+								<td>{% if sale.fulfilled %}
+									<img src="{{MEDIA_URL}}admin/img/admin/icon_success.gif" />
+									{% else %}
+									<img src="{{MEDIA_URL}}admin/img/admin/icon_error.gif" />
+									{% endif %}</td>
 								<td>{{sale.cashdesk}}</td>
 								<td>{{sale.cashier}}</td>
 								<td>{{sale.time|date:"Y-m-d H:i:s"}}</td>
@@ -37,6 +43,7 @@
 						<tfoot>
 							<tr>
 								<th>Sale no.</th>
+								<th>Fulfilled</th>
 								<th>Cashdesk</th>
 								<th>Cashier</th>
 								<th>Date</th>
