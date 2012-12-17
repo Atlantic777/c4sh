@@ -27,6 +27,9 @@
 				{% if sale.reversed %}
 				<h2 style="color:red;">This sale has been reversed by {{sale.reversed_by}}!</h3>
 				{% endif %}
+				{% if not sale.fulfilled %}
+				<h2 style="color:red;">This sale has not been fulfilled!</h3>
+				{% endif %}
 				<fieldset>
 					<legend>Data</legend>
 					<dl>

@@ -39,7 +39,7 @@ def dashboard_view(request):
 	dashtext = settings.EVENT_DASHBOARD_TEXT
 	# aggregate statistics
 	#  sold tickets
-	tickets_sold = len(SalePosition.objects.all())
+	tickets_sold = len(SalePosition.objects.filter(sale__fulfilled=True, sale__reversed=False))
 	#  cashdesks
 	cashdesks_open = len(Cashdesk.objects.filter(Q(active=True) & ~Q(active_session=None)))
 	cashdesks = len(Cashdesk.objects.filter())
