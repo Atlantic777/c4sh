@@ -118,3 +118,6 @@ EVENT_RECEIPT_TOTAL_FORMAT = "                           Summe:  %s\r\n"
 
 # Localized receipt total, must have 2 %s format specifiers. first date, second cashdesk identifier
 EVENT_RECEIPT_TIMESTAMP_FORMAT = "%(timestamp)s %(cashdesk_identifier)s\r\n"
+
+# Logo for PDF backend reports
+EVENT_REPORT_LOGO = "29c3-logo.png"

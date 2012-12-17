@@ -104,7 +104,7 @@ def cashdesks_session_report_view(request, session_id):
 	pdf.set_right_margin(0)
 
 	# print logo
-	pdf.image('%ssigint-logo.png' % (settings.STATIC_ROOT), 280, 10, 1000*0.3, 580*0.3)
+	pdf.image(settings.STATIC_ROOT+'/'+settings.EVENT_REPORT_LOGO, 400, 10, 1920*0.1, 1600*0.1)
 	pdf.set_font('Arial','B',50)
 	pdf.text(20,60,"%s" % settings.EVENT_NAME_SHORT)
 
@@ -118,7 +118,7 @@ def cashdesks_session_report_view(request, session_id):
 
 	# print ticket table
 	pdf.set_font('Arial','B',15)
-	pdf.text(150,220,"Ticket")
+	pdf.text(80,220,"Ticket")
 	pdf.text(330,220,"Price single")
 	pdf.text(500,220,"Total")
 
@@ -139,9 +139,9 @@ def cashdesks_session_report_view(request, session_id):
 
 	total_total = 0
 	for position in positions_merged:
-		pdf.set_font('Arial','',15)
+		pdf.set_font('Arial','',11)
 		pdf.text(50, i, "%s x" % str(positions_merged[position]['amount']))
-		pdf.text(150, i, positions_merged[position]['ticket'].name)
+		pdf.text(80, i, positions_merged[position]['ticket'].name)
 		pdf.text(330, i, "%s EUR" % str(positions_merged[position]['ticket'].sale_price))
 		pdf.text(500, i, "%s EUR" % str(positions_merged[position]['total']))
 		i = i + 20
