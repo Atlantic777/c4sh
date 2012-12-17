@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 import datetime, os, socket, re, datetime
 from django.core import serializers
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
 from django.http import Http404, HttpResponseServerError, HttpResponseRedirect, HttpResponse, HttpResponseNotFound
@@ -39,7 +39,7 @@ def dashboard_view(request):
 @login_required
 @no_supervisor
 @session_required
-def sell_action(request):
+def sell_action(request, sale_id=None):
 	"""
 	This action should:
 		* Calculate the price total (including tax total and rabate total) -- DONE (excl. rabate)
@@ -58,97 +58,106 @@ def sell_action(request):
 	except CashdeskSession.DoesNotExist:
 		messages.error(request, "Your session seems to be over")
 		return HttpResponseRedirect(reverse("fail"))
-	sale = Sale(cashier=request.user, cashdesk=get_cashdesk(request=request), session=cds, cached_sum=0, time=datetime.datetime.now())
-	sale.save() # we need a primary key
-
-	for ticketid in request.POST.getlist("position"):
-		if not ticketcache.get(ticketid):
-			ticketcache[ticketid] = get_object_or_404(Ticket, pk=ticketid, active=True, deleted=False) # sale time restriction will be honored later to give an useful error
-		cart_total[ticketcache[ticketid].tax_rate] = cart_total.get(ticketcache[ticketid].tax_rate, 0) + ticketcache[ticketid].sale_price # taxes included
-		newpos = SalePosition(sale=sale, ticket=ticketcache[ticketid])
-		# TODO implement local overrides of sale price etc
-		# Check requirements -- NOTE: they cause to fail the complete transaction! nothing will be sold!
+	
+	if sale_id:
 		try:
-			# Check for time restriction
-			if ticketcache[ticketid].limit_timespan:
-				if not ticketcache[ticketid].valid_from < datetime.datetime.now() < ticketcache[ticketid].valid_until:
-					raise Exception("You can't sell %s before %s or after %s." % (ticketcache[ticketid].name, ticketcache[ticketid].valid_from, ticketcache[ticketid].valid_until))
+			sale = Sale.objects.get(pk=sale_id, cashier=request.user, cashdesk=get_cashdesk(request=request), session=cds)
+		except Sale.DoesNotExist:
+			messages.error(request, "Sale doesn't exist.")
+			return redirect('dashboard')
+	else:
+		sale = Sale(cashier=request.user, cashdesk=get_cashdesk(request=request), session=cds, cached_sum=0, time=datetime.datetime.now())
+		sale.save() # we need a primary key
 
-			# Check for supervisor:
-			if ticketcache[ticketid].limit_supervisor:
-				shall_pass = False
-				# check if we have supervisor_auth_code in POST
-				if request.POST.get("supervisor_auth_code"):
-					try:
-						supervisor = User.objects.get(userprofile__supervisor_auth_code=request.POST.get("supervisor_auth_code"), is_staff=True, userprofile__supervisor_auth_code__isnull=False)
-						newpos.supervisor = supervisor
-						shall_pass = True
-					except User.DoesNotExist:
-						messages.error(request, "Invalid supervisor auth code or supervisor not found!")
+	if not sale_id: # only do this for the first run
+		for ticketid in request.POST.getlist("position"):
+			if not ticketcache.get(ticketid):
+				ticketcache[ticketid] = get_object_or_404(Ticket, pk=ticketid, active=True, deleted=False) # sale time restriction will be honored later to give an useful error
+			cart_total[ticketcache[ticketid].tax_rate] = cart_total.get(ticketcache[ticketid].tax_rate, 0) + ticketcache[ticketid].sale_price # taxes included
+			newpos = SalePosition(sale=sale, ticket=ticketcache[ticketid])
+			# TODO implement local overrides of sale price etc
+			# Check requirements -- NOTE: they cause to fail the complete transaction! nothing will be sold!
+			try:
+				# Check for time restriction
+				if ticketcache[ticketid].limit_timespan:
+					if not ticketcache[ticketid].valid_from < datetime.datetime.now() < ticketcache[ticketid].valid_until:
+						raise Exception("You can't sell %s before %s or after %s." % (ticketcache[ticketid].name, ticketcache[ticketid].valid_from, ticketcache[ticketid].valid_until))
 
-				if not shall_pass:
-					transaction.rollback()
+				# Check for supervisor:
+				if ticketcache[ticketid].limit_supervisor:
+					shall_pass = False
+					# check if we have supervisor_auth_code in POST
+					if request.POST.get("supervisor_auth_code"):
+						try:
+							supervisor = User.objects.get(userprofile__supervisor_auth_code=request.POST.get("supervisor_auth_code"), is_staff=True, userprofile__supervisor_auth_code__isnull=False)
+							newpos.supervisor = supervisor
+							shall_pass = True
+						except User.DoesNotExist:
+							messages.error(request, "Invalid supervisor auth code or supervisor not found!")
 
-					# get all items from the basket to redisplay it
-					try:
-						tickets = Ticket.objects.filter(pk__in=request.POST.getlist("position"))
-					except Ticket.DoesNotExist:
-						pass
+					if not shall_pass:
+						transaction.rollback()
 
-					try:
-						preorder_tickets = PreorderPosition.objects.filter(uuid__in=request.POST.getlist("uuid"))
-					except PreorderPosition.DoesNotExist:
-						pass
+						# get all items from the basket to redisplay it
+						try:
+							tickets = Ticket.objects.filter(pk__in=request.POST.getlist("position"))
+						except Ticket.DoesNotExist:
+							pass
 
-					return render_to_response("frontend/sale_supervisor.html", locals(), context_instance=RequestContext(request))
+						try:
+							preorder_tickets = PreorderPosition.objects.filter(uuid__in=request.POST.getlist("uuid"))
+						except PreorderPosition.DoesNotExist:
+							pass
 
-			# Decided against checking for venue limit here.
-			# If they got here, let them in.
-		except Exception as e:
-			transaction.rollback()
-			transaction.leave_transaction_management()
-			messages.error(request, e)
-			return HttpResponseRedirect(reverse("dashboard"))
-		# Passed requirements, let's sell this thing
-		try:
-			newpos.save()
-		except Exception as e:
-			transaction.rollback()
-			transaction.leave_transaction_management()
-			messages.error(request, e)
-			return HttpResponseRedirect(reverse("dashboard"))
+						return render_to_response("frontend/sale_supervisor.html", locals(), context_instance=RequestContext(request))
 
-	# process preorders
-	for uuid in request.POST.getlist("uuid"):
+				# Decided against checking for venue limit here.
+				# If they got here, let them in.
+			except Exception as e:
+				transaction.rollback()
+				transaction.leave_transaction_management()
+				messages.error(request, e)
+				return HttpResponseRedirect(reverse("dashboard"))
+			# Passed requirements, let's sell this thing
+			try:
+				newpos.save()
+			except Exception as e:
+				transaction.rollback()
+				transaction.leave_transaction_management()
+				messages.error(request, e)
+				return HttpResponseRedirect(reverse("dashboard"))
 
-		ticket_position = get_object_or_404(PreorderPosition, uuid=uuid)
-		ticket = get_object_or_404(Ticket, pk=ticket_position.ticket.backend_id, active=True, deleted=False)
+		# process preorders
+		for uuid in request.POST.getlist("uuid"):
 
-		cart_total[ticket.tax_rate] = cart_total.get(ticket.tax_rate, 0) + ticket.sale_price # taxes included
-		newpos = SalePosition(sale=sale, ticket=ticket, uuid=uuid)
+			ticket_position = get_object_or_404(PreorderPosition, uuid=uuid)
+			ticket = get_object_or_404(Ticket, pk=ticket_position.ticket.backend_id, active=True, deleted=False)
 
-		try:
-			if ticket_position.redeemed == True:
-				raise Exception("The Preorder Code %s has already been redeemed." % uuid)
+			cart_total[ticket.tax_rate] = cart_total.get(ticket.tax_rate, 0) + ticket.sale_price # taxes included
+			newpos = SalePosition(sale=sale, ticket=ticket, uuid=uuid)
 
-			if ticket_position.preorder.paid != True:
-				raise Exception("The Preorder %s has not yet been marked as paid." % uuid)
+			try:
+				if ticket_position.redeemed == True:
+					raise Exception("The Preorder Code %s has already been redeemed." % uuid)
 
-		except Exception as e:
-			transaction.rollback()
-			transaction.leave_transaction_management()
-			messages.error(request, e)
-			return HttpResponseRedirect(reverse("dashboard"))
-		# Passed requirements, let's sell this thing
-		try:
-			newpos.save()
-			ticket_position.redeemed = True
-			ticket_position.save()
-		except Exception as e:
-			transaction.rollback()
-			transaction.leave_transaction_management()
-			messages.error(request, e)
-			return HttpResponseRedirect(reverse("dashboard"))
+				if ticket_position.preorder.paid != True:
+					raise Exception("The Preorder %s has not yet been marked as paid." % uuid)
+
+			except Exception as e:
+				transaction.rollback()
+				transaction.leave_transaction_management()
+				messages.error(request, e)
+				return HttpResponseRedirect(reverse("dashboard"))
+			# Passed requirements, let's sell this thing
+			try:
+				newpos.save()
+				ticket_position.redeemed = True
+				ticket_position.save()
+			except Exception as e:
+				transaction.rollback()
+				transaction.leave_transaction_management()
+				messages.error(request, e)
+				return HttpResponseRedirect(reverse("dashboard"))
 
 	# we now have all sale positions and a local cart_total
 	# therefore, we need to check for tickets which require honorary member identification
@@ -187,7 +196,9 @@ def sell_action(request):
 						shall_pass = False
 
 			if not shall_pass:
-				transaction.rollback()
+				transaction.commit()
+				transaction.leave_transaction_management()
+				sale.save()
 
 				# did we need a supervisor auth code?
 				supervisor_auth_code = request.POST.get("supervisor_auth_code")
@@ -200,7 +211,7 @@ def sell_action(request):
 	try:
 		for taxrate in cart_total:
 			sale.cached_sum += cart_total[taxrate]
-		sale.save() # Das neue Nightwish-Album lutscht ja mal krass Schwaenze.
+		sale.save()
 	except Exception as e:
 		transaction.rollback()
 		transaction.leave_transaction_management()

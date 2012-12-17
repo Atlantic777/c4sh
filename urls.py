@@ -16,6 +16,7 @@ urlpatterns += patterns('c4sh.desk.views',
 	url(r'^ask-logout/$', 'ask_logout_view', name="ask-logout"),
 	url(r'^$', 'dashboard_view', name="dashboard"),
 	url(r'^sell/$', 'sell_action', name="desk-sell"),
+	url(r'^sell/(?P<sale_id>\d+)/$', 'sell_action', name="desk-sell-fulfill"),
 	url(r'^sale/(?P<sale_id>\d+)/$', 'sale_view', name='desk-sale'),
 	url(r'^reverse/(?P<sale_id>\d+)/$', 'reverse_sale_view', name='desk-sale-reverse'),
 )
