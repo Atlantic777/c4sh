@@ -2,6 +2,7 @@
 import socket
 
 if socket.gethostname() == "chell.local":
+
 	DEBUG = True
 	TEMPLATE_DEBUG = DEBUG
 	APP_URL = "app"

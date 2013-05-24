@@ -40,7 +40,7 @@ def no_supervisor(func):
 					# logout user
 					return HttpResponseRedirect(reverse('login'), ["fail=1"])
 		except:
-			raise Exception("Fix your configuration (EVENT_SUPERVISOR_IPS, Cashdesk objects)")
+			raise Exception("Fix your configuration (EVENT_SUPERVISOR_IPS, Cashdesk objects). (DEBUG: desk) - Your IP is: %s", request.META['REMOTE_ADDR'])
 		return func(request, *args, **kwargs)
 	return _dec
 

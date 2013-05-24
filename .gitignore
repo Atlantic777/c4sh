@@ -2,4 +2,7 @@
 *.AppleDouble
 *:2e*
 *.sqlite3
+.DS_Store
 settings.py
+/settings.py
+.vagrant

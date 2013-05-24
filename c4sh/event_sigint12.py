@@ -46,7 +46,7 @@ EVENT_DASHBOARD_TEXT = "Here be important event-related supervisor information.<
                        "You can define this text in EVENT_DASHBOARD_TEXT."
 
 # Supervisor IPs
-EVENT_SUPERVISOR_IPS = ('127.0.0.1', '172.17.0.1',)
+EVENT_SUPERVISOR_IPS = ('127.0.0.1', '172.17.0.1', '10.0.2.15', '10.0.2.2')
 
 # Printer related settings
 '''
@@ -111,7 +111,7 @@ EVENT_RECEIPT_TOTAL_EXCL_TAX_FORMAT = "                      Nettosumme:  %s\r\n
 
 # Localized receipt sum excl. sales tax, must have 3 %s format specifiers. first %s is actual tax rate (eg. 19)
 # second %s is tax identifier (eg A), third %s is tax amount
-EVENT_RECEIPT_SALES_TAX_FORMAT = "                    MwSt %(tax_rate)s%% (%(tax_identifier)s):  %(tax_amount)s\r\n" 
+EVENT_RECEIPT_SALES_TAX_FORMAT = "                    MwSt %(tax_rate)s%% (%(tax_identifier)s):  %(tax_amount)s\r\n"
 
 # Localized receipt total, must have %s format specifier
 EVENT_RECEIPT_TOTAL_FORMAT = "                           Summe:  %s\r\n"
