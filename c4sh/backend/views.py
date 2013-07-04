@@ -44,7 +44,7 @@ def dashboard_view(request):
 	cashdesks_open = len(Cashdesk.objects.filter(Q(active=True) & ~Q(active_session=None)))
 	cashdesks = len(Cashdesk.objects.filter())
 
-	sales = Sale.objects.all().order_by("-pk")
+	sales = Sale.objects.all().order_by("-pk")[:100]
 	return render_to_response("backend/dashboard.html", locals(), context_instance=RequestContext(request))
 
 @login_required
