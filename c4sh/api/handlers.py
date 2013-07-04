@@ -61,6 +61,8 @@ class ReprintReceiptHandler(BaseHandler):
 
 		if cashdesk_id:
 			cashdesk = bmodels.Cashdesk.objects.get(pk=cashdesk_id)
+			if not cashdesk.receipt_printer:
+				return rc.NOT_HERE
 			printer = cashdesk.receipt_printer_name
 		else:
 			printer = sale.cashdesk.receipt_printer_name
@@ -75,6 +77,8 @@ class OpenCashDrawerHandler(BaseHandler):
 	def read(self, request, cashdesk_id):
 
 		cashdesk = bmodels.Cashdesk.objects.get(pk=cashdesk_id)
-
+		if not cashdesk.receipt_printer:
+			return rc.NOT_HERE
+		
 		open_drawer(cashdesk.receipt_printer_name)
 		return rc.ALL_OK
