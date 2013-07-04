@@ -1,0 +1,91 @@
+{% extends "base/frontend.html" %}
+{% block content %}
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#supervisor_auth_code').focus();
+		$('#supervisor_auth_code').select();
+	});
+</script>
+		<div class="notification attention">
+			<a href="#" class="close-notification tooltip" title="Hide Notification">x</a>
+			<h4>Attention, supervisor required!</h4>
+			<p>The cart contains Tickets which require supervisor authentication. Supervisor, enter your Auth Code here!</p>
+		</div>
+
+
+		<article class="content-box col-super2p1">
+			<header>
+				<h2>Cart</h2>
+			</header>
+			<section>
+				<table id="tickets">
+					{% for t in tickets %}
+					<tr>
+						<td style="text-align:left;padding-left:20px;max-width:300px;">
+							<span style="font-size:large;">{{t.name}}</span>
+							{% if t.limit_supervisor %}
+							<button class='icon red tooltip' title='Needs supervisor'><img src='{{STATIC_URL}}img/icons/buttons/alert.png'></button>
+							<br />
+							This Ticket required supervisor authorization.
+							{% endif %}
+						</td>
+						<td style="width:150px;">
+							{{t.sale_price|floatformat:2}}
+							{{t.currency}}
+							<br/>
+							<small>incl. {{t.tax_rate}}% tax</small>
+						</td>
+					</tr>
+					{% endfor %}
+
+					{% for p in preorder_tickets %}
+					<tr>
+						<td style="text-align:left;padding-left:20px;max-width:300px;">
+							<span style="font-size:large;">{{p.get_backend_ticket.name}}</span>
+							{% if p.uuid %}
+							<br /><small>{{p.uuid}}</small>
+							{% endif %}
+						</td>
+						<td style="width:150px;">
+							{% if p.get_backend_ticket.sale_price %}<strike>{% endif %}
+							{{p.get_backend_ticket.sale_price|floatformat:2}}
+							{% if p.get_backend_ticket.sale_price %}</strike> {{p.get_backend_ticket.sale_price|floatformat:2}}{% endif %}
+							{{p.get_backend_ticket.currency}}
+							<br/>
+							<small>incl. {{p.get_backend_ticket.tax_rate}}% tax</small>
+						</td>
+					</tr>
+					{% endfor %}
+				</table>
+				</form>
+			</section>
+		</article>
+
+		<article class="content-box col-super2p2 clear-rm">
+			<header>
+				<h2>Supervisor Auth</h2>
+			</header>
+			<section>
+				<table id="supervisor">
+				</table>
+				<table>
+					<tr>
+						<td style="padding:10px;">
+							<form method="POST" action="{% url "desk-sell" %}" id="supervisor_auth">
+								{% csrf_token %}
+								{% for t in tickets %}
+									<input type="hidden" name="position" value="{{t.pk}}"/>
+								{% endfor %}
+								{% for p in preorder_tickets %}
+									<input type="hidden" name="uuid" value="{{p.uuid}}"/>
+								{% endfor %}
+								<input type="password" name="supervisor_auth_code" id="supervisor_auth_code" style="width:90%;outline:0;" />
+							</form>
+						</td>
+					</tr>
+				</table>
+				<p><a href="{% url "dashboard" %}" class="button red">Cancel</a></p>
+			</section>
+		</article>
+		<div class="clearfix"></div>
+{% endblock %}

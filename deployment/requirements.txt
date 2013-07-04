@@ -1,0 +1,10 @@
+Django==1.5.1
+PIL==1.1.7
+South==0.8
+hg+https://bitbucket.org/spookylukey/django-piston#egg=django-piston
+ipython>=0.13.2
+readline>=6.2.4.1
+wsgiref>=0.1.2
+django-extensions>=1.1.1
+Werkzeug>=0.8.3
+fpdf>=1.7

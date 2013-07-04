@@ -1,0 +1,10 @@
+[1;31;40m      ____     __   __                      [0m
+[1;31;40m ____/ / /[1;33;40m_//_[1;31;40m/ /  / /[0m
+[1;31;40m/ __/_  _[1;33;40m(_-<[1;31;40m/ _ \/_/ [0m
+[1;31;40m\__/ /_/[1;33;40m/ __/[1;31;40m_//_(_)  [0m
+[1;31;40m        [1;33;40m//[1;31;40m            [0m
+
+[1;32m*[0m there's a mysqld running with an empty root password.
+[1;32m*[0m you'll find your local checkout at [0;34m~vagrant/c4sh[0m.
+[1;32m*[0m port 8000 is forwarded automatically, so you can just open
+  [4;34mhttp://localhost:8000/[0m on your box after starting the development server.
