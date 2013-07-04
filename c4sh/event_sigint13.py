@@ -11,13 +11,13 @@ python processes or else the changes won't be in effect.
 """
 
 # Short name of your event
-EVENT_NAME_SHORT = 'SIGINT12'
+EVENT_NAME_SHORT = 'SIGINT13'
 
 # Unix-friendly name of your event (lowercase, a-z0-9)
-EVENT_NAME_UNIX = 'sigint12'
+EVENT_NAME_UNIX = 'sigint13'
 
 # Official name of your event
-EVENT_NAME = 'SIGINT 2012'
+EVENT_NAME = 'SIGINT 2013'
 
 # Postal address of host (for invoices)
 EVENT_INVOICE_ADDRESS = "CCC Veranstaltungs GmbH\n" + \
@@ -39,7 +39,7 @@ EVENT_RECEIPTS = True
 EVENT_INVOICES = False
 
 # Do you have cash drawers (see documentation for configuration howto)?
-EVENT_DRAWER = False
+EVENT_DRAWER = True
 
 # Supervisor information
 EVENT_DASHBOARD_TEXT = "Here be important event-related supervisor information.<br />" + \
@@ -81,7 +81,7 @@ EVENT_RECEIPT_POS_LIST_HEADER = """ Ticket                                EUR
 EVENT_RECEIPT_SEPERATOR = " -----------------------------------------\r\n"
 
 # Receipt printer header logo file name relative to STATIC_ROOT
-EVENT_RECEIPT_HEADER = "29c3-header.png"
+EVENT_RECEIPT_HEADER = "sigint13-header.png"
 
 # Address on receipt. Automatically centered.
 EVENT_RECEIPT_ADDRESS = """
@@ -120,4 +120,4 @@ EVENT_RECEIPT_TOTAL_FORMAT = "                           Summe:  %s\r\n"
 EVENT_RECEIPT_TIMESTAMP_FORMAT = "%(timestamp)s %(cashdesk_identifier)s\r\n"
 
 # Logo for PDF backend reports
-EVENT_REPORT_LOGO = "29c3-logo.png"
+EVENT_REPORT_LOGO = "sigint13-logo.png"
