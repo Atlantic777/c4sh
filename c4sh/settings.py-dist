@@ -1,32 +1,39 @@
 # Django settings for c4sh project.
 import socket
 
-if socket.gethostname() == "chell.local":
+if socket.gethostname() == "precise64":
 
 	DEBUG = True
 	TEMPLATE_DEBUG = DEBUG
 	APP_URL = "app"
 	EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-	MEDIA_ROOT = '/Users/zakx/git/c4sh/media/'
+	MEDIA_ROOT = '/home/vagrant/c4sh/media/'
 	MEDIA_URL = '/media/'
-	STATIC_ROOT = '/Users/zakx/git/c4sh/static/'
+	STATIC_ROOT = '/home/vagrant/c4sh/static/'
 	STATIC_URL = '/static/'
-	DATA_ROOT = '/Users/zakx/git/c4sh/data/'
+	DATA_ROOT = '/home/vagrant/c4sh/data/'
 	TEMPLATE_DIRS = (
-		"/Users/zakx/git/c4sh/templates",
+		"/home/vagrant/c4sh/templates",
 	)
 	DATABASES = {
 		'default': {
-		'NAME': 'c4sh.sqlite3',
-		'ENGINE': 'django.db.backends.sqlite3',
+			'NAME': 'c4sh',
+			'ENGINE': 'django.db.backends.mysql',
+			'USER': 'root',
+			'HOST': 'localhost',
+			'PASSWORD': ''
 		}
 	}
 	SECRET_KEY = 'SET THIS TO A RANDOM STRING'
 	ADMINS = (
 		('zakx', 'zakx@localhost'),
 	)
+	DATABASE_OPTIONS = {
+		"init_command": "SET storage_engine=INNODB",
+	}
 	from event_sigint12 import *
 elif socket.gethostname() == "$livebox":
+	DEBUG = False
 	# stuff from above, plus:
 	SESSION_COOKIE_SECURE = True
 	SESSION_EXPIRE_AT_BROWSER_CLOSE = True
