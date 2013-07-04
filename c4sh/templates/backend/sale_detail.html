@@ -49,13 +49,13 @@
 							<label>Date</label>
 						</dt>
 						<dd class="text">
-							<p><a href="{% url backend-cashdesks-session-edit sale.session.pk %}">{{sale.time|date:"d.m.y H:i:s"}}</a></p>
+							<p><a href="{% url "backend-cashdesks-session-edit" sale.session.pk %}">{{sale.time|date:"d.m.y H:i:s"}}</a></p>
 						</dd>
 						<dt>
 							<label>Session</label>
 						</dt>
 						<dd class="text">
-							<p><a href="{% url backend-cashdesks-session-edit sale.session.pk %}">#{{sale.session.pk}}</a></p>
+							<p><a href="{% url "backend-cashdesks-session-edit" sale.session.pk %}">#{{sale.session.pk}}</a></p>
 						</dd>
 						<dt>
 							<label>Value</label>
@@ -108,7 +108,7 @@
 							<label>Reverse transaction</label>
 						</dt>
 						<dd class="text">
-							<a href="{% url backend-sale-reverse sale.pk %}" class="button red">Reverse</a>
+							<a href="{% url "backend-sale-reverse" sale.pk %}" class="button red">Reverse</a>
 						</dd>
 					</dl>
 				</fieldset>

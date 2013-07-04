@@ -8,7 +8,7 @@
 		//}
 	});
 </script>
-		<form method="POST" action="{% url backend-cashdesks-session-edit session.pk %}">
+		<form method="POST" action="{% url "backend-cashdesks-session-edit" session.pk %}">
 			<article class="content-box col-2">
 				<header>
 					<h2>Basic settings</h2>
@@ -129,7 +129,7 @@
 						</tr>
 					</table>
 				<div style="float:right;margin-top:10px;">
-					<a target="_blank" href="{% url backend-cashdesks-session-report session.pk %}"><button onclick="window.location='{% url backend-cashdesks-session-report session.pk %}';return false;" class="button green">Print report</button></a>
+					<a target="_blank" href="{% url "backend-cashdesks-session-report" session.pk %}"><button onclick="window.location='{% url "backend-cashdesks-session-report" session.pk %}';return false;" class="button green">Print report</button></a>
 				</div>
 				</section>
 			</article>

@@ -48,7 +48,7 @@
 						<td colspan="2" style="text-align:right;padding-right:30px;font-weight:bold;font-size:large;">{{sale.cached_sum|floatformat:2}} EUR</td>
 					</tr>
 				</table>
-				<a style="text-decoration:none;" href="{% url desk-sale-reverse sale.pk %}"><button style="float:right;margin-top:10px;margin-left:10px;" class="button">Reverse sale</button></a>
+				<a style="text-decoration:none;" href="{% url "desk-sale-reverse" sale.pk %}"><button style="float:right;margin-top:10px;margin-left:10px;" class="button">Reverse sale</button></a>
 				<button style="float:right;margin-top:10px;" id="reprint_receipt" class="button blue">Reprint receipt</button>
 			</section>
 		</article>
@@ -85,7 +85,7 @@
 				</table>
 				<br style="clear: both;"/>
 				<div style="text-align:right;">
-					<a href="{% url dashboard %}" class="button blue">Continue</a>
+					<a href="{% url "dashboard" %}" class="button blue">Continue</a>
 				</div>
 			</section>
 		</article>

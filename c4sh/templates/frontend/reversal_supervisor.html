@@ -50,7 +50,7 @@
 				<table>
 					<tr>
 						<td style="padding:10px;">
-							<form method="POST" action="{% url desk-sale-reverse sale.pk %}" id="supervisor_auth">
+							<form method="POST" action="{% url "desk-sale-reverse" sale.pk %}" id="supervisor_auth">
 								{% csrf_token %}
 								{% for t in tickets %}
 									<input type="hidden" name="position" value="{{t.pk}}"/>
@@ -63,7 +63,7 @@
 						</td>
 					</tr>
 				</table>
-				<p><a href="{% url dashboard %}" class="button red">Cancel</a></p>
+				<p><a href="{% url "dashboard" %}" class="button red">Cancel</a></p>
 			</section>
 		</article>
 		<div class="clearfix"></div>

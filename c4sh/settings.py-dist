@@ -56,6 +56,7 @@ USE_L10N = True
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
+ACCEPT_HOSTNAME = ["*",]
 
 STATICFILES_FINDERS = (
 	'django.contrib.staticfiles.finders.FileSystemFinder',

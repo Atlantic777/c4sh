@@ -23,7 +23,7 @@
 					<li>
 						<strong class="stats-count">{{cashdesks_open}}/{{cashdesks}}</strong>
 						<p>Cashdesks open</p>
-						<a href="{% url backend-cashdesks %}" class="button stats-view tooltip" title="Manage cashdesks">View</a>
+						<a href="{% url "backend-cashdesks" %}" class="button stats-view tooltip" title="Manage cashdesks">View</a>
 					</li>
 
 					<!--<li>
@@ -121,7 +121,7 @@
 								<td>{{sale.cached_sum|floatformat:2}}</td>
 								<td>
 										<ul class="actions">
-											<li><a class="view tooltip" href="{% url backend-sale-detail sale.pk %}" title="View Sale">view</a></li>
+											<li><a class="view tooltip" href="{% url "backend-sale-detail" sale.pk %}" title="View Sale">view</a></li>
 										</ul>
 								</td>
 							</tr>

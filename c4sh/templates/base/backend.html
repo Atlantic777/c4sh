@@ -30,8 +30,8 @@
 			<nav>
 				<ul>
 					<li><a href="/" class="muon-no-submenu">Dashboard</a></li>
-					<li><a href="{% url backend-sales %}" class="muon-no-submenu">Sales</a></li>
-					<li><a href="{% url backend-cashdesks %}" class="muon-no-submenu">Cashdesks</a></li>
+					<li><a href="{% url "backend-sales" %}" class="muon-no-submenu">Sales</a></li>
+					<li><a href="{% url "backend-cashdesks" %}" class="muon-no-submenu">Cashdesks</a></li>
 					<li><a href="/admin" class="muon-no-submenu">Backend</a></li>
 					<li><nav/></li>
 				</ul>
@@ -39,7 +39,7 @@
 			<ul class="muon-user-list">
 				<li class="muon-user-data">logged in as {{user}}</li>
 				<li><a class="muon-settings" title="Settings" href="#">Settings</a></li>
-				<li><a class="muon-logout" title="Logout" href="{% url logout %}">Logout</a></li>
+				<li><a class="muon-logout" title="Logout" href="{% url "logout" %}">Logout</a></li>
 			</ul>
 		</div>
 	</header>

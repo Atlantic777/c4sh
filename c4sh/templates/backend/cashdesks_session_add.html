@@ -5,7 +5,7 @@
 		$('#id_supervisor_before').val({{request.user.pk}});
 	});
 </script>
-		<form method="POST" action="{% url backend-cashdesks-session-add %}">
+		<form method="POST" action="{% url "backend-cashdesks-session-add" %}">
 			<article class="content-box col-2">
 				<header>
 					<h2>Basic settings</h2>

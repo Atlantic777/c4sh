@@ -6,7 +6,7 @@
 				<h2>Add cashier</h2>
 			</header>
 			<section>
-				<form method="POST" action="{% url backend-cashdesks-cashier-add %}">
+				<form method="POST" action="{% url "backend-cashdesks-cashier-add" %}">
 				<table class="form">
 				{% csrf_token %}
 				{{form}}

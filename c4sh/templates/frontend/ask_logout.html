@@ -9,10 +9,10 @@
 		</section>
 
 			<div style="float:left;margin-top:25px;">
-				<a href="{% url logout %}" class="button green" style="font-size:45px;">Just a break</a>
+				<a href="{% url "logout" %}" class="button green" style="font-size:45px;">Just a break</a>
 			</div>
 			<div style="float:right;margin-top:25px;">
-				<a href="{% url logout %}?type=session_end" style="font-size:45px;" class="button red">Session has ended</a>
+				<a href="{% url "logout" %}?type=session_end" style="font-size:45px;" class="button red">Session has ended</a>
 			</div>
 	</article>
 {% endblock %}

@@ -7,7 +7,7 @@
 		</div>
 
 
-		<form method="POST" action="{% url desk-sell-fulfill sale.pk %}" id="honoary_member">
+		<form method="POST" action="{% url "desk-sell-fulfill" sale.pk %}" id="honoary_member">
 		<article class="content-box col-super3p1">
 			<header>
 				<h2>Cart</h2>
@@ -122,8 +122,8 @@
 					{% endfor %}
 				</table>
 
-				<p style="text-align:right;"><a href="{% url dashboard %}" class="button red">Cancel</a>
-				<a href="javascript:$('#honoary_member').submit();" href="{% url dashboard %}" class="button green">Continue</a></p>
+				<p style="text-align:right;"><a href="{% url "dashboard" %}" class="button red">Cancel</a>
+				<a href="javascript:$('#honoary_member').submit();" href="{% url "dashboard" %}" class="button green">Continue</a></p>
 			</section>
 		</article>
 		<input type="hidden" name="supervisor_auth_code" value="{{supervisor_auth_code}}" />

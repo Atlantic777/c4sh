@@ -222,7 +222,7 @@
 				<h2>Cart</h2>
 			</header>
 			<section>
-				<form method="POST" action="{% url desk-sell %}">
+				<form method="POST" action="{% url "desk-sell" %}">
 				{% csrf_token %}
 				<table id="cart">
 				</table>
