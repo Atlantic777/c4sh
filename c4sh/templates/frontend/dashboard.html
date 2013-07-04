@@ -27,21 +27,27 @@
 		$("#cart").append("<tr id='cart-"+position+"'>" +
 							"<td class='name'>"+input+limit+t.fields.name+uuid_short+"</td>" +
 							"<td class='price'>"+parseFloat(t.fields.sale_price).toFixed(2)+" "+t.fields.currency+"</td>" +
-							"<td class='remove'><button class='icon red tooltip' title='Remove' onClick='remove("+position+","+parseFloat(t.fields.sale_price).toFixed(2)+");return false;'><img src='{{STATIC_URL}}img/icons/buttons/box_outgoing.png'></button></td>" +
+							"<td class='remove'><button class='icon red tooltip' title='Remove' onClick='cartremove("+position+","+parseFloat(t.fields.sale_price).toFixed(2)+");return false;'><img src='{{STATIC_URL}}img/icons/buttons/box_outgoing.png'></button></td>" +
 						  "</tr>");
 		cartsum += parseFloat(t.fields.sale_price);
 		$("#cart-sum").html(cartsum.toFixed(2)+" EUR");
 		position += 1;
+		$('#preorder_uuid').focus();
+		$('#preorder_uuid').select();
 	}
-	function remove(pos, sub){
+	function cartremove(pos, sub){
 		$("#cart-"+pos).html("");
 		cartsum -= sub;
 		$("#cart-sum").html(cartsum.toFixed(2)+" EUR");
+		$('#preorder_uuid').focus();
+		$('#preorder_uuid').select();
 	}
 	function emptyCart(){
 		$("#cart").html("");
 		cartsum = 0;
 		$("#cart-sum").html("0.00 EUR");
+		$('#preorder_uuid').focus();
+		$('#preorder_uuid').select();
 	}
 	function getData(pk){
 		for(t in tickets){
