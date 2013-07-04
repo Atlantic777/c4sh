@@ -15,7 +15,7 @@ apt-get -q -y update
 apt-get install -q -y build-essential python python-dev python-setuptools python-pip python-mysqldb git zsh screen tmux vim
 
 # certain module dependencies
-apt-get install -q -y libjpeg62-dev zlib1g-dev libfreetype6-dev liblcms1-dev libncurses5-dev libgif4 giflib-tools libgif-dev
+apt-get install -q -y libjpeg62-dev zlib1g-dev libfreetype6-dev liblcms1-dev libncurses5-dev libgif4 giflib-tools libgif-dev mercurial
 
 # mysql
 export DEBIAN_FRONTEND=noninteractive
