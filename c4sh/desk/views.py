@@ -58,7 +58,7 @@ def sell_action(request, sale_id=None):
 	except CashdeskSession.DoesNotExist:
 		messages.error(request, "Your session seems to be over")
 		return HttpResponseRedirect(reverse("fail"))
-	
+
 	if sale_id:
 		try:
 			sale = Sale.objects.get(pk=sale_id, cashier=request.user, cashdesk=get_cashdesk(request=request), session=cds)
@@ -224,7 +224,7 @@ def sell_action(request, sale_id=None):
  	# sale fulfilled
 	sale.fulfilled = True
 	sale.save()
-	
+
 	if cds.cashdesk.receipt_printer:
 		print_receipt(sale, cds.cashdesk.receipt_printer_name)
 
@@ -298,5 +298,4 @@ def sale_view(request, sale_id):
 	sale = get_object_or_404(Sale, pk=sale_id)
 	if sale.cashier != request.user:
 		raise Exception("Not your sale.")
-	cashlist = [25, 50, 75, 100, 125, 150]
 	return render_to_response("frontend/sale.html", locals(), context_instance=RequestContext(request))
