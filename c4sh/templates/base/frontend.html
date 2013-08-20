@@ -16,7 +16,7 @@
 
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$('#c4shlogo').click(function() {
+			$('#open_drawer').click(function() {
 				$.ajax({
 					type: 'GET',
 					url: '/api/cashdrawer/open/{{request.session.cashdesk}}/',
@@ -44,14 +44,22 @@
 <body>
 	<header class="muon">
 		<div class="navigation-wrapper">
-			<a href="javascript:;" id="c4shlogo" class="muon-logo" title="c4sh">c4sh</a>
+			<a href="/" id="c4shlogo" class="muon-logo" title="c4sh">c4sh</a>
 
 			<ul>
-				<li>Session time left: <span id="session_time_left">{{request.session|cashdesk_session|safe}}</span></li>
+				<li style="padding:6px;">
+					<a href="javascript:;" id="open_drawer" class="button blue small">Open Drawer</a>
+				</li>
+				<li style="padding:6px;">
+					<a href="{% url "logout" %}" class="button red small">Lock Screen</a>
+				</li>
+				<li>
+					Session time left: <span id="session_time_left">{{request.session|cashdesk_session|safe}}</span>
+				</li>
 			</ul>
 
 			<ul class="muon-user-list">
-				<li class="muon-user-data">logged in as {{user}}</li>
+				<li class="muon-user-data">{{user}}</li>
 				<li><a class="muon-logout" title="Logout" href="{% url "ask-logout" %}">Logout</a></li>
 			</ul>
 		</div>

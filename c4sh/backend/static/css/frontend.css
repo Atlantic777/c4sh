@@ -28,3 +28,9 @@ section[role=main] {
 	padding: 30px 0px;
 }
 
+/* smaller nav button */
+a.button.small {
+	font-size: x-small;
+	padding: 3px 6px;
+}
+
