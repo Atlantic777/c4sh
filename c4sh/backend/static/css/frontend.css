@@ -1,3 +1,9 @@
+/* reduce upper spacing */
+section[role=main] {
+	padding-top: 50px;
+}
+
+/* reduce content-box header size */
 .content-box header {
 	height: auto;
 }
