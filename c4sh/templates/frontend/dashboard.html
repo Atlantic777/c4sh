@@ -200,18 +200,18 @@
 			<section>
 				<form method="POST" action="{% url "desk-sell" %}">
 				{% csrf_token %}
-				<table id="cart">
-				</table>
 				<table>
 					<tr>
 						<td style="text-align:left; padding-left: 20px;">
-							<button class="button red tooltip" title="Empty Cart" onclick="emptyCart(); return false;">Clear</button>
+							<button class="button red" onclick="emptyCart(); return false;">Empty Cart</button>
 						</td>
-						<td id="cart-sum">0.00 EUR</td>
+						<td id="cart-sum" style="font-size:larger;">0.00 EUR</td>
 						<td style="text-align:right; padding-right: 20px;">
 							<input type="submit" class="button green" onclick="return true;" value="Checkout"/>
 						</td>
 					</tr>
+				</table>
+				<table id="cart">
 				</table>
 				</form>
 			</section>
