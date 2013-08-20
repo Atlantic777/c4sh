@@ -3,6 +3,7 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		$('#given').focus();
+		$('#given').select();
 
 		$('#reprint_receipt').click(function() {
 			$.ajax({
@@ -10,7 +11,7 @@
 				url: '/api/receipt/print/{{sale.pk}}/',
 				success: function(response) {
 					successNotification('Command sent to Printer!');
-				}, 
+				},
 				error: function() {
 					errorNotification('Error while sending this command to the printer!')
 				}
@@ -48,8 +49,10 @@
 						<td colspan="2" style="text-align:right;padding-right:30px;font-weight:bold;font-size:large;">{{sale.cached_sum|floatformat:2}} EUR</td>
 					</tr>
 				</table>
-				<a style="text-decoration:none;" href="{% url "desk-sale-reverse" sale.pk %}"><button style="float:right;margin-top:10px;margin-left:10px;" class="button">Reverse sale</button></a>
-				<button style="float:right;margin-top:10px;" id="reprint_receipt" class="button blue">Reprint receipt</button>
+				<div style="float:left;">
+					<a style="text-decoration:none;" href="{% url "desk-sale-reverse" sale.pk %}"><button style="float:right;margin-top:10px;margin-left:10px;" class="button">Reverse sale</button></a>
+					<button style="float:right;margin-top:10px;" id="reprint_receipt" class="button blue">Reprint receipt</button>
+				</div>
 			</section>
 		</article>
 		<article class="content-box col-super2p2 clear-rm">
@@ -68,24 +71,10 @@
 						<td><input id="given" name="given" onKeyUp="$('#changecalc').html((this.value-{{sale.cached_sum|floatformat:2}}).toFixed(2));"/></td>
 						<td id="changecalc">enter value</td>
 					</tr>
-					{% for given in cashlist %}
-					{% if given > sale.cached_sum %}
-					<tr>
-						<td>{{given}}</td>
-						<td>
-							<script>document.write(({{given}} - {{sale.cached_sum|floatformat:2}}).toFixed(2));</script>
-						</td>
-					</tr>
-					{% endif %}
-					{% empty %}
-					<tr>
-						<td colspan="2">No suggestions.</td>
-					</tr>
-					{% endfor %}
 				</table>
 				<br style="clear: both;"/>
 				<div style="text-align:right;">
-					<a href="{% url "dashboard" %}" class="button blue">Continue</a>
+					<a href="{% url "dashboard" %}" class="button green button-large">Continue</a>
 				</div>
 			</section>
 		</article>

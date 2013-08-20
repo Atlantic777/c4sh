@@ -34,3 +34,7 @@ a.button.small {
 	padding: 3px 6px;
 }
 
+/* larger continue button */
+a.button.button-large {
+	font-size: x-large;
+}
