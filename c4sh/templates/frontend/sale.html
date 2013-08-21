@@ -68,13 +68,14 @@
 					</tr>
 					</thead>
 					<tr>
-						<td><input id="given" name="given" onKeyUp="$('#changecalc').html((this.value-{{sale.cached_sum|floatformat:2}}).toFixed(2));"/></td>
+						<td><input id="given" name="given" onKeyUp="if(event.keyCode==13){window.location='/';};$('#changecalc').html((this.value-{{sale.cached_sum|floatformat:2}}).toFixed(2));" onReturn="alert('yolo');"/></td>
 						<td id="changecalc">enter value</td>
 					</tr>
 				</table>
 				<br style="clear: both;"/>
-				<div style="text-align:right;">
-					<a href="{% url "dashboard" %}" class="button green button-large">Continue</a>
+				<div style="text-align:center;float:right;">
+						<a href="{% url "dashboard" %}" class="button green button-large">Continue</a><br />
+						<small style="font-style:italic;">or press Return</small>
 				</div>
 			</section>
 		</article>
