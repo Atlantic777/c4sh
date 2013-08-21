@@ -79,6 +79,6 @@ class OpenCashDrawerHandler(BaseHandler):
 		cashdesk = bmodels.Cashdesk.objects.get(pk=cashdesk_id)
 		if not cashdesk.receipt_printer:
 			return rc.NOT_HERE
-		
+
 		open_drawer(cashdesk.receipt_printer_name)
 		return rc.ALL_OK

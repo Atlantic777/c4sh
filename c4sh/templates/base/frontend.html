@@ -1,9 +1,6 @@
 {% load cashdesk_session %}
 <!doctype html>
-<!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
-<!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
-<!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<html lang="en" class="no-js">
 <head>
 	<title>c4sh</title>
 	<meta charset="utf-8">
@@ -12,21 +9,14 @@
 	<link rel="stylesheet" href="{{STATIC_URL}}css/colors.css">
 	<link rel="stylesheet" href="{{STATIC_URL}}css/jquery.muon.css">
 	<link rel="stylesheet" href="{{STATIC_URL}}css/jquery.tipsy.css">
-	<link rel="stylesheet" href="{{STATIC_URL}}css/jquery.wysiwyg.css">
-	<link rel="stylesheet" href="{{STATIC_URL}}css/jquery.datatables.css">
-	<link rel="stylesheet" href="{{STATIC_URL}}css/jquery.nyromodal.css">
-	<link rel="stylesheet" href="{{STATIC_URL}}css/jquery.datepicker.css">
-	<link rel="stylesheet" href="{{STATIC_URL}}css/jquery.fileinput.css">
-	<link rel="stylesheet" href="{{STATIC_URL}}css/jquery.fullcalendar.css">
-	<link rel="stylesheet" href="{{STATIC_URL}}css/jquery.visualize.css">
-	<link rel="stylesheet" href="{{STATIC_URL}}css/jquery.snippet.css">
-	<link href='http://fonts.googleapis.com/css?family=Droid+Sans+Mono|Open+Sans:400,400italic,700,700italic&amp;v2' rel='stylesheet' type='text/css'>
+	<link href='{{STATIC_URL}}css/fonts.css' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="{{STATIC_URL}}css/frontend.css">
 	<script src="{{STATIC_URL}}js/libs/modernizr-1.7.min.js"></script>
 	<script src="{{STATIC_URL}}js/libs/jquery-1.5.1.min.js"></script>
 
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$('#c4shlogo').click(function() {
+			$('#open_drawer').click(function() {
 				$.ajax({
 					type: 'GET',
 					url: '/api/cashdrawer/open/{{request.session.cashdesk}}/',
@@ -34,6 +24,8 @@
 						successNotification('Command sent to Cash Drawer!');
 					}
 				});
+			$('#preorder_uuid').focus();
+			$('#preorder_uuid').select();
 			});
 
 			var updateSessionTimeLeft = function() {
@@ -54,14 +46,22 @@
 <body>
 	<header class="muon">
 		<div class="navigation-wrapper">
-			<a href="javascript:;" id="c4shlogo" class="muon-logo" title="c4sh">c4sh</a>
+			<a href="/" id="c4shlogo" class="muon-logo" title="c4sh">c4sh</a>
 
 			<ul>
-				<li>Session time left: <span id="session_time_left">{{request.session|cashdesk_session|safe}}</span></li>
+				<li style="padding:6px;">
+					<a href="javascript:;" id="open_drawer" class="button blue small">Open Drawer</a>
+				</li>
+				<li style="padding:6px;">
+					<a href="{% url "logout" %}" class="button red small">Lock Screen</a>
+				</li>
+				<li>
+					Session time left: <span id="session_time_left">{{request.session|cashdesk_session|safe}}</span>
+				</li>
 			</ul>
 
 			<ul class="muon-user-list">
-				<li class="muon-user-data">logged in as {{user}}</li>
+				<li class="muon-user-data">{{user}}</li>
 				<li><a class="muon-logout" title="Logout" href="{% url "ask-logout" %}">Logout</a></li>
 			</ul>
 		</div>
@@ -92,21 +92,10 @@
 	{% endblock %}
 	</section>
 	<div class="loading-notification">Loading&hellip;</div>
-	<!--[if IE]><script src="{{STATIC_URL}}js/jquery/excanvas.js"></script><![endif]--><!-- IE Canvas Fix for Visualize Charts -->
-	<script src="{{STATIC_URL}}js/libs/selectivizr.js"></script>
-	<script src="{{STATIC_URL}}js/jquery/jquery.visualize.js"></script>
-	<script src="{{STATIC_URL}}js/jquery/jquery.visualize.tooltip.js"></script>
 	<script src="{{STATIC_URL}}js/jquery/jquery.tipsy.js"></script>
-	<script src="{{STATIC_URL}}js/jquery/jquery.nyromodal.min.js"></script>
-	<script src="{{STATIC_URL}}js/jquery/jquery.wysiwyg.js"></script>
-	<script src="{{STATIC_URL}}js/jquery/jquery.datatables.js"></script>
-	<script src="{{STATIC_URL}}js/jquery/jquery.datepicker.js"></script>
-	<script src="{{STATIC_URL}}js/jquery/jquery.fileinput.js"></script>
-	<script src="{{STATIC_URL}}js/jquery/jquery.fullcalendar.min.js"></script>
 	<script src="{{STATIC_URL}}js/jquery/jquery.ui.totop.js"></script>
-	<script src="{{STATIC_URL}}js/jquery/jquery.snippet.js"></script>
 	<script src="{{STATIC_URL}}js/jquery/jquery.muonmenu.js"></script>
-	<script src="{{STATIC_URL}}js/script.js"></script>
+	<script src="{{STATIC_URL}}js/script-lite.js"></script>
 	<script src="{{STATIC_URL}}js/frontend.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){

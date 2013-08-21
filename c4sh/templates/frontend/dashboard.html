@@ -81,7 +81,7 @@
 			success: function(response) {
 				var html = '';
 				$.each(response, function(i, result) {
-					html = html + '<tr><td style="font-size:medium;height:10px;cursor:pointer;"><span onclick="add('+result.ticket__backend_id+',\''+result.uuid+'\');$(\'#preorder_search\').html(\'\');$(\'#preorder_uuid\').val(\'\');">'+result.uuid+'</span></td></tr>';
+					html = html + '<tr><td><span onclick="add('+result.ticket__backend_id+',\''+result.uuid+'\');$(\'#preorder_search\').html(\'\');$(\'#preorder_uuid\').val(\'\');">'+result.uuid+'</span></td></tr>';
 				});
 				$('#preorder_search').html(html);
 
@@ -154,26 +154,33 @@
 				<h2>Cashdesk</h2>
 			</header>
 			<section>
+				<table id="preorder">
+					<tr>
+						<td style="padding:10px;">
+							<form action="javascript:;" id="preorder_form">
+								<input type="text" name="preorder_uuid" id="preorder_uuid" style="width:90%;outline:0;" placeholder="Scan Preorder here (or enter UUID)" />
+							</form>
+						</td>
+					</tr>
+				</table>
+				<table id="preorder_search">
+				</table>
 				<table id="tickets">
 					{% for t in tickets %}
-					{% if not  t.preorder_sold %}
-						<tr>
+						{% if not t.preorder_sold %}
+						{% cycle "<tr>" "" %}
+							<td style="text-align:left;padding-left:10px;padding-top:15px;padding-bottom:15px">
+								<span style="font-size:larger;">{{t.name}}</span>
+							</td>
+							<td style="padding-right:10px;text-align:right;{%cycle "border-right:1px dotted #aaa;" ""%}"><button class="button green" onclick="add({{t.pk}})" style="width:85px">{{t.sale_price|floatformat:2}} {{t.currency}}</button></td>
+						{% cycle "" "</tr>" %}
 
-							<td style="padding-left:20px;width:50px;">
-								{% if t.description %}<button class="icon green" onClick="$('#detail-{{t.pk}}').fadeToggle(); return false;"><img src="{{STATIC_URL}}img/icons/buttons/info_about.png"></button>
-								{% endif %}
-							</td>
-							<td style="text-align:left;max-width:300px;">
-								<span style="font-size:large;">{{t.name}}</span>
-							</td>
-							<td style="width:100px;">{{t.sale_price|floatformat:2}} {{t.currency}}</td>
-							{#<td style="width: 80px;"><button class="button blue" onclick="return false;">Sell!</button></td>#}
-							<td style="width: 80px; padding-right: 20px;"><button class="button green" onclick="add({{t.pk}})">Add to Cart</button></td>
+						{# make sure that there is always a trailing </tr> tag #}
+						{% if forloop.last %}
+							{% if forloop.counter|divisibleby:2 %}
+							{% else %}
 						</tr>
-						{% if t.description %}
-						<tr id="detail-{{t.pk}}" style="display:none;" onClick="$('#detail-{{t.pk}}').fadeToggle()">
-							<td colspan="5" style="text-align:left;padding-left:30px;">{{t.description|safe|linebreaksbr}}</td>
-						</tr>
+							{% endif %}
 						{% endif %}
 						{% endif %}
 					{% empty %}
@@ -183,25 +190,27 @@
 			</section>
 		</article>
 
-		<article class="content-box col-super2p2 clear-rm">
+		<article class="content-box col-super2p2 clear-rm" style="float:right;">
 			<header>
-				<h2>Preorder Code</h2>
+				<h2>Cart</h2>
 			</header>
 			<section>
-				<table id="preorder">
-				</table>
+				<form method="POST" action="{% url "desk-sell" %}">
+				{% csrf_token %}
 				<table>
 					<tr>
-						<td style="padding:10px;">
-							<form action="javascript:;" id="preorder_form">
-								<input type="text" name="preorder_uuid" id="preorder_uuid" style="width:90%;outline:0;" />
-							</form>
+						<td style="text-align:left; padding-left: 20px;">
+							<button class="button red" onclick="emptyCart(); return false;">Empty Cart</button>
+						</td>
+						<td id="cart-sum" style="font-size:larger;">0.00 EUR</td>
+						<td style="text-align:right; padding-right: 20px;">
+							<input type="submit" class="button green" onclick="return true;" value="Checkout"/>
 						</td>
 					</tr>
 				</table>
-				</form>
-				<table id="preorder_search" style="position:absolute;width:340px;z-index:10000;">
+				<table id="cart">
 				</table>
+				</form>
 			</section>
 		</article>
 
@@ -223,28 +232,5 @@
 			</section>
 		</article>
 
-		<article class="content-box col-super2p2 clear-rm" style="float:right;">
-			<header>
-				<h2>Cart</h2>
-			</header>
-			<section>
-				<form method="POST" action="{% url "desk-sell" %}">
-				{% csrf_token %}
-				<table id="cart">
-				</table>
-				<table>
-					<tr>
-						<td style="text-align:left; padding-left: 20px;">
-							<button class="button red tooltip" title="Empty Cart" onclick="emptyCart(); return false;">Clear</button>
-						</td>
-						<td id="cart-sum">0.00 EUR</td>
-						<td style="text-align:right; padding-right: 20px;">
-							<input type="submit" class="button green" onclick="return true;" value="Checkout"/>
-						</td>
-					</tr>
-				</table>
-				</form>
-			</section>
-		</article>
 		<div class="clearfix"></div>
 {% endblock %}

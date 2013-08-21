@@ -1,0 +1,40 @@
+/* reduce upper spacing */
+section[role=main] {
+	padding-top: 50px;
+}
+
+/* reduce content-box header size */
+.content-box header {
+	height: auto;
+}
+.content-box header h2 {
+	font-size: small;
+	padding: 7px 60px 7px 7px;
+}
+
+/* preorder search display */
+#preorder_search {
+	position: absolute;
+	width: 570px;
+	margin-left: -13px;
+	z-index: 10000;
+}
+#preorder_search tr {
+	border: 2px solid #F00;
+}
+#preorder_search td {
+	font-size: 220%;
+	cursor: pointer;
+	padding: 30px 0px;
+}
+
+/* smaller nav button */
+a.button.small {
+	font-size: x-small;
+	padding: 3px 6px;
+}
+
+/* larger continue button */
+a.button.button-large {
+	font-size: x-large;
+}

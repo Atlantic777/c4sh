@@ -142,7 +142,7 @@ section[role=main] { padding-top:80px; }
 	position:relative;
 	background:url('../img/bgs/bg_container_top_left.png') no-repeat top left;
 }
-.col-2 { 
+.col-2 {
 	width:49%;
 	margin-right:2%;
 	float:left;
@@ -157,7 +157,7 @@ section[role=main] { padding-top:80px; }
 	margin-right:2%;
 	float:left;
 }
-.col-super2p1 { 
+.col-super2p1 {
 	width:59%;
 	margin-right:2%;
 	float:left;
@@ -229,7 +229,7 @@ div.clearfix { zoom: 1; }
 	-moz-border-radius:5px 0 0 5px;
 	border-radius:5px 0 0 5px;
 }
-.ie7 .content-box header nav .content-box-header-search-input { top:-11px; left:1; }
+.ie7 .content-box header nav .content-box-header-search-input { top:-11px; left:1px; }
 .ie8 .content-box header nav .content-box-header-search-input { top:-2px; }
 .opera11 .content-box header nav .content-box-header-search-input { top:-15px; }
 
@@ -1167,7 +1167,7 @@ ul li:last-child { margin-bottom:0; }
 	margin:3px 0 0;
 }
 .vcard > * { margin-left:90px; }
-.vcard ul { 
+.vcard ul {
 	list-style:none;
 	margin:0;
 }
@@ -1527,7 +1527,7 @@ input.datepicker {
 .jq-datepicker .datepick-ctrl { padding:5px 0 3px; }
 .jq-datepicker .datepick-nav, .jq-datepicker .datepick-ctrl, .jq-datepicker .datepick-month, .jq-datepicker .datepick-month-header,
 .jq-datepicker .datepick-month-header select, .jq-datepicker .datepick-month-header input, .jq-datepicker .datepick-cmd:hover,
-.jq-datepicker .datepick-ctrl .datepick-cmd:hover, .jq-datepicker .datepick-month th, .jq-datepicker .datepick-month tr, 
+.jq-datepicker .datepick-ctrl .datepick-cmd:hover, .jq-datepicker .datepick-month th, .jq-datepicker .datepick-month tr,
 .jq-datepicker .datepick-month th a { background:none; }
 .jq-datepicker .datepick-month table td { width:30px; }
 .jq-datepicker .datepick-month a, .jq-datepicker .datepick-month span { padding:11px 0; }
@@ -2150,7 +2150,7 @@ table.form th {
 .ui-datepicker .ui-datepicker-title { margin: 0 2.3em; line-height: 1.8em; text-align: center; }
 .ui-datepicker .ui-datepicker-title select { font-size:1em; margin:1px 0; }
 .ui-datepicker select.ui-datepicker-month-year {width: 100%;}
-.ui-datepicker select.ui-datepicker-month, 
+.ui-datepicker select.ui-datepicker-month,
 .ui-datepicker select.ui-datepicker-year { width: 49%;}
 .ui-datepicker table {width: 100%; font-size: .9em; border-collapse: collapse; margin:0 0 .4em; }
 .ui-datepicker th { padding: .7em .3em; text-align: center; font-weight: bold; border: 0;  }
