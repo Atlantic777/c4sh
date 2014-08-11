@@ -26,6 +26,7 @@ class PreorderPositionHandler(BaseHandler):
 			if preorder_position.redeemed == True:
 				return rc.FORBIDDEN
 
+			print "found it!", preorder_position.ticket.backend_id, type(preorder_position.ticket.backend_id)
 			return preorder_position.ticket.backend_id
 		except pmodels.PreorderPosition.DoesNotExist:
 			return rc.NOT_HERE
