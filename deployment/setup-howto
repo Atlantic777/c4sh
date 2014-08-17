@@ -1,0 +1,71 @@
+Instalirati zavisnosti sa:
+#########################
+
+Za ubuntu i još neke distribucije treba libpython-dev i swig
+Možda treba koristiti pip2 ili pip-2.7, zavisi od distribucije
+Možda nije instaliran sqlite modul za python, npr dev-python/sqlite3dbm za gentoo ili python-sqlite, python-pysqlite2
+
+	sudo pip install -r requirements.txt --allow-external PIL --allow-unverified PIL
+
+Redovan django setup:
+####################
+
+Ako se buni da Django ne postoji, možda manage.py koristi python3.
+Tada treba izmeniti prvu liniju u mange.py da koristi python 2
+  #!/usr/bin/python -> #!/usr/bin/python2
+
+ - kopirati balccon2k14.py sa trona
+ - kreirati settings.py
+  - kopirati settings-dist.py
+  - izmeniti hostname
+  - srediti putanje do fajlova
+  - dodati adrese u listu za allowed supervisor IP
+  - podesiti podatke za bazu
+  - ako se iskljuci DEBUG, treba dodati IP servera u allowed hosts
+  - postaviti neki random secret
+ - ./manage.py syncdb
+ - ./manage.py migrate
+ - kreirati nginx config (ima fajl kao primer)
+ - kreirati uwsgi config (ima fajl kao primer)
+ - pokrenuti uwsgi sa "uwsgi -c c4sh.ini" ili kao daemon
+ - aktivirati nginx config i restartovati nginx
+
+Import podataka iz presale u ovu bazu:
+#####################################
+
+c4sh.sqlite je baza za ovaj c4sh (kase)
+presale.sqlite je kopija baze sa tickets.balccon.org
+
+Koristiti sqlite shell.
+ 
+	attach 'c4sh.sqlite' as c4sh;
+	attach 'presale.sqlite' as presale;
+
+	update presale.preorder_preorderticket set backend_id = id;
+
+	insert into c4sh.preorder_preorder select * from presale.preorder_preorder;
+
+	insert into c4sh.preorder_preorderticket select * from presale.preorder_preorderticket;
+
+	insert into c4sh.preorder_preorderposition (id, preorder_id, ticket_id, uuid, redeemed) select id, preorder_id, ticket_id, uuid, redeemed from presale.preorder_preorderposition;
+
+	insert into c4sh.backend_ticket (currency, id, receipt_name, limit_timespan, sale_price, valid_from, valid_until, active, deleted, name, invoice_price, invoice_name, preorder_sold, limit_honorary_member, tax_rate, rabate_rate, invoice_autoprint, limit_supervisor, receipt_autoprint) select currency, id, name, limit_timespan, price, valid_from, valid_until, active, deleted, name, price, name, deleted, deleted, tax_rate, deleted, deleted, deleted, deleted from presale.preorder_preorderticket;
+
+Uputstvo za upotrebu:
+####################
+
+ - U admin panelu ( adresa.servera.org/admin ) kreirati kase (cashdesk). Postaviti IP za kasu sa koje joj se može pristupiti.
+ - U dashboardu (kada smo ulogovani kao superisor) u SALES dodati naloge za prodavce i kreirati sesije za prodaju
+ - Kada se prodavac uloguje na kasu, može da prodaje nove karte.
+ - U polje da unese prvih nekoliko (barem 5) znakova koda sa karte, nakon čega će se pojaviti spisak karti u bazi.
+ - Ako se koristi QR code skener, u isto to polje treba upisati/kopirati ceo kod koji je skeniran.
+
+Primer koda koji se nalazi i odštampan na papiru:
+
+	xxxxc2a2-7f03-4e56-9591-179981fxxf64
+
+Srećno!
+
+Atlantic777, LUGoNS
+
+17.08.2014.
